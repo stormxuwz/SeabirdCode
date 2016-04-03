@@ -1,0 +1,46 @@
+{
+	"DataFolder":{
+		"csvFolder":"/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/"
+	},
+	"SmoothingMethod":{
+		"Temperature":["window",11],
+		"Fluorescence":["dwt","bior3.1",0],
+		"Other":["spline",1]
+	},
+	"Preprocessing":{
+		"Interval":0.25,
+		"badDepthThreshold":3
+	},
+	
+	"testFile":["/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/HU45_2009_Aug_08.csv",
+	"/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/ER09_1998_Aug_04.csv",
+	"/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/ER30_2002_Aug_07.csv",
+	"/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/MI40_2006_Aug_04.csv",
+	"/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/ER10_2006_Aug_12.csv",
+	"/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/ER36_2001_Aug_06.csv",
+	"/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/ER37_1998_Aug_03.csv",
+	"/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/ER63_1997_Aug_04.csv",
+	"/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/SU17_2011_Aug_21.csv",
+	"/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/SU16_1996_Aug_18.csv",
+	"/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/ER73_1998_Aug_03.csv",
+	"/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/ER15_1996_Aug_04.csv",
+	"/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/SU19_2001_Aug_16.csv",
+	"/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/SU18_1997_Aug_21.csv"],
+
+	"wrongFile":["/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/ER59_1997_Aug_02.csv",
+	"/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/MI46_1999_Aug_30.csv"],
+
+	"Algorithm":{
+		"Peak":{
+			"peakInterval": 25,
+			"minPeakMagnitude": 0.3,
+			"minBoundaryValue": 0.2,
+			"maxBoundaryGradient": 0.1,
+			"peakHeight": 0.25,
+			"tailTol": 0.2
+		},
+		"Spectrum":{"windowSize":8,"threshold":null},
+		"segment":{"max_error":0.5,"stable_gradient":0.05}
+	}
+	
+}
