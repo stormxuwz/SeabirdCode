@@ -66,7 +66,7 @@ def seabird_class_test():
 	from seabird.tools.misc import findExpertData
 	from seabird.seabird_class import seabird
 	
-	expertDataFile = pd.read_csv("./data/data_expert_lineup.csv")
+	expertDataFile = pd.read_csv("../input/data_expert_lineup.csv")
 
 	config=json.load(open('./config/config.json'))
 	# sourceFile = config["testFile"][10]
@@ -99,8 +99,8 @@ def runApp():
 		root.destroy()
 
 if __name__ == '__main__':
-	logging.basicConfig(level=logging.INFO)
+	# logging.basicConfig(level=logging.INFO)
 	# futureFeatureTest()
-	seabird_class_test()
-	# runApp()
+	# seabird_class_test()
+	runApp()
 	pass

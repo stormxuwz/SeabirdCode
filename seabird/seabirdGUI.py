@@ -23,7 +23,7 @@ class SeabirdGUI:
 		self.feature_HYP=-99
 		self.feature_DCL=-99
 
-		self.config = json.load(open('./config/config.json'))
+		self.config = json.load(open('./Seabird/config.json'))
 
 	# 	GUI elements
 		master.title("Seabird Thermocline/DCL Detection")
