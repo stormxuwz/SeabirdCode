@@ -7,14 +7,15 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import logging
+from tools.seabird_parser import seabird_file_parser
+from sqlalchemy import create_engine
+
 
 class seabird:
-	def __init__(self, fileName, config, variable=None, expertFile=None):
-		self.data_file = fileName
-		self.expertFile = expertFile
-
+	def __init__(self, config):
+		self.data_file = None
 		self.config=config
-		self.interstVar = variable
+
 		self.thermocline = thermocline(config)
 		self.DCL = DCL(config)
 		self.DCL_future = DCL_future(config)
@@ -29,9 +30,26 @@ class seabird:
 		self.cleanData = None
 		self.bottleFile = None # maybe useful
 		self.feature = None
-		# Read files
-		self.read_data()
-		logging.info("initialized")
+
+	def loadData(self,dataFile = None,expertFile = None, fileId = None, dbEngine = None):
+		if fileId is None:
+			# Read data from dataFile
+			parser = seabird_file_parser()
+			parser.readFile(dataFile)
+			sensorData = parser.sensordata
+
+		else:
+			if dbEngine is None:
+				 dbEngine = create_engine('mysql+mysqldb://root:XuWenzhaO@localhost/Seabird')
+			
+			sql_data = "Select * from seabird_data where fileId = %d Order By 'index' ASC" %(fileId)
+			sensorData = pd.read_sql_query(sql_data,dbEngine).drop('index',axis = 1)
+			sql_meta = "Select * from seabird_meta where fileId = %d" %(fileId)
+			meta = pd.read_sql_query(sql_meta,dbEngine)
+			self.time = meta["systemUpLoadTime"][0]
+		
+		self.rawData = sensorData
+	
 
 	def updateConfig(self,new_config):
 		self.config=new_config

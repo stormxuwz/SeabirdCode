@@ -13,7 +13,7 @@ def check_StationName(Name):
 		else:
 			accurateName=Name[0:4]
 
-	return accurateName
+	return accurateName  
 
 
 def read_seabird_file(filename):
@@ -23,8 +23,7 @@ def read_seabird_file(filename):
 		lines=file.readlines();
 		if(lines==[]):
 			return None,None,None,None
-		variable_name_dictionary={"depF:":"Depth","depFM:":"Depth","t068:":"Temperature","t090:":"Temperature","t090C:":"Temperature","specc:":"Specific_Conductivity","bat:":"Beam_Attenuation","sbeox0Mg/L:":"DO","oxMg/L:":"DO","xmiss:":"Beam_Transmission","flSP:":"Fluorescence","flS:":"Fluorescence","ph:":"pH","c0mS/cm:":"Conductivity","c0uS/cm:":"Conductivity","par:":"Par","spar:":"SPar"
-		}
+		variable_name_dictionary={"depF:":"Depth","depFM:":"Depth","t068:":"Temperature","t090:":"Temperature","t090C:":"Temperature","specc:":"Specific_Conductivity","bat:":"Beam_Attenuation","sbeox0Mg/L:":"DO","oxMg/L:":"DO","xmiss:":"Beam_Transmission","flSP:":"Fluorescence","flS:":"Fluorescence","ph:":"pH","c0mS/cm:":"Conductivity","c0uS/cm:":"Conductivity","par:":"Par","spar:":"SPar","prDE":"Pressure"}
 
 		column_index=[];
 		varNameList=[];
@@ -95,6 +94,11 @@ def read_seabird_file(filename):
 		sensordata=np.array(sensordata)[:,column_index]
 
 	return sensordata,data_time,stationName,varNameList
+
+
+
+
+
 
 if __name__ == '__main__':
 	# filename="/Users/XuWenzhao/Developer/DataSource/Seabird/Summer12 SBE/Michigan/MI48b.cnv.cnv"

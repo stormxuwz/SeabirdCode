@@ -112,15 +112,15 @@ def extractWaterChemistryData(featureFile):
 	varList = ["DO","Temperature","Specific_Conductivity","Fluorescence","Beam_Attenuation"]
 	epilimnionFeature = np.zeros((feature.shape[0],2*len(varList)))
 	hypolimnionFeature = np.zeros((feature.shape[0],2*len(varList)))
-	for i in range(374,375):
-	# for i in range(feature.shape[0]):
+	# for i in range(374,375):
+	for i in range(feature.shape[0]):
 		print i
 		site = feature.site[i]
 		year = feature.year[i]
 		LEP = feature.LEP_segment[i]
 		UHY = feature.UHY_segment[i]
 		try:
-			mySeabird = pickle.load(open("../Project_IO/Seabird/pickle/%s_%d.p" %(site,year),"rb"))
+			mySeabird = pickle.load(open("../output/pickle/%s_%d.p" %(site,year),"rb"))
 			data = mySeabird.cleanData
 			# print data.columns.values
 			for var in varList:
@@ -138,7 +138,7 @@ def extractWaterChemistryData(featureFile):
 			hypolimnionFeature[i,len(varList):] = hypolimnion.var()
 		except:
 			print "Unexpected error:", sys.exc_info()[0]
-			# traceback.print_exc()
+			traceback.print_exc()
 			pass
 
 	epilimnionFeature = pd.DataFrame(epilimnionFeature,columns=["epi_mean_"+name for name in varList] + ["epi_var_"+name for name in varList])
@@ -157,4 +157,5 @@ if __name__ == '__main__':
 	# summary.write_counterpart_list()
 	# summary.load_counterpart_list("./config/data_expert_lineup.csv")
 	# summary.extractSeabirdFeature(config)
-	extractWaterChemistryData("/Users/WenzhaoXu/Desktop/SU.csv")
+	# extractWaterChemistryData("/Users/WenzhaoXu/Desktop/SU.csv")
+	extractWaterChemistryData("../output/testFeature.csv")

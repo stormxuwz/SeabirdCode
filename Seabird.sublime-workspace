@@ -713,6 +713,7 @@
 	],
 	"file_history":
 	[
+		"/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/seabird/tools/seabird_cnvFileParser.py",
 		"/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/main.py",
 		"/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/seabird/seabirdGUI.py",
 		"/Users/WenzhaoXu/Developer/Triaxus/TriaxusCode/main.R",
@@ -839,8 +840,7 @@
 		"/Users/WenzhaoXu/Downloads/DO_visualization_threejs-master/js/test.js",
 		"/Users/WenzhaoXu/Library/Mobile Documents/com~apple~CloudDocs/Assignments/Courses/CS411/Project/account.php",
 		"/Users/WenzhaoXu/Downloads/DO_visualization_threejs-master/index.html",
-		"/Users/WenzhaoXu/Downloads/DO_visualization_threejs-master/js/dataBase.php",
-		"/Users/WenzhaoXu/Downloads/DO_visualization_threejs-master/js/button.js"
+		"/Users/WenzhaoXu/Downloads/DO_visualization_threejs-master/js/dataBase.php"
 	],
 	"find":
 	{
@@ -994,6 +994,10 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"pa",
+				"seabird/tools/seabird_cnvFileParser.py"
+			],
 			[
 				"ser",
 				"src/server.R"

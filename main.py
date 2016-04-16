@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import json,sys
 import logging
+from sqlalchemy import create_engine
 
 def plotAccumu(x):
 	print x,np.cumsum(x)
@@ -19,7 +20,7 @@ def futureFeatureTest():
 	import seabird.futureFeature.timeSeriesSeg as tsModel
 	import seabird.futureFeature.peakDetection as peakModel
 
-	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/config/config.json'))
+	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeairdCode/config.json'))
 	# sourceFile = "/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/ON49_1996_Aug_07.csv"
 	sourceFile=config["testFile"][2]
 	data = pd.read_csv(sourceFile)
@@ -98,9 +99,39 @@ def runApp():
 		root.mainloop()
 		root.destroy()
 
+
+
+def detectThermocline(fileId,dbEngine = create_engine('mysql+mysqldb://root:XuWenzhaO@localhost/Seabird')):
+	import seabird.tools.seabird_preprocessing as seabirdPrep
+	import seabird.futureFeature.timeSeriesSeg as tsModel
+	import seabird.futureFeature.peakDetection as peakModel
+	from seabird.seabird_class import seabird
+
+	sql = "Select * from seabird_data where fileId = %d Order By 'index' ASC" %(fileId)
+	data = pd.read_sql_query(sql,dbEngine).drop('index',axis = 1)
+	temperature_error=0.5
+	# print data.describe()
+	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/seabird/config.json'))
+
+	mySeabird = seabird(config = config)
+	mySeabird.loadData(fileId = 1000)
+	# print mySeabird.time
+	mySeabird.preprocessing()
+	mySeabird.identify()
+	mySeabird.plot()
+	plt.show()
+# def detectThermocline(engine):
+# 	sql = "Select fileId from seabird_meta where duplicate = 0"
+# 	fileIdList = pd.read_sql_query(sql,engine)["fileId"]
+
+# 	for i in fileIdList[:1]:
+# 		data = retriveData(i, engine)
+# 		print data
+
 if __name__ == '__main__':
 	# logging.basicConfig(level=logging.INFO)
 	# futureFeatureTest()
 	# seabird_class_test()
-	runApp()
+	# runApp()
+	detectThermocline(10)
 	pass

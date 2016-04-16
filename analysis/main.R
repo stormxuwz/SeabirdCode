@@ -6,15 +6,21 @@ library(plotly)
 require(gridExtra)
 
 readFeature <- function(){
-	feature <- read.csv("testFeature.csv")
-	validStation <- read.csv("station_loc.csv")
+	feature <- read.csv("../../output/testFeature.csv")
+	validStation <- read.csv("../../input/station_loc.csv")
+  waterChemistryData <- read.csv("../../output/waterFeature.csv")[,-1]
 
-	validStation$Station <- as.character(validStation$Station)
-  validStation$bathymetry <- retriveBathyMetriy(validStation,"./superior_lld/superior_lld.asc")
-	
   feature$lake <- addLake(feature$site)
+
+  feature <- cbind(feature,waterChemistryData)
+
+  feature_ER <- filter(feature,lake=="ER")
+	validStation$Station <- as.character(validStation$Station)
+  validStation$bathymetry <- retriveBathyMetriy(validStation,"../../input/erie_lld/erie_lld.asc")
+	
+  
 	# feature <- subset(feature,site %in% validStation$Station)
-  feature <- merge(feature,validStation,by.x = "site", by.y = "Station")
+  feature_ER <- merge(feature_ER,validStation,by.x = "site", by.y = "Station")
 	return(feature)
 }
 
@@ -108,7 +114,7 @@ summary_diff_stat <- function(feature,var = "THM"){
 
 LakeSU_analysis <- function(feature){
   SU <- subset(feature,lake=="SU")
-    <- subset(SU,!(site=="ER08" & year == 1996))
+    # <- subset(SU,!(site=="ER08" & year == 1996))
   waterFeature <- read.csv("waterFeature.csv")
 
   totalSU <- cbind(validSU,waterFeature)
@@ -149,13 +155,13 @@ GWPCA <- function(feature){
 
 }
 
-plot(subset(totalSU,epi_mean_Beam_Attenuation>0 & epi_mean_DO>0 & DCL_depth >0)[,c(mean_varList,"DCL_depth")])
+# plot(subset(totalSU,epi_mean_Beam_Attenuation>0 & epi_mean_DO>0 & DCL_depth >0)[,c(mean_varList,"DCL_depth")])
 
-df <- subset(totalSU,DCL_depth>0)
-# lmModel <- lm(DCL_depth~epi_mean_Temperature+epi_mean_Fluorescence,data=df)
+# df <- subset(totalSU,DCL_depth>0)
+# # lmModel <- lm(DCL_depth~epi_mean_Temperature+epi_mean_Fluorescence,data=df)
 
-df$site <- as.factor(df$site)
-ggplot(df)+geom_boxplot(aes(x=as.factor(year),y=DCL_depth))+geom_text(aes(x=factor(year),y=DCL_depth,label = site))
+# df$site <- as.factor(df$site)
+# ggplot(df)+geom_boxplot(aes(x=as.factor(year),y=DCL_depth))+geom_text(aes(x=factor(year),y=DCL_depth,label = site))
 
 getdf <- function(feature,site_,var="DCL_depth"){
   df <- subset(feature,site %in% site_)
@@ -164,7 +170,7 @@ getdf <- function(feature,site_,var="DCL_depth"){
 }
 
 
-bbox <- make_bbox(Long, Lat, cleanSU, f = 0.3)
+# bbox <- make_bbox(Long, Lat, cleanSU, f = 0.3)
 
 plotSPData <- function(data,varName){
   map <- ggmap(get_map(bbox,source="stamen"))
@@ -188,14 +194,14 @@ plotSPData <- function(data,varName){
 }
 
 
-plotSPData(totalSU,"DCL_depth")
-plotSPData(totalSU,"hyp_mean_Temperature")
-plotSPData(totalSU,"DCL_depth")
-plotSPData(totalSU,"DCL_depth")
+# plotSPData(totalSU,"DCL_depth")
+# plotSPData(totalSU,"hyp_mean_Temperature")
+# plotSPData(totalSU,"DCL_depth")
+# plotSPData(totalSU,"DCL_depth")
 # df <- getdf(totalSU,c("SU06","SU07","SU08"))
 # df <- subset(df,DCL_exist>0)
 # ggplot(df)+geom_boxplot(aes(x=as.factor(year),y=DCL_depth))+geom_text(aes(x=factor(year),y=DCL_depth,label = site))
 
-
+feature <- readFeature()
 
 # main()

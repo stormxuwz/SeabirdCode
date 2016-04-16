@@ -6,6 +6,7 @@ import pandas as pd
 from scipy.interpolate import UnivariateSpline
 import pywt
 import logging
+
 def window_smooth(x, window_len=11, window='hanning'):
 
 	if x.ndim != 1:
@@ -37,6 +38,9 @@ def spline_smooth(x, smoothing_para=1):
 
 
 def testFilter(x, smoothing_para=1):
+	'''
+	Not implemented yet
+	'''
 	from scipy.signal import wiener, filtfilt, butter, gaussian, freqz
 	pass
 
@@ -97,13 +101,17 @@ def separate(sensordata):
 
 def resample(sensordata, interval=0.25):
 	depth = sensordata.Depth
+
 	featureNum = sensordata.shape[1] - 1
 	new_depth = np.arange(np.ceil(depth.min()), depth.max(), interval)
 	new_sensordata = np.zeros((len(new_depth), sensordata.shape[1]-1))
 	new_sensordata[:, 0] = new_depth
 
 	for i in range(1, sensordata.shape[1]-1):
-		new_sensordata[:, i] = np.interp(new_depth, depth, sensordata.iloc[:, i])
+		if sum(~sensordata.iloc[:,i].isnull())<1:
+			new_sensordata[:, i] = np.nan
+		else:
+			new_sensordata[:, i] = np.interp(new_depth, depth, sensordata.iloc[:, i])
 
 	return pd.DataFrame(new_sensordata,columns=sensordata.columns.values[:-1])
 

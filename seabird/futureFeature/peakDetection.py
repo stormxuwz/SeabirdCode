@@ -19,7 +19,7 @@ def fitGaussian(x,y,x_mean,weight= None):
 def t_pdf_function(x, a, x0, df):
 	return a*t.pdf(x-x0,df)
 
-def fit_t_pdf(x,y,x_mean):
+def fit_t_pdf(x,y,x_mean,weight=None):
 	popt, pcov = curve_fit(lambda x,a,sigma: t_pdf_function(x,a,x_mean,sigma), x, y,method="trf")
 	fit_y = t_pdf_function(x, popt[0], x_mean, popt[1])
 	return fit_y,popt
@@ -45,10 +45,8 @@ def fitShape(y,direction,method="gaussian"):
 		fit_func = fit_laplace
 	else:
 		raise "Method not available"
-	# print "direction:",direction
+
 	if direction == "left":
-		# print len(y)
-			# print i
 		y_for_fit = y
 		x_for_fit = np.arange(len(y_for_fit))
 
@@ -57,18 +55,13 @@ def fitShape(y,direction,method="gaussian"):
 		fit_y,popt = fit_func(x_for_fit, y_for_fit, len(x_for_fit),weight)
 			
 	else:
-		# for i in range(2,len(y)):
 		y_for_fit = y
 		x_for_fit = np.arange(len(y_for_fit))
 		weight = range(1,len(y_for_fit)+1,1)
 		weight = None
 		fit_y,popt = fit_func(x_for_fit, y_for_fit,0,weight)
 
-			# if calculate_error(y_for_fit, fit_y)>max_error:
-				# break
-
 	return fit_y,x_for_fit, y_for_fit, popt,
-
 
 def slopeSum(x,windowSize):
 	gradient_x = np.diff(x)
@@ -80,8 +73,7 @@ def slopeSum(x,windowSize):
 	return np.array(y)
 
 class peak(object):
-	def __init__(self,max_error,method = "gaussian",config=None):
-		self.max_error = max_error
+	def __init__(self,config,method = "gaussian"):
 		self.peak = []
 		self.shape_fit = []
 		self.x=None
@@ -89,18 +81,16 @@ class peak(object):
 		self.config = config
 
 	def detect(self,x):
-		# x_gradient = spp.window_smooth(np.diff(x),10)
 		x_gradient = np.diff(x)
-
 		rawPeak = self._zeroCrossing(x_gradient, mode=1)
-		threshold = (max(x)-min(x))*0.3+min(x)  # need a parameter here
+		threshold = (max(x)-min(x))*self.config["minPeakMagnitude"]+min(x) # a tuning parameter
 
 		rawPeak = self.initialFilter(rawPeak, x, threshold)
 		
 		rawPeak.append(len(x)-1)
 		rawPeak = [0]+rawPeak
 
-		peakHeightThreshold = (max(x)-min(x))*0.2  # need a parameter here
+		peakHeightThreshold = (max(x)-min(x))*self.config["peakHeight"]  # a tuning parameter
 		logging.info(x)
 		logging.info("rawPeak")
 		logging.info(rawPeak)
@@ -114,8 +104,8 @@ class peak(object):
 			if len(shape_height) ==0:
 				break
 			minHeightPeak_index = np.argmin(shape_height)
-			if shape_height[minHeightPeak_index]<peakHeightThreshold:  # remove shallower peak
-				rawPeak.pop(minHeightPeak_index+1)
+			if shape_height[minHeightPeak_index]<peakHeightThreshold:  # remove shalloest peak
+				rawPeak.pop(minHeightPeak_index+1) # +1 because the starting point as the 1st point in rawPeak
 			else:
 				break
 
@@ -145,14 +135,15 @@ class peak(object):
 		shape_fit = []
 
 		for i in range(1,len(rawPeak)-1):
+			# Logger Info
 			logging.info(i)
 			logging.info("rawPeak i = %d" %(rawPeak[i]))
+
 
 			leftNode = rawPeak[i-1]
 			middleNode = rawPeak[i]
 			rightNode =rawPeak[i+1]
 
-			# print x[middleNode], x[leftNode:middleNode],x[middleNode:rightNode]
 			leftBoundary = np.argmin(x[leftNode:middleNode])+leftNode
 			rightBoundary = np.argmin(x[middleNode:rightNode])+middleNode
 			
@@ -169,7 +160,7 @@ class peak(object):
 			leftShape_diff = leftShape[2][-1]-min(leftShape[2])
 			leftShape_corr = np.mean(abs(leftShape[0]-leftShape[2]))/(max(x)-min(x))
 
-			if leftShape_corr>0.08:
+			if leftShape_corr>self.config["peakFitTol"]:  
 				# the shape is not fit very well
 				# back to recurison methods
 				logging.info("Fitting data gradually -left")
@@ -179,7 +170,7 @@ class peak(object):
 					sub_leftShape_diff = sub_leftShape[2][-1]-min(sub_leftShape[2])
 					sub_leftShape_corr = np.mean(abs(sub_leftShape[0]-sub_leftShape[2]))/(max(x)-min(x))
 					
-					if sub_leftShape_corr > 0.08:
+					if sub_leftShape_corr > self.config["peakFitTol"]:
 						leftData = leftData[-k+1:]
 						leftShape = fitShape(leftData, "left",self.method)
 						leftShape_diff = leftShape[2][-1]-min(leftShape[2])
