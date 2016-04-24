@@ -116,6 +116,13 @@ def resample(sensordata, interval=0.25):
 	return pd.DataFrame(new_sensordata,columns=sensordata.columns.values[:-1])
 
 
+def transTransimissionToBAT(transmission):
+	return -np.log(transmission/100)*4
+	
+def transCondToSpecCond(conductitivty,temperature):
+	return conductitivty/(1+0.02*(self.temperature-25))
+
+
 def filter(data,config):
 	for var in data.columns.values[1:]:
 		if var in config["SmoothingMethod"]:

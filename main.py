@@ -20,9 +20,9 @@ def futureFeatureTest():
 	import seabird.futureFeature.timeSeriesSeg as tsModel
 	import seabird.futureFeature.peakDetection as peakModel
 
-	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeairdCode/config.json'))
-	# sourceFile = "/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/ON49_1996_Aug_07.csv"
-	sourceFile=config["testFile"][2]
+	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/config.json'))
+	sourceFile = "/Users/WenzhaoXu/Developer/Seabird/input/csvFile/ON49_1996_Aug_07.csv"
+	# sourceFile=config["testFile"][2]
 	data = pd.read_csv(sourceFile)
 
 	tmp,data = seabirdPrep.preprocessing(data,config)
@@ -30,7 +30,7 @@ def futureFeatureTest():
 	temperature_error=0.5
 
 	# segModel = slidingWindow(max_error=error)
-	segModel = tsModel.bottomUp(max_error=temperature_error)
+	segModel = tsModel.bottomUp_efficient(max_error=temperature_error)
 	segModel.fit_predict(np.array(data.Temperature))
 
 	#print len(segModel.segmentList)
@@ -130,8 +130,8 @@ def detectThermocline(fileId,dbEngine = create_engine('mysql+mysqldb://root:XuWe
 
 if __name__ == '__main__':
 	# logging.basicConfig(level=logging.INFO)
-	# futureFeatureTest()
+	futureFeatureTest()
 	# seabird_class_test()
 	# runApp()
-	detectThermocline(10)
+	# detectThermocline(10)
 	pass
