@@ -1,8 +1,8 @@
 from tools.seabird_cnvFileParser import read_seabird_file
 from tools.seabird_bottleFileParser import read_bottle_file
 from tools.seabird_preprocessing import preprocessing as seabird_pp
-from thermocline_class import thermocline
-from DCL_class import DCL,DCL_future
+from thermocline import thermocline
+from deepChlLayers import DCL
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -18,177 +18,70 @@ class seabird:
 
 		self.thermocline = thermocline(config)
 		self.DCL = DCL(config)
-		self.DCL_future = DCL_future(config)
 
-		self.time = "NA"
-		self.site = "NA"
-		self.ID = "NA"
+		self.time = None
+		self.site = None
+		self.ID = None
 		
 		self.downCastRawData= None
 		self.rawData = None
 		self.bottleData = None
 		self.cleanData = None
 		self.bottleFile = None # maybe useful
-		self.feature = None
+		self.features = None
+		self.expert = {"TRM":None,"LEP":None,"UHY":None,"DCL":None}
 
-	def loadData(self,dataFile = None,expertFile = None, fileId = None, dbEngine = None):
+	def loadData(self,dataFile = None,fileId = None, dbEngine = None):
+		
 		if fileId is None:
-			# Read data from dataFile
 			parser = seabird_file_parser()
 			parser.readFile(dataFile)
 			sensorData = parser.sensordata
+			self.time = parser.meta["systemUpLoadTime"]
+			self.site = parser.meta["stationInfered"]
 
 		else:
 			if dbEngine is None:
 				 dbEngine = create_engine('mysql+mysqldb://root:XuWenzhaO@localhost/Seabird')
 			
-			sql_data = "Select * from seabird_data where fileId = %d Order By 'index' ASC" %(fileId)
+			sql_data = "Select * from summer_data where fileId = %d Order By 'index' ASC" %(fileId)
 			sensorData = pd.read_sql_query(sql_data,dbEngine).drop('index',axis = 1)
-			sql_meta = "Select * from seabird_meta where fileId = %d" %(fileId)
+			sql_meta = "Select * from summer_meta where fileId = %d" %(fileId)
 			meta = pd.read_sql_query(sql_meta,dbEngine)
 			self.time = meta["systemUpLoadTime"][0]
 		
 		self.rawData = sensorData
+		self.preprocessing()
 	
+	def setExpert(self,notes):
+		self.expert["TRM"] = notes["TRM"]
+		self.expert["LEP"] = notes["LEP"]
+		self.expert["UHY"] = notes["UHY"]
+		self.expert["DCL"] = notes["DCL"]
 
 	def updateConfig(self,new_config):
 		self.config=new_config
-		self.thermocline.config=new_config
-		self.DCL.config=new_config
+		self.thermocline = thermocline(new_config)
+		self.DCL = DCL(new_config)
+		self.features = None
 
 	def updateData(self):
 		self.downCastRawData, self.cleanData = seabird_pp(self.rawData, self.config)
 
-	def extractWaterChemistry(self,location="LEP",interestVarList=None):
-		if interestVarList is None:
-			interestVarList=["Temperature", "DO", "Beam_Attenuation","Specific_Conductivity","Fluorescence", "Par"]
-
-		subdata = None
-		if location == "EPI":
-			depth_criteria = self.thermocline.threshold_epi
-			subData=self.cleanData[self.cleanData.Depth<depth_criteria]
-
-		elif location=="HYP":
-			depth_criteria = self.thermocline.hmm_hyp
-			subData=self.cleanData[self.cleanData.Depth>depth_criteria]
-
-		elif location=="MET":
-			subData=self.cleanData[self.cleanData.Depth>self.thermocline.hmm_hyp and self.cleanData.Depth<self.thermocline.threshold_epi]
-
-		varMean = np.mean(subdata, axis=0)  # variable mean above depth criteria
-		varVariance = np.var(subdata, axis=0)  # variable mean
-
-		return np.concatenate((varMean, varVariance))
-
-	def completePar(self):
-		if "Par" not in self.rawData.columns.values:
-			self.rawData["Par"]=-99
-
-	def transTransimissionToBAT(self):
-		if "Beam_Attenuation" not in self.rawData.columns.values and "Beam_Transmission" in self.rawData.columns.values:
-			self.rawData["BAT"]=-np.log(self.rawData["Beam_Transmission"]/100)*4
-		else:
-			self.rawData["BAT"]=-99
-
-	def transCondToSpecCond(self):
-		if "Specific_Conductivity" not in self.rawData.columns.values:
-			self.rawData["Specific_Conductivity"]=self.rawData.Conductivity/(1+0.02*(self.rawData.Temperature-25))
-
-	def read_data(self):
-		import os
-		if self.data_file.endswith('.csv'):  # Read CSV data
-			self.rawData = pd.read_csv(self.data_file)
-
-			sampleInfo = os.path.basename(self.data_file)
-			sampleInfo = sampleInfo[0:-4]
-			sampleInfo = sampleInfo.split("_")
-			self.site = sampleInfo[0]
-			self.time = sampleInfo[1]
-			self.ID = self.site + "_" + self.time
-
-		else:  # Read cnv data
-			self.rawData, self.time, self.site, varList = read_seabird_file(self.data_file);
-			self.rawData=pd.DataFrame(self.rawData,columns=varList)
-			self.ID = self.site + "_" + self.time
-
-		if self.bottleFile is not None:  # read bottle File
-			self.bottleData = read_bottle_file(self.bottleFile)
-
-		if self.expertFile is not None and self.expertFile is not np.nan:  # read expert File
-			# print self.expertFile
-			expertData = pd.read_csv(self.expertFile,header=None)
-			self.thermocline.setExpert([expertData.iloc[0,0], expertData.iloc[0,1], expertData.iloc[0,2]])
-			self.DCL_future.setExpert(expertData.iloc[0,3])
-
 	def preprocessing(self):
-		self.completePar()
-		self.transTransimissionToBAT()
-		self.transCondToSpecCond()
 		self.downCastRawData, self.cleanData=seabird_pp(self.rawData, self.config)
 		
 	def DCLBelowThm(self):
 		return self.thermocline.tsSeg_epi<self.DCL_future.peakDepth
 	
-	
-	def identify(self,data=None):
-		if data is None:
-			data=self.cleanData
+	def identify(self):
+		TRM_features = self.thermocline.detect(self.cleanData[["Depth","Temperature"]])
+		DCL_features = self.DCL.detect(self.cleanData[["Depth","Fluorescence"]])
 
-		self.thermocline.identify(self.cleanData)
-		logging.info("THM finished")
-		# if max(self.cleanData.Fluorescence)>0.1:
-		if max(self.cleanData.Depth) >10:
-			# self.DCL.identify(self.cleanData)
-			self.DCL_future.identify(self.cleanData)
-			logging.info("peakDepth")
-			logging.info(self.DCL_future.peakDepth)
+		self.features = TRM_features.copy()
+		self.features.update(DCL_features)
 
-		if self.DCL_future.peakNum==0:
-			print "no peak detected"
-			DCL_peak_index = 0
-			DCLexist = 0
-		else:
-			if any(self.DCLBelowThm()) is True:
-				DCL_peak_index = np.argmax(self.DCL_future.magnitude * (self.DCL_future.peakDepth > self.thermocline.tsSeg_epi))
-				DCLexist = 1
-			else:
-				print "no peak below thermocline exists"
-				DCL_peak_index = 0
-				DCLexist = 0
 
-		logging.info("DCL finished")
-		self.feature = {	
-		"THM_expert":self.thermocline.expert_thm,
-		"LEP_expert":self.thermocline.expert_epi,
-		"UHY_expert":self.thermocline.expert_hyp,
-
-		"THM_HMM":self.thermocline.hmm_thm,
-		"LEP_HMM":self.thermocline.hmm_epi,
-		"UHY_HMM":self.thermocline.hmm_hyp,
-
-		"THM_segment":self.thermocline.tsSeg_thm,
-		"LEP_segment":self.thermocline.tsSeg_epi,
-		"UHY_segment":self.thermocline.tsSeg_hyp,
-		"num_segment":self.thermocline.tsSegNum,
-		"THM_gradient":self.thermocline.tsSegGradient,
-
-		"THM_threshold":self.thermocline.threshold_thm,
-		"LEP_threshold":self.thermocline.threshold_epi,
-		"UHY_threshold":self.thermocline.threshold_hyp,
-
-		"DCL_expert":self.DCL_future.expert_peakDepth,
-		"DCL_peakNum":self.DCL_future.peakNum,
-		"DCL_exist":DCLexist,
-		"DCL_depth":self.DCL_future.peakDepth[DCL_peak_index],
-		"DCL_magnitude":self.DCL_future.magnitude[DCL_peak_index],
-		"DCL_magnitude_upperBoundary":self.DCL_future.boundaryMagnitude[DCL_peak_index][0],
-		"DCL_magnitude_bottomBoundary":self.DCL_future.boundaryMagnitude[DCL_peak_index][1],
-		"DCL_depth_upperBoundary":self.DCL_future.boundaryDepth[DCL_peak_index][0],
-		"DCL_depth_bottomBoundary":self.DCL_future.boundaryDepth[DCL_peak_index][1],
-		"DCL_fitness":self.DCL_future.fitness
-		}
-
-	
 	def plot(self, legend=True, pt=None, OtherFeatures=None, bottle=None, filename=None):
 		if pt is None:
 			pt = plt.figure(figsize=(6, 7), dpi=80)
@@ -229,8 +122,8 @@ class seabird:
 			xlimRange = (
 				np.percentile(self.downCastRawData["Fluorescence"][self.downCastRawData.Depth > 3],5) * 0.95,
 				np.percentile(self.downCastRawData["Fluorescence"][self.downCastRawData.Depth > 3],95) * 1.3)
+			
 			if max(xlimRange)>0.01:
-			# print xlimRange
 				ax2.set_xlim(xlimRange)
 				ax2.axhline(y=-self.DCL_future.expert_peakDepth, color="g", ls="--")
 				ax2.set_xlabel("Fluorescence (ug/L)")
@@ -304,7 +197,7 @@ class seabird:
 
 		host.set_xlabel("Temperature")
 		host.set_ylabel("Depth (m)")
-		host.set_title(self.site + "_" + self.time)
+		# host.set_title(self.site + "_" + self.time)
 		host.set_xlim((max(host.get_xlim()[0], 0), host.get_xlim()[1]))
 		host.set_ylim((host.get_ylim()[0], min(host.get_ylim()[1], 0),))
 		if fileTitle is None:

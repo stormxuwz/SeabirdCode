@@ -20,9 +20,9 @@ def futureFeatureTest():
 	import seabird.futureFeature.timeSeriesSeg as tsModel
 	import seabird.futureFeature.peakDetection as peakModel
 
-	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeairdCode/config.json'))
-	# sourceFile = "/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/ON49_1996_Aug_07.csv"
-	sourceFile=config["testFile"][2]
+	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/config.json'))
+	sourceFile = "/Users/WenzhaoXu/Developer/Seabird/input/csvFile/ON49_1996_Aug_07.csv"
+	# sourceFile=config["testFile"][2]
 	data = pd.read_csv(sourceFile)
 
 	tmp,data = seabirdPrep.preprocessing(data,config)
@@ -30,7 +30,7 @@ def futureFeatureTest():
 	temperature_error=0.5
 
 	# segModel = slidingWindow(max_error=error)
-	segModel = tsModel.bottomUp(max_error=temperature_error)
+	segModel = tsModel.bottomUp_efficient(max_error=temperature_error)
 	segModel.fit_predict(np.array(data.Temperature))
 
 	#print len(segModel.segmentList)
@@ -133,5 +133,11 @@ if __name__ == '__main__':
 	# futureFeatureTest()
 	# seabird_class_test()
 	# runApp()
-	detectThermocline(10)
-	pass
+	# detectThermocline(10)
+	# pass
+	from seabird.seabird_class import seabird
+	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/seabird/config.json'))
+	mySeabird = seabird(config = config)
+
+	mySeabird.loadData(dataFile = "/Users/WenzhaoXu/Developer/Hypoxia/input/seabird_data/Erie2013DO/DO Survey August/ER73.cnv.cnv")
+	mySeabird.plot_all()
