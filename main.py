@@ -130,8 +130,14 @@ def detectThermocline(fileId,dbEngine = create_engine('mysql+mysqldb://root:XuWe
 
 if __name__ == '__main__':
 	# logging.basicConfig(level=logging.INFO)
-	futureFeatureTest()
+	# futureFeatureTest()
 	# seabird_class_test()
 	# runApp()
 	# detectThermocline(10)
-	pass
+	# pass
+	from seabird.seabird_class import seabird
+	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/seabird/config.json'))
+	mySeabird = seabird(config = config)
+
+	mySeabird.loadData(dataFile = "/Users/WenzhaoXu/Developer/Hypoxia/input/seabird_data/Erie2013DO/DO Survey August/ER73.cnv.cnv")
+	mySeabird.plot_all()

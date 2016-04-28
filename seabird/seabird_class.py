@@ -197,7 +197,7 @@ class seabird:
 
 		host.set_xlabel("Temperature")
 		host.set_ylabel("Depth (m)")
-		host.set_title(self.site + "_" + self.time)
+		# host.set_title(self.site + "_" + self.time)
 		host.set_xlim((max(host.get_xlim()[0], 0), host.get_xlim()[1]))
 		host.set_ylim((host.get_ylim()[0], min(host.get_ylim()[1], 0),))
 		if fileTitle is None:
