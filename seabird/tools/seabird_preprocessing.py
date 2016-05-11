@@ -8,7 +8,9 @@ import pywt
 import logging
 
 def window_smooth(x, window_len=11, window='hanning'):
-
+	window_len = min(int(len(x)/5),window_len)
+	if window_len % 2 ==0:
+		window_len+=1
 	if x.ndim != 1:
 		raise ValueError, "smooth only accepts 1 dimension arrays."
 	if x.size < window_len:
@@ -88,6 +90,7 @@ def init_filter(data, depth_threshold=1):  # Remove the data on the surface
 	data = data[data.Depth > depth_threshold]
 	# data = data[data.Depth < 1000]
 	data = data[data.Temperature>0]
+	data = data[data.Depth<1000]
 	logging.debug("finished init_filter")
 	return data
 
@@ -148,6 +151,8 @@ def filter(data,config):
 def preprocessing(data,config):
 	downcast, upcast = separate(data)
 	pre_data = init_filter(downcast)
+	if pre_data.shape[0]<1:
+		return None,None
 	pre_data_resample = resample(sensordata=pre_data, interval=config["Preprocessing"]["Interval"])
 
 	if pre_data_resample.shape[0] % 2 > 0:

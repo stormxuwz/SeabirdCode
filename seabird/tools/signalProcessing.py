@@ -14,7 +14,7 @@ def extractSignalFeatures(data, var, w=10):
 	data: a data frame that with depth as first column and the variable as the second column
 	w: window for windowed fft
 	'''
-
+	# when data only has a few points, w might be too large
 	N = data.shape[0]
 	signalFeature = pd.DataFrame(np.zeros((N - 2 * w, 4)),columns=['Depth','Var','Power','Gradient'])
 	variableGradient = np.diff(data[var])

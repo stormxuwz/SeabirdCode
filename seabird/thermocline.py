@@ -1,4 +1,6 @@
 import numpy as np
+import traceback
+import sys
 from models.model_HMM import hmmModel
 from models.model_segmentation import bottomUp
 from models.model_threshold import thresholdModel
@@ -91,32 +93,58 @@ class thermocline_threshold(thermocline_base):
 
 class thermocline(object):
 	def __init__(self,config):
-		self.TRM_segment = thermocline_segmentation(config)
-		self.TRM_HMM = thermocline_HMM(config)
-		self.TRM_threshold = thermocline_threshold(config)
+		self.config = config
 		self.features = {}
+		self.models = {}
 		
-	def detect(self,data,methods = ["segmentation","HMM","threshold"]):
+	def detect(self,data,methods = ["segmentation","HMM","threshold"],saveModel = True):
 		features = {}
+		# initialize Features
+		for d in ["TRM","LEP","UHY"]:
+			for m in ["segment","HMM","threshold"]:
+				features[d+"_"+m] = None
+		features["TRM_gradient_segment"] = None
+		features["TRM_num_segment"] = None
+
 		if "segmentation" in methods:
-			self.TRM_segment.detect(data)
-			features["TRM_segment"] = self.TRM_segment.TRM
-			features["LEP_segment"] = self.TRM_segment.LEP
-			features["UHY_segment"] = self.TRM_segment.UHY
-			features["TRM_gradient_segment"] = self.TRM_segment.TRM_gradient
-			features["TRM_num_segment"] = self.TRM_segment.num_segments
+			try:
+				model = thermocline_segmentation(self.config)
+				model.detect(data,saveModel = saveModel)
+				features["TRM_segment"] = model.TRM
+				features["LEP_segment"] = model.LEP
+				features["UHY_segment"] = model.UHY
+				features["TRM_gradient_segment"] = model.TRM_gradient
+				features["TRM_num_segment"] = model.num_segments
+				if saveModel:
+					self.models["segmentation"] = model.model
+			except Exception,err:
+				print "segmentation Fail"
+				print(traceback.format_exc())
+
+			
+
 
 		if "HMM" in methods:
-			self.TRM_HMM.detect(data)
-			features["TRM_HMM"] = self.TRM_HMM.TRM
-			features["LEP_HMM"] = self.TRM_HMM.LEP
-			features["UHY_HMM"] = self.TRM_HMM.UHY
+			try:
+				model = thermocline_HMM(self.config)
+				model.detect(data)
+				features["TRM_HMM"] = model.TRM
+				features["LEP_HMM"] = model.LEP
+				features["UHY_HMM"] = model.UHY
+			except Exception,err:
+				print "HMM Fail"
+				print(traceback.format_exc())
 
 		if "threshold" in methods:
-			self.TRM_threshold.detect(data)
-			features["TRM_threshold"] = self.TRM_threshold.TRM
-			features["LEP_threshold"] = self.TRM_threshold.LEP
-			features["UHY_threshold"] = self.TRM_threshold.UHY
+			try:
+				model = thermocline_threshold(self.config)
+				model.detect(data)
+				features["TRM_threshold"] = model.TRM
+				features["LEP_threshold"] = model.LEP
+				features["UHY_threshold"] = model.UHY
+			except Exception,err:
+				print "threshold Fail"
+				print(traceback.format_exc())
 
 		return features
 

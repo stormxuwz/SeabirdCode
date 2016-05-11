@@ -7,21 +7,27 @@ require(gridExtra)
 
 source("data.R")
 source("EDA.R")
-source("labDataExplore.R")
+# source("labDataExplore.R")
 source("plot.R")
 source("ML.R")
 source("global.R")
 
 main <- function(){
   feature <- readFeature()
-
+  
+  # waterChemistryVariables
+  # [1] "epi_mean_Temperature"           "epi_mean_Specific_Conductivity" "epi_mean_Fluorescence"         
+  # [4] "hyp_mean_Temperature"           "hyp_mean_Specific_Conductivity" "hyp_mean_Fluorescence" 
+  
+  MDS(feature,distanceFeature = waterChemistryVariables,targetFeature = "DCL_depth",site = "SU04",outlier = TRUE)
+  
   # plot all the summary of differences between expert and algorithm
-  THM_res <- summary_diff_stat(feature,"THM")
-  LEP_res <- summary_diff_stat(feature,"LEP")
-  UHY_res <- summary_diff_stat(feature,"UHY")
-  DCL_res <- summary_diff_stat(feature,"DCL")
+  # THM_res <- summary_diff_stat(feature,"THM")
+  # LEP_res <- summary_diff_stat(feature,"LEP")
+  # UHY_res <- summary_diff_stat(feature,"UHY")
+  # DCL_res <- summary_diff_stat(feature,"DCL")
 
-  LakeSU_analysis(feature)
+  # LakeSU_analysis(feature)
 
 }
 

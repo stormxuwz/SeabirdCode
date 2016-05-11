@@ -51,7 +51,6 @@ class hmmModel(object):
 			# means_prior=state_means,
 			# transmat_prior=transmat,
 			# startprob_prior=startprob)
-		# print transmat
 		model.transmat_=transmat
 		model.means_=state_means
 		model.startprob_=startprob

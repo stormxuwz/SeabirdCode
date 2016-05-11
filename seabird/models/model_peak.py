@@ -120,7 +120,7 @@ class peak(object):
 
 		self.shape_fit = shape_fit
 		self.x = x
-		self.featureExtraction()
+		self.allPeaks = self.featureExtraction()
 		
 	def featureExtraction(self):
 		if self.shape_fit is None:
@@ -139,7 +139,7 @@ class peak(object):
 			allPeaks["leftStd"].append(shape["left_std"])
 			allPeaks["rightStd"].append(shape["right_std"])
 			
-		self.allPeaks = pd.DataFrame(allPeaks)
+		return pd.DataFrame(allPeaks)
 
 	def single_detect(self,x,rawPeak):
 		shape_height = []

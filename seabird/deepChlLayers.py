@@ -23,7 +23,7 @@ class DCL(object):
 		
 		features = {"DCL_depth":None,"peakNums":None,"DCL_conc":None,"DCL_upperConc":None,"DCL_bottomConc":None,"DCL_upperDepth":None,"DCL_bottomDepth":None,"DCL_upperShape":None,"DCL_bottomShape":None,"DCL_exists":None}
 
-		if self.allPeaks.shape[0]<1:
+		if self.allPeaks is None or self.allPeaks.shape[0]<1:
 			features["peakNums"] = 0
 			features["DCL_exists"] = 0
 			return features
@@ -43,7 +43,7 @@ class DCL(object):
 			
 			self.DCL_idx = DCL_idx
 			# print self.allPeaks,DCL_idx
-			features["DCL_depth"] = peakDepths
+			features["DCL_depth"] = peakDepths[DCL_idx]
 			features["DCL_conc"] = data.Fluorescence[self.allPeaks.peakIndex[DCL_idx]]
 			features["DCL_upperConc"] = data.Fluorescence[self.allPeaks.leftIndex[DCL_idx]]
 			features["DCL_bottomConc"] = data.Fluorescence[self.allPeaks.rightIndex[DCL_idx]]
