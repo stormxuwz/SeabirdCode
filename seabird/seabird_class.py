@@ -139,7 +139,7 @@ class seabird:
 
 			xlimRange = (
 				np.percentile(self.downCastRawData["Fluorescence"][self.downCastRawData.Depth > 2],5) * 0.95,
-				np.percentile(self.downCastRawData["Fluorescence"][self.downCastRawData.Depth > 2],95) * 1.3)
+				np.percentile(self.downCastRawData["Fluorescence"][self.downCastRawData.Depth > 2],99) * 1.3)
 
 			if max(xlimRange)>0.01:
 				ax2.set_xlim(xlimRange)

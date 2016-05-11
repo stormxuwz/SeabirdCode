@@ -13,6 +13,7 @@ To use:
 	
 	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/seabird/config.json'))
 	mySeabird = seabird(config = config)  # config is in json format
+	filename = "sample.cnv"
 	mySeabird.loadData(dataFile = filename)  # filename is the cnv file, taking data from database is optional, see the source code
 	mySeabird.preprocessing()
 	mySeabird.identify()

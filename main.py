@@ -12,14 +12,17 @@ def test():
 	mySeabird = seabird(config = config)
 
 	# mySeabird.loadData(dataFile = "/Users/WenzhaoXu/Developer/Seabird/input/history_data/2012/Summer12 SBE/Ontario/ON12.cnv.cnv")
-	mySeabird.loadData(fileId=10)
+	mySeabird.loadData(dataFile="sample.cnv")
+	# mySeabird.loadData(fileId=10)
+	# mySeabird.loadData("")
 	mySeabird.preprocessing()
 	# print mySeabird.cleanData
 	mySeabird.identify()
 	# mySeabird.plot_all()
-	fname = "/Users/WenzhaoXu/Developer/Seabird/output/plot/"+mySeabird.site+"_"+str(mySeabird.time)+".png"
-
+	# fname = "/Users/WenzhaoXu/Developer/Seabird/output/plot/"+mySeabird.site+"_"+str(mySeabird.time)+".png"
+	fname=None
 	mySeabird.plot(filename = fname)
+	plt.show()
 
 	print mySeabird.features
 
