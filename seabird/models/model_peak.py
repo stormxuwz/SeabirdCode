@@ -197,7 +197,7 @@ class peak(object):
 			rightShape_diff = rightShape[2][0]-min(rightShape[2])
 			rightShape_corr = np.mean(abs(rightShape[0]-rightShape[2]))/(max(x)-min(x))
 
-			if rightShape_corr>0.08:
+			if rightShape_corr>self.config["peakFitTol"]:
 				# the shape is not fit very well
 				# back to recurison methods
 				logging.info("Fitting data gradually - right")
@@ -206,7 +206,7 @@ class peak(object):
 					sub_rightShape = fitShape(sub_rightData, "right",self.method)
 					sub_rightShape_diff = sub_rightShape[2][0]-min(sub_rightShape[2])
 					sub_rightShape_corr = np.mean(abs(sub_rightShape[0]-sub_rightShape[2]))/(max(x)-min(x))
-					if sub_rightShape_corr > 0.08:
+					if sub_rightShape_corr > self.config["peakFitTol"]:
 						rightData = rightData[:k-1]
 						rightShape = fitShape(rightData, "right",self.method)
 						rightShape_diff = rightShape[2][0]-min(rightShape[2])

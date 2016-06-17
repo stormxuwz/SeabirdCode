@@ -4,7 +4,7 @@
 	},
 	"SmoothingMethod":{
 		"Temperature":["window",11],
-		"Fluorescence":["dwt","bior3.1",0],
+		"Fluorescence":["dwt","db2",0],
 		"Other":["spline",1]
 	},
 	"Preprocessing":{
@@ -41,7 +41,7 @@
 			"peakFitTol":0.08
 		},
 		"Spectrum":{"windowSize":8,"threshold":null},
-		"segment":{"max_error":0.5,"stable_gradient":0.05}
+		"segment":{"max_error":0.5,"stable_gradient":0.05,"minTRM_gradient":0.25}
 	}
 	
 }

@@ -24,6 +24,7 @@ class thermocline_segmentation(thermocline_base):
 		super(thermocline_segmentation, self).__init__(config)
 		self.TRM_gradient = None
 		self.num_segments = None
+		self.num_belowTRM = None
 		self.model = None
 	
 	def detect(self,data,saveModel = False):
@@ -32,44 +33,51 @@ class thermocline_segmentation(thermocline_base):
 		segmentList = model.segmentList
 
 		depthInterval = data.Depth[1]-data.Depth[0]
+		
 		# segmentList is a list of [fitted line,point index]
 		gradient = [(seg[0][0]-seg[0][1])/depthInterval for seg in model.segmentList]
-		
 		maxGradient_index = np.argmax(gradient)
 
-		epilimnion_seg = model.segmentList[0]
-		LEP_index = epilimnion_seg[1][-1]
+
+		if gradient[maxGradient_index]>1: # TRM exist
+
+			# Detect TRM
+			self.TRM = data.Depth[int(np.mean(segmentList[maxGradient_index][1]))]
+
+			# Detect LEP
+			epilimnion_seg = model.segmentList[0]
+			LEP_index = epilimnion_seg[1][-1]
+			
+			if maxGradient_index == 0: # if maximum gradient is the first segment 
+				LEP_index = epilimnion_seg[1][0]
+			elif abs(gradient[1]) < self.config["Algorithm"]["segment"]["stable_gradient"]: # if the first seg is anomaly and second seg is stable
+				LEP_index = model.segmentList[1][1][-1]
 		
-		# Detect the epiliminion
-		if maxGradient_index == 0: # if the maximum gradient is the first segment
-			LEP_index = epilimnion_seg[1][0]
-		elif maxGradient_index == 1: # if the maximum gradient is the second segment
-			pass
-		elif abs(gradient[1]) < self.config["Algorithm"]["segment"]["stable_gradient"]:
-			LEP_index = model.segmentList[1][1][-1]
+			# Detect the HYP
+			hypolimnion_seg = model.segmentList[-1]
+			UHY_index = hypolimnion_seg[1][0]
 
-		# Detect the Hypolimnion
-		hypolimnion_seg = model.segmentList[-1]
-		UHY_index = hypolimnion_seg[1][0]
+			if maxGradient_index == len(gradient)-1: # if the TRM is the last segment
+				# UHY_index = hypolimnion_seg[1][-1]
+				UHY_index = None # No UHY in this profile
 
-		if maxGradient_index == len(gradient)-1: # if the TRM is the last segment
-			UHY_index = hypolimnion_seg[1][-1]
+			elif abs(gradient[-2])< self.config["Algorithm"]["segment"]["stable_gradient"]: # if the last second one is stable
+				UHY_index = model.segmentList[-2][1][0] # pick the last second as the HYP
+			
+			elif abs(gradient[-1]) > max(gradient)*0.2: # if last one still has large gradient
+				UHY_index=None # No UHY in this profile
 
-		elif maxGradient_index == len(gradient)-2: # if TRM is the last but one segment
-			pass
+			if LEP_index is not None:
+				self.LEP = data.Depth[LEP_index]
 
-		elif abs(gradient[-2])< self.config["Algorithm"]["segment"]["stable_gradient"]:
-			UHY_index = model.segmentList[-2][1][0]
-		
-		elif abs(gradient[-1]) > max(gradient)*0.2:
-			UHY_index=None # No 
-
-		self.LEP = data.Depth[LEP_index]
-		self.TRM = data.Depth[int(np.mean(segmentList[maxGradient_index][1]))]
-		self.UHY = data.Depth[UHY_index]
+			if UHY_index is not None:
+				self.UHY = data.Depth[UHY_index]
+		else:
+			print "No TRM deteted"
 		self.TRM_gradient = max(gradient)
 		self.num_segments = len(segmentList)
-		
+		self.TRM_idx = maxGradient_index
+
 		if saveModel:
 			self.model = model
 
@@ -78,18 +86,18 @@ class thermocline_HMM(thermocline_base):
 		signal_data = extractSignalFeatures(data, "Temperature")
 		model = hmmModel(nc = 3)
 		res = model.fit_predict(signal_data)
-		self.TRM = data.Depth[res[0]]
-		self.LEP = data.Depth[res[1]]
-		self.UHY = data.Depth[res[2]]
+		self.TRM = signal_data.Depth[res[0]]
+		self.LEP = signal_data.Depth[res[1]]
+		self.UHY = signal_data.Depth[res[2]]
 
 class thermocline_threshold(thermocline_base):
 	def detect(self,data):
 		signal_data = extractSignalFeatures(data, "Temperature")
 		model = thresholdModel(threshold = None)
 		res = model.fit_predict(signal_data.Power)
-		self.TRM = data.Depth[res[0]]
-		self.LEP = data.Depth[res[1]]
-		self.UHY = data.Depth[res[2]]
+		self.TRM = signal_data.Depth[res[0]]
+		self.LEP = signal_data.Depth[res[1]]
+		self.UHY = signal_data.Depth[res[2]]
 
 class thermocline(object):
 	def __init__(self,config):
@@ -110,11 +118,13 @@ class thermocline(object):
 			try:
 				model = thermocline_segmentation(self.config)
 				model.detect(data,saveModel = saveModel)
+
+				features["TRM_gradient_segment"] = model.TRM_gradient
 				features["TRM_segment"] = model.TRM
 				features["LEP_segment"] = model.LEP
 				features["UHY_segment"] = model.UHY
-				features["TRM_gradient_segment"] = model.TRM_gradient
 				features["TRM_num_segment"] = model.num_segments
+				features["TRM_idx"] = model.TRM_idx
 				if saveModel:
 					self.models["segmentation"] = model.model
 			except Exception,err:

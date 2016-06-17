@@ -31,6 +31,7 @@ class seabird:
 		self.features = None
 		self.expert = {"TRM":None,"LEP":None,"UHY":None,"DCL":None}
 		self.fileId = None
+		self.saveModel = False
 
 	def loadData(self,dataFile = None,fileId = None, dbEngine = None):
 		
@@ -78,6 +79,7 @@ class seabird:
 		# return self.thermocline.tsSeg_epi<self.DCL_future.peakDepth
 	
 	def identify(self,saveModel = True):
+		self.saveModel = True
 		TRM_features = self.thermocline.detect(data = self.cleanData[["Depth","Temperature"]],\
 		                                       saveModel = saveModel)
 		DCL_features = self.DCL.detect(data = self.cleanData[["Depth","Fluorescence"]],\
@@ -89,7 +91,7 @@ class seabird:
 		self.features.update(DCL_features)
 
 
-	def plot(self, legend=True, pt=None, OtherFeatures=None, bottle=None, filename=None):
+	def plot(self, legend=True, pt=None, OtherFeatures=None, bottle=None, filename=None,meta=True):
 		if pt is None:
 			pt = plt.figure(figsize=(6, 7), dpi=80)
 
@@ -113,29 +115,19 @@ class seabird:
 		else:
 			colors = ["r","b","y"]
 			for i,depth in enumerate([self.features["TRM_segment"],self.features["LEP_segment"],self.features["UHY_segment"]]):
-				ax1.axhline(y = -1*depth if depth is not None else -99,color = colors[i])
+				ax1.axhline(y = -1*depth if depth is not None else -999,color = colors[i])
 
-			for i,depth in enumerate([self.features["TRM_threshold"],self.features["LEP_threshold"],self.features["UHY_threshold"]]):
-				ax1.axhline(y = -1*depth if depth is not None else -99,color = colors[i],ls = "+")
+			if meta:
+				for i,depth in enumerate([self.features["TRM_threshold"],self.features["LEP_threshold"],self.features["UHY_HMM"]]):
+					ax1.axhline(y = -1*depth if depth is not None else -999,color = colors[i],ls = ":")
 
 			for i,depth in enumerate([self.expert["TRM"],self.expert["LEP"],self.expert["UHY"]]):
-				ax1.axhline(y = -1*depth if depth is not None else -99,color = colors[i],ls="--")
+				ax1.axhline(y = -1*depth if depth is not None else -999,color = colors[i],ls="--")
 
-			#
-			# ax1.axhline(y=-self.thermocline.tsSeg_thm, color="r",label="tsSeg_thm")
-			# ax1.axhline(y=-self.thermocline.expert_thm, color="r", ls="--")
-			# ax1.axhline(y=-self.thermocline.threshold_thm, color="r", ls=":",marker=  r'$\circlearrowleft$',label = "oldTHM")
 
-			# ax1.axhline(y=-self.thermocline.tsSeg_epi, color="b",label="tsSeg_epi")
-			# ax1.axhline(y=-self.thermocline.expert_epi, color="b", ls="--")
-			# ax1.axhline(y=-self.thermocline.threshold_epi, color="b", ls=":",marker=  r'$\circlearrowleft$',label = "oldEPI")
-
-			# ax1.axhline(y=-self.thermocline.tsSeg_hyp, color="y",label = "tsSeg_hyp")
-			# ax1.axhline(y=-self.thermocline.expert_hyp, color="y", ls="--")
-			# ax1.axhline(y=-self.thermocline.hmm_hyp, color="y", ls=":",marker=  r'$\circlearrowleft$',label = "oldHYP")
-
-			# for seg in self.thermocline.tsSegModel.segmentList:
-			# 	ax1.plot(seg[0],-np.array(self.cleanData.Depth[seg[1]]))
+			if self.saveModel and meta:
+				for seg in self.thermocline.models["segmentation"].segmentList:
+					ax1.plot(seg[0],-np.array(self.cleanData.Depth[seg[1]]))
 
 			xlimRange = (
 				np.percentile(self.downCastRawData["Fluorescence"][self.downCastRawData.Depth > 2],5) * 0.95,
@@ -143,17 +135,17 @@ class seabird:
 
 			if max(xlimRange)>0.01:
 				ax2.set_xlim(xlimRange)
-				ax2.axhline(y=-self.expert["DCL"] if self.expert["DCL"] is not None else -99, color="g", ls="--")
 				ax2.set_xlabel("Fluorescence (ug/L)")
 				ax2.plot(self.cleanData.Fluorescence, -self.cleanData.Depth, "g")
 				ax2.plot(self.downCastRawData.Fluorescence, -self.downCastRawData.Depth, "g--", alpha=0.5)
 				
-				# if self.DCL_future.myPeak is not None:
-				# 	for i, shape_res in enumerate(self.DCL_future.myPeak.shape_fit):
-				# 		ax2.plot(shape_res["left_data"],-self.cleanData.Depth[shape_res["left_index"]])
-				# 		ax2.plot(shape_res["right_data"],-self.cleanData.Depth[shape_res["right_index"]])
+				if self.saveModel and meta:
+					for i, shape_res in enumerate(self.DCL.model.shape_fit):
+						ax2.plot(shape_res["left_data"],-self.cleanData.Depth[shape_res["left_index"]])
+						ax2.plot(shape_res["right_data"],-self.cleanData.Depth[shape_res["right_index"]])
 				# for peakDepth in self.DCL_future.peakDepth:
-				ax2.axhline(y=-self.features["DCL_depth"] if self.features["DCL_depth"] is not None else -99, color="g")
+				if self.features["DCL_depth"] is not None:
+					ax2.axhline(y=-self.features["DCL_depth"],color="g")
 				#
 				# for i in range(len(self.DCL_future.boundaryDepth)):
 				# 	ax2.plot(self.DCL_future.boundaryMagnitude, -1*np.array(self.DCL_future.boundaryDepth), "ro")

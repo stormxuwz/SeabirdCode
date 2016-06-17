@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv='content-type' content='text/html; charset=utf-8' />
+
+    <title>Embed Demo</title>
+
+    {{ js_resources|indent(4)|safe }}
+
+    {{ css_resources|indent(4)|safe }}
+
+    {{ plot_script|indent(4)|safe }}
+
+  </head>
+  <body>
+    <!-- A simple form for changing the graph -->
+    <p> Please upload your SeaBird CNV file </p>
+    <form name="filebutton" method=post enctype=multipart/form-data>
+        <!-- Color: -->
+        <!-- <select name="color"> -->
+            <!-- <option value="Red">Red</option> -->
+            <!-- <option value="Green">Green</option> -->
+            <!-- <option value="Blue">Blue</option> -->
+            <!-- <option selected="selected" value="Black">Black</option> -->
+            
+        <!-- </select> -->
+        <!-- <br> -->
+        <!-- From: -->
+        <!-- <input type="text" name="_from" value="{{ _from }}"> -->
+        <!-- <br> -->
+        <!-- To: -->
+        <!-- <input type="text" name="to" value="{{ to }}"> -->
+        <!-- <br> -->
+        <input type="file" name="file">
+        <input type="submit" value = Upload>
+    </form>
+    <p>TRM: {{depth_TRM}}</p>
+    <p>LEP: {{depth_TRM}}</p>
+    <p>UHY: {{depth_TRM}}</p>
+    <p>DCL: {{depth_DCL}} </p>
+   
+    {{ plot_div|indent(4)|safe }}
+   
+
+  </body>
+</html>

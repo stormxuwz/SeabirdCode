@@ -48,6 +48,7 @@ def testFilter(x, smoothing_para=1):
 
 
 def dwt_smooth(x, smoothing_para={'wavelet':'bior3.1','level':0}):
+
 	wavelet=smoothing_para["wavelet"]
 	level = smoothing_para["level"]
 	num = len(x)
@@ -128,18 +129,19 @@ def transCondToSpecCond(conductitivty,temperature):
 
 def filter(data,config):
 	for var in data.columns.values[1:]:
+
 		if var in config["SmoothingMethod"]:
 			smoothCfg=config["SmoothingMethod"][var]
 		else:
 			smoothCfg = config["SmoothingMethod"]["Other"]
 
 		method=smoothCfg[0]
-
 		if method == "spline":
 			data[var] = spline_smooth(data[var],smoothCfg[1])
 		
 		elif method == "dwt":
 			smoothing_para={'wavelet':smoothCfg[1],'level':smoothCfg[2]}
+			print smoothing_para
 			data[var] = dwt_smooth(data[var],smoothing_para)
 
 		elif method == "window":

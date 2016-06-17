@@ -42,7 +42,8 @@ class DCL(object):
 				DCL_idx = np.argmax(availablePeaks)
 			
 			self.DCL_idx = DCL_idx
-			# print self.allPeaks,DCL_idx
+			
+			features["DCL_exists"] = 1
 			features["DCL_depth"] = peakDepths[DCL_idx]
 			features["DCL_conc"] = data.Fluorescence[self.allPeaks.peakIndex[DCL_idx]]
 			features["DCL_upperConc"] = data.Fluorescence[self.allPeaks.leftIndex[DCL_idx]]

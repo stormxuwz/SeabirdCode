@@ -8,12 +8,12 @@ from sqlalchemy import create_engine
 
 def test():
 	from seabird.seabird_class import seabird
-	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/seabird/config.json'))
+	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/config.json'))
 	mySeabird = seabird(config = config)
 
-	# mySeabird.loadData(dataFile = "/Users/WenzhaoXu/Developer/Seabird/input/history_data/2012/Summer12 SBE/Ontario/ON12.cnv.cnv")
-	mySeabird.loadData(dataFile="sample.cnv")
-	# mySeabird.loadData(fileId=10)
+	# mySeabird.loadData(dataFile = "/Users/WenzhaoXu/Developer/Seabird/input/history_data/1996/SUMMER96/SU04SU96.CNV")
+	# mySeabird.loadData(dataFile="sample.cnv")
+	mySeabird.loadData(fileId=733)
 	# mySeabird.loadData("")
 	mySeabird.preprocessing()
 	# print mySeabird.cleanData
@@ -21,7 +21,8 @@ def test():
 	# mySeabird.plot_all()
 	# fname = "/Users/WenzhaoXu/Developer/Seabird/output/plot/"+mySeabird.site+"_"+str(mySeabird.time)+".png"
 	fname=None
-	mySeabird.plot(filename = fname)
+	mySeabird.plot(filename = fname,meta = True)
+	print mySeabird.cleanData.Depth[39]
 	plt.show()
 
 	print mySeabird.features
