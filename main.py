@@ -13,7 +13,8 @@ def test():
 
 	# mySeabird.loadData(dataFile = "/Users/WenzhaoXu/Developer/Seabird/input/history_data/1996/SUMMER96/SU04SU96.CNV")
 	# mySeabird.loadData(dataFile="sample.cnv")
-	mySeabird.loadData(fileId=733)
+	# mySeabird.loadData(fileId=733)
+	mySeabird.loadData(dataFile= "./sample.cnv")
 	# mySeabird.loadData("")
 	mySeabird.preprocessing()
 	# print mySeabird.cleanData

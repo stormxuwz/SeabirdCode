@@ -20,7 +20,6 @@ class summary(object):
 		sql = '''Select DISTINCT(STATION) from expertNotes where DepthCode in ('%s') and YEAR >= 1996;''' %(depthCode)
 		return self.sqlQuery(sql)
 
-	
 	def findEntry(self,station,year):
 		subStation = station[:4]
 		sql_meta = '''select systemUploadTime,datcnv_date,fileId,stationInfered, year(systemUpLoadTime) as Year from summer_meta where stationInfered = '%s' And year(systemUpLoadTime) = %d''' %(subStation,year)
@@ -67,9 +66,8 @@ class summary(object):
 							duplicateExpertNotes.append(expertnotes_res)
 						expertNotes[expertnotes_res.DepthCode[i]] = expertnotes_res.Depth[i]
 
-
 				if meta_res.shape[0]>0:
-					fileId_ = self.filterDup(meta_res)  # choose the one with maximum depth
+					fileId_ = self.filterDup(meta_res)  # choose the depth profile with maximum depth
 					print fileId_  
 					# for fileId_ in meta_res.fileId:
 						# print fileId_
@@ -90,10 +88,10 @@ class summary(object):
 						for d in ["LEP","UHY","TRM"]:
 							res["expert_"+d] = expertNotes[d]
 
-						fname = "/Users/WenzhaoXu/Developer/Seabird/output/new2/"+mySeabird.site+"_"+str(mySeabird.time)+"_"+str(fileId_)
+						fname = "/Users/WenzhaoXu/Developer/Seabird/output/meta/"+mySeabird.site+"_"+str(mySeabird.time)+"_"+str(fileId_)
 						
-						pickle.dump(mySeabird,open(fname+".p","wb"))
-						mySeabird.plot(filename = fname+".png")
+						pickle.dump(mySeabird,open(fname+".p","wb"))  # pickle the data
+						mySeabird.plot(filename = fname+".png") # plot the results
 						
 					except:
 						errorFileId.append(fileId_)
@@ -105,9 +103,9 @@ class summary(object):
 
 		# print len(results)
 		results = pd.DataFrame(results)
-		results.to_csv("/Users/WenzhaoXu/Developer/Seabird/output/new2/newDetected.csv")
-		pickle.dump(duplicateExpertNotes,open("/Users/WenzhaoXu/Developer/Seabird/output/new2/duplicateExpertNotes.p","wb"))
-		pickle.dump(errorFileId,open("/Users/WenzhaoXu/Developer/Seabird/output/new2/errorFileId.p","wb"))
+		results.to_csv("/Users/WenzhaoXu/Developer/Seabird/output/detectedFeatures.csv")
+		pickle.dump(duplicateExpertNotes,open("/Users/WenzhaoXu/Developer/Seabird/output/duplicateExpertNotes.p","wb"))
+		pickle.dump(errorFileId,open("/Users/WenzhaoXu/Developer/Seabird/output/errorFileId.p","wb"))
 
 		print duplicateExpertNotes
 		print errorFileId

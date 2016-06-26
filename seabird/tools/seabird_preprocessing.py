@@ -54,7 +54,7 @@ def dwt_smooth(x, smoothing_para={'wavelet':'bior3.1','level':0}):
 	num = len(x)
 	
 	maxlevel = pywt.dwt_max_level(data_len=num, filter_len=pywt.Wavelet(wavelet).dec_len)
-
+	print maxlevel
 	if level > 0:
 		level = int(level)
 	elif level < 0:

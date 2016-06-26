@@ -102,8 +102,8 @@ class seabirdSummary:
 		wrongFile = pd.Series(wrongFile)
 		# print wrongFile
 
-		seabirdResults.to_csv("/Users/WenzhaoXu/Desktop/testFeature.csv")
-		wrongFile.to_csv("/Users/WenzhaoXu/Desktop/badFile.csv",index=True)
+		seabirdResults.to_csv("../output/testFeature.csv")
+		wrongFile.to_csv("../output/testFeature.csv",index=True)
 		# print seabird_feature
 
 def extractWaterChemistryData(featureFile):
@@ -146,7 +146,7 @@ def extractWaterChemistryData(featureFile):
 	hypolimnionFeature = pd.DataFrame(hypolimnionFeature,columns =["hyp_mean_"+name for name in varList] + ["hyp_var_"+name for name in varList])
 	# print epilimnionFeature
 	waterChemistryFeature = pd.concat([epilimnionFeature,hypolimnionFeature],axis=1)
-	waterChemistryFeature.to_csv("/Users/WenzhaoXu/Desktop/waterFeature.csv")
+	waterChemistryFeature.to_csv("../output/waterFeature.csv")
 	
 
 if __name__ == '__main__':
@@ -157,6 +157,6 @@ if __name__ == '__main__':
 	# summary.find_expert_opinion()
 	# summary.write_counterpart_list()
 	# summary.load_counterpart_list("./config/data_expert_lineup.csv")
-	# summary.extractSeabirdFeature(config)
+	summary.extractSeabirdFeature(config)
 	# extractWaterChemistryData("/Users/WenzhaoXu/Desktop/SU.csv")
-	extractWaterChemistryData("../output/testFeature.csv")
+	# extractWaterChemistryData("../output/testFeature.csv")

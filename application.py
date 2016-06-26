@@ -4,7 +4,6 @@ import os
 from seabird.seabird_class import seabird
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import json,sys
 import logging
 from sqlalchemy import create_engine
@@ -44,7 +43,7 @@ def seabirdAnalysis(filename = None):
     # Grab the inputs arguments from the URL
     # This is automated by the button
     args = flask.request.args
-    print(args,file=sys.stderr)
+    # print(args,file=sys.stderr)
     depth_TRM = None
     depth_LEP = None
     depth_UHY = None
@@ -53,11 +52,11 @@ def seabirdAnalysis(filename = None):
         config=json.load(open('./config.json'))
         mySeabird = seabird(config = config)
         
-        color = colors[getitem(args, 'color', 'Black')]
-        _from = int(getitem(args, '_from', 0))
-        to = int(getitem(args, 'to', 10))
+        # color = colors[getitem(args, 'color', 'Black')]
+        # _from = int(getitem(args, '_from', 0))
+        # to = int(getitem(args, 'to', 10))
 
-        print(os.path.join(app.config['UPLOAD_FOLDER'],filename),file = sys.stderr)
+        # print(os.path.join(app.config['UPLOAD_FOLDER'],filename),file = sys.stderr)
         mySeabird.loadData(dataFile = os.path.join(app.config['UPLOAD_FOLDER'],filename))
         mySeabird.preprocessing()
         mySeabird.identify()
@@ -112,7 +111,7 @@ def seabirdAnalysis(filename = None):
     #   http://bokeh.pydata.org/en/latest/docs/user_guide/embedding.html#components
     script, div = components(fig, INLINE)
     html = flask.render_template(
-        'embed.html',
+        'index.html',
         plot_script=script,
         plot_div=div,
         js_resources=js_resources,
@@ -130,7 +129,7 @@ def index():
     filename = None
     if request.method == 'POST':
         # check if the post request has the file part
-        print(request.files,file=sys.stderr)
+        # print(request.files,file=sys.stderr)
 
         if 'file' not in request.files:
             # flash('No file part')
@@ -175,4 +174,4 @@ def allowed_file(filename):
 
 
 if __name__ == '__main__':
-	app.run(debug = True)
+	app.run()
