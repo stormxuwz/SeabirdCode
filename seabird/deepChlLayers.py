@@ -1,4 +1,4 @@
-from models.model_peak import peak
+from models.model_peak2 import peak
 import pandas as pd
 import numpy as np
 
@@ -50,8 +50,8 @@ class DCL(object):
 			features["DCL_bottomConc"] = data.Fluorescence[self.allPeaks.rightIndex[DCL_idx]]
 			features["DCL_upperDepth"]=  data.Depth[self.allPeaks.leftIndex[DCL_idx]]
 			features["DCL_bottomDepth"] =  data.Depth[self.allPeaks.rightIndex[DCL_idx]]
-			features["DCL_upperShape"] = self.allPeaks.leftStd[DCL_idx]*depthInterval
-			features["DCL_bottomShape"] = self.allPeaks.rightStd[DCL_idx]*depthInterval
+			# features["DCL_upperShape"] = self.allPeaks.leftStd[DCL_idx]*depthInterval
+			# features["DCL_bottomShape"] = self.allPeaks.rightStd[DCL_idx]*depthInterval
 
 		return features
 

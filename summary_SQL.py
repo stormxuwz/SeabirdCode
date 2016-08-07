@@ -10,6 +10,7 @@ class summary(object):
 		self.engine = engine
 		self.allYears = range(1996,2014)
 		self.allStations = self.getAllStations()
+		print self.allStations
 		self.config = config
 
 	def sqlQuery(self,sql):
@@ -17,7 +18,7 @@ class summary(object):
 
 	def getAllStations(self,depthCode = ['LEP','TRM','UHY','DCL']):
 		depthCode = "','".join(depthCode)
-		sql = '''Select DISTINCT(STATION) from expertNotes where DepthCode in ('%s') and YEAR >= 1996;''' %(depthCode)
+		sql = '''Select DISTINCT(stationInfered) as STATION from summer_meta where year(systemUpLoadTime) >= 1996 ORDER BY STATION;'''
 		return self.sqlQuery(sql)
 
 	def findEntry(self,station,year):
@@ -85,7 +86,7 @@ class summary(object):
 						res["time"] = mySeabird.time
 						res["year"] = year
 
-						for d in ["LEP","UHY","TRM"]:
+						for d in ["LEP","UHY","TRM","DCL"]:
 							res["expert_"+d] = expertNotes[d]
 
 						fname = "/Users/WenzhaoXu/Developer/Seabird/output/meta/"+mySeabird.site+"_"+str(mySeabird.time)+"_"+str(fileId_)
@@ -94,6 +95,7 @@ class summary(object):
 						mySeabird.plot(filename = fname+".png") # plot the results
 						
 					except:
+						res = {"site":station,"year":year}
 						errorFileId.append(fileId_)
 				
 				else:

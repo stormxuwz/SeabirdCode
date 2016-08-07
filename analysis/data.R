@@ -61,7 +61,8 @@ stationAllYearPlot <- function(site){
 
 
 readFeature <- function(){
-  feature <- read.csv("../../output/testFeature.csv")
+  # feature <- read.csv("../../output/testFeature.csv")
+	feature <- read.csv("../../output/detectedFeatures.csv")
   validStation <- read.csv("../../input/station_loc.csv")
   waterChemistryData <- read.csv("../../output/waterFeature.csv")[,-1]
   feature <- cbind(feature,waterChemistryData)

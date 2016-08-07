@@ -36,10 +36,11 @@ class thermocline_segmentation(thermocline_base):
 		
 		# segmentList is a list of [fitted line,point index]
 		gradient = [(seg[0][0]-seg[0][1])/depthInterval for seg in model.segmentList]
+
 		maxGradient_index = np.argmax(gradient)
 
 
-		if gradient[maxGradient_index]>1: # TRM exist
+		if gradient[maxGradient_index]>1/4: # TRM exist
 
 			# Detect TRM
 			self.TRM = data.Depth[int(np.mean(segmentList[maxGradient_index][1]))]

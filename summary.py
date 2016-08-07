@@ -5,6 +5,7 @@ import sys
 from seabird.seabird_class import seabird
 import traceback
 import cPickle as pickle
+from time import strftime
 
 class seabirdSummary:
 	def __init__(self, sensorDir=None, expertDir=None):
@@ -113,22 +114,28 @@ def extractWaterChemistryData(featureFile):
 	varList = ["DO","Temperature","Specific_Conductivity","Fluorescence","Beam_Attenuation"]
 	epilimnionFeature = np.zeros((feature.shape[0],2*len(varList)))
 	hypolimnionFeature = np.zeros((feature.shape[0],2*len(varList)))
+	fidArray = np.zeros(feature.shape[0])
+
 	# for i in range(374,375):
 	for i in range(feature.shape[0]):
-		print i
+	# for i in range():
 		site = feature.site[i]
 		year = feature.year[i]
+		time = str(feature.time[i])
 		LEP = feature.LEP_segment[i]
 		UHY = feature.UHY_segment[i]
+		fid = feature.fileId[i]
+		print fid
+		fidArray[i] = fid
 		try:
-			mySeabird = pickle.load(open("../output/pickle/%s_%d.p" %(site,year),"rb"))
+			mySeabird = pickle.load(open("/Users/WenzhaoXu/Developer/Seabird/output/meta/%s_%s_%d.p" %(site,time,fid),"rb"))
 			data = mySeabird.cleanData
 			# print data.columns.values
 			for var in varList:
 				if var not in data.columns.values:
 					print var
 					# print data.columns.values
-					data[var]=-99
+					data[var]=np.nan
 			epilimnion = data[data.Depth<LEP][varList]
 			hypolimnion = data[data.Depth>UHY][varList]
 			
@@ -146,6 +153,9 @@ def extractWaterChemistryData(featureFile):
 	hypolimnionFeature = pd.DataFrame(hypolimnionFeature,columns =["hyp_mean_"+name for name in varList] + ["hyp_var_"+name for name in varList])
 	# print epilimnionFeature
 	waterChemistryFeature = pd.concat([epilimnionFeature,hypolimnionFeature],axis=1)
+	print waterChemistryFeature.shape,len(fidArray)
+	waterChemistryFeature["fileId"] = fidArray
+	print waterChemistryFeature.columns
 	waterChemistryFeature.to_csv("../output/waterFeature.csv")
 	
 
@@ -157,6 +167,6 @@ if __name__ == '__main__':
 	# summary.find_expert_opinion()
 	# summary.write_counterpart_list()
 	# summary.load_counterpart_list("./config/data_expert_lineup.csv")
-	summary.extractSeabirdFeature(config)
+	# summary.extractSeabirdFeature(config)
 	# extractWaterChemistryData("/Users/WenzhaoXu/Desktop/SU.csv")
-	# extractWaterChemistryData("../output/testFeature.csv")
+	extractWaterChemistryData("../output/detectedFeatures.csv")

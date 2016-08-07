@@ -13,6 +13,10 @@ plot_gly <- function(feature,variable){
 #plot_gly(feature,"DCL_magnitude")
 #plot_gly(feature,"THM_segment")
 
+visGeoLocations <- function(locations){
+  leaflet(data = locations) %>% addTiles() %>% addMarkers(~Long, ~Lat, popup = ~as.character(Station))
+}
+
 
 plotSPData <- function(data,varName){
   map <- ggmap(get_map(bbox,source="stamen"))

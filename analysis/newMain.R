@@ -38,24 +38,62 @@ algorithmDiff <- function(feature,lake_=NULL,var = "TRM"){
 # read the data
 features <- read.csv("../../output/detectedFeatures.csv") %>% preprocessing()
 locations <- read.csv("../../input/station_loc.csv")
+
+locations$Long <- -locations$Long
+
 expertNotes <- read.csv("../../input/All_Lakes_through2012.csv")
 
-# construct all possible data combination
-yearRange <- unique(features$year)
-siteRange <- unique(locations$Station)
-fullRange <- expand.grid(year = yearRange,site = siteRange)
+features <- merge(features,locations,by.x = "site",by.y = "Station",all.x=TRUE)
 
-cleanFeatures <- merge(fullRange,features,by.x = c("year","site"),by.y = c("year","site"),all.x =TRUE)
-cleanFeatures <- merge(cleanFeatures,locations,by.x = c("site"), by.y = "Station") %>% arrange(site,year)
+features$TRM_diff <- features$TRM_segment-features$expert_TRM
+features$LEP_diff <- features$LEP_segment-features$expert_LEP
+features$UHY_diff <- features$UHY_segment-features$expert_UHY
 
+features <- rename(features,DCL_segment = DCL_depth)
 
-# plot differences
-for(var in c("TRM","LEP","DLC","UHY")){
-	tmp <- algorithmDiff(cleanFeatures)
-	png(paste("../../output/",var,".png",sep=""),width = 1000,height = 3000)
-	print(ggplot(aes(lake,diff),data=tmp)+geom_boxplot()+geom_text(aes(lake,diff,label = paste(site,year))))
+# functions to summary statistics
+
+# probably remove data before 1998 would be a good choice
+feature_stat <- function(df,varName = "TRM"){
+	predVar <- paste(varName,"segment",sep = "_")
+	expertVar <- paste("expert",varName, sep = "_")
+
+	diffVar <- paste(varName,"diff",sep ="_")
+
+	expertExist <- !is.na(df[,expertVar])
+	predExist <- !is.na(df[,predVar])
+
+	df$only_pred <- predExist == TRUE & expertExist !=TRUE  # you only have expert
+	df$only_expert <- predExist == FALSE & expertExist == TRUE # you only have predication
+	res <- group_by(df,lake) %>% summarise(totalN = n(),only_pred = sum(only_pred),only_expert = sum(only_expert))
+	print(res)
+
+	pdf(sprintf("../../output/%s_diff.pdf",varName),height = 50, width = 30)
+	print(qplot(lake,df[,diffVar],data = df)+geom_boxplot()+geom_text(aes(lake,df[,diffVar],label = paste(site,year)),data =df))
 	dev.off()
 }
+
+
+
+
+
+
+# # construct all possible data combination
+# yearRange <- unique(features$year)
+# siteRange <- unique(locations$Station)
+# fullRange <- expand.grid(year = yearRange,site = siteRange)
+
+# cleanFeatures <- merge(fullRange,features,by.x = c("year","site"),by.y = c("year","site"),all.x =TRUE)
+# cleanFeatures <- merge(cleanFeatures,locations,by.x = c("site"), by.y = "Station") %>% arrange(site,year)
+
+
+# # plot differences
+# for(var in c("TRM","LEP","DLC","UHY")){
+# 	tmp <- algorithmDiff(cleanFeatures)
+# 	png(paste("../../output/",var,".png",sep=""),width = 1000,height = 3000)
+# 	print(ggplot(aes(lake,diff),data=tmp)+geom_boxplot()+geom_text(aes(lake,diff,label = paste(site,year))))
+# 	dev.off()
+# }
 
 
 

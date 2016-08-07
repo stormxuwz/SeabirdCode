@@ -13,8 +13,8 @@ def test():
 
 	# mySeabird.loadData(dataFile = "/Users/WenzhaoXu/Developer/Seabird/input/history_data/1996/SUMMER96/SU04SU96.CNV")
 	# mySeabird.loadData(dataFile="sample.cnv")
-	# mySeabird.loadData(fileId=733)
-	mySeabird.loadData(dataFile= "./sample.cnv")
+	mySeabird.loadData(fileId=1268)
+	# mySeabird.loadData(dataFile= "./sample.cnv")
 	# mySeabird.loadData("")
 	mySeabird.preprocessing()
 	# print mySeabird.cleanData
@@ -22,11 +22,13 @@ def test():
 	# mySeabird.plot_all()
 	# fname = "/Users/WenzhaoXu/Developer/Seabird/output/plot/"+mySeabird.site+"_"+str(mySeabird.time)+".png"
 	fname=None
+	print mySeabird.features
 	mySeabird.plot(filename = fname,meta = True)
+	
 	print mySeabird.cleanData.Depth[39]
 	plt.show()
 
-	print mySeabird.features
+	
 
 def runApp():
 	from seabird.seabirdGUI import SeabirdGUI

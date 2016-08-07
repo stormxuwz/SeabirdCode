@@ -143,10 +143,12 @@ class seabird:
 					for i, shape_res in enumerate(self.DCL.model.shape_fit):
 						ax2.plot(shape_res["left_data"],-self.cleanData.Depth[shape_res["left_index"]])
 						ax2.plot(shape_res["right_data"],-self.cleanData.Depth[shape_res["right_index"]])
+
 				# for peakDepth in self.DCL_future.peakDepth:
 				if self.features["DCL_depth"] is not None:
 					ax2.axhline(y=-self.features["DCL_depth"],color="g")
-				#
+					ax2.axhline(y=-self.features["DCL_upperDepth"],color = "g")
+					ax2.axhline(y=-self.features["DCL_bottomDepth"],color = "g")
 				# for i in range(len(self.DCL_future.boundaryDepth)):
 				# 	ax2.plot(self.DCL_future.boundaryMagnitude, -1*np.array(self.DCL_future.boundaryDepth), "ro")
 

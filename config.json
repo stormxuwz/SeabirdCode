@@ -38,7 +38,9 @@
 			"maxBoundaryGradient": 0.1,
 			"peakHeight": 0.25,
 			"tailTol": 0.2,
-			"peakFitTol":0.08
+			"peakFitTol":0.08,
+			"SNR":10,
+			"slope":0.1
 		},
 		"Spectrum":{"windowSize":8,"threshold":null},
 		"segment":{"max_error":0.5,"stable_gradient":0.05,"minTRM_gradient":0.25}
