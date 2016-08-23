@@ -31,6 +31,8 @@ class DCL(object):
 			features["peakNums"] = self.allPeaks.shape[0]
 			peakDepths = np.array(data.Depth[self.allPeaks.peakIndex])
 			
+			print "peak Depths",peakDepths
+
 			if depthThreshold is not None and all(peakDepths<depthThreshold):
 				features["DCL_exists"] = 0
 				return features

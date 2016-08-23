@@ -3,7 +3,10 @@ rm(list=ls())
 library(dplyr)
 library(reshape2)
 library(ggplot2)
+source("./plot.R")
 
+
+#### Function to preprocess the feature matrix
 preprocessing <- function(features){
 	# make consistent of the site name
 	ind_MI18M <- which(features$site == "MI18M")
@@ -18,41 +21,8 @@ preprocessing <- function(features){
 }
 
 
-algorithmDiff <- function(feature,lake_=NULL,var = "TRM"){
-	expertVar <- paste("expert",var,sep="_")
-	algorithmVar <- paste(var,"segment",sep="_")
-	if(var =="DCL"){
-		algorithmVar <- "DCL_depth"
-	}
-	feature$diff <- feature[,expertVar]-feature[,algorithmVar]
-	feature$ratio <- round((feature[,expertVar]-feature[,algorithmVar])/feature[,expertVar]*100,2)
-	
-	if(is.null(lake_))
-		subdata <- arrange(feature,diff,site,year)
-	else
-		subdata <- subset(feature,lake==lake_) %>% arrange(diff,site,year)
-	
-	return(subdata[,c("diff","site","year","ratio","lake",expertVar,algorithmVar)])
-}
-
-# read the data
-features <- read.csv("../../output/detectedFeatures.csv") %>% preprocessing()
-locations <- read.csv("../../input/station_loc.csv")
-
-locations$Long <- -locations$Long
-
-expertNotes <- read.csv("../../input/All_Lakes_through2012.csv")
-
-features <- merge(features,locations,by.x = "site",by.y = "Station",all.x=TRUE)
-
-features$TRM_diff <- features$TRM_segment-features$expert_TRM
-features$LEP_diff <- features$LEP_segment-features$expert_LEP
-features$UHY_diff <- features$UHY_segment-features$expert_UHY
-
-features <- rename(features,DCL_segment = DCL_depth)
 
 # functions to summary statistics
-
 # probably remove data before 1998 would be a good choice
 feature_stat <- function(df,varName = "TRM"){
 	predVar <- paste(varName,"segment",sep = "_")
@@ -65,7 +35,9 @@ feature_stat <- function(df,varName = "TRM"){
 
 	df$only_pred <- predExist == TRUE & expertExist !=TRUE  # you only have expert
 	df$only_expert <- predExist == FALSE & expertExist == TRUE # you only have predication
-	res <- group_by(df,lake) %>% summarise(totalN = n(),only_pred = sum(only_pred),only_expert = sum(only_expert))
+	df$pred_expert <- predExist == TRUE & expertExist == TRUE
+	
+	res <- group_by(df,lake) %>% summarise(totalN = n(),only_pred = sum(only_pred),only_expert = sum(only_expert),allExist = sum(pred_expert))
 	print(res)
 
 	pdf(sprintf("../../output/%s_diff.pdf",varName),height = 50, width = 30)
@@ -74,6 +46,71 @@ feature_stat <- function(df,varName = "TRM"){
 }
 
 
+clusteringAlgorithm <- function()
+
+
+
+# read the data
+features <- read.csv("../../output/detectedFeatures.csv") %>% preprocessing()
+locations <- read.csv("../../input/station_loc.csv")
+
+waterChemistry <- read.csv("../../output/waterFeature.csv")
+
+locations$Long <- -locations$Long
+
+expertNotes <- read.csv("../../input/All_Lakes_through2012.csv")
+
+features <- merge(features,locations,by.x = "site",by.y = "Station")
+
+
+# calculate the differences between algorithm and expert notes
+features$TRM_diff <- features$TRM_segment-features$expert_TRM
+features$LEP_diff <- features$LEP_segment-features$expert_LEP
+features$UHY_diff <- features$UHY_segment-features$expert_UHY
+features$DCL_diff <- features$DCL_depth-features$expert_DCL
+features$UHY_num <- features$TRM_num_segment-(features$TRM_idx+1)
+features$DCL_segment <- features$DCL_depth
+
+features$DCL_size <- features$DCL_bottomDepth-features$DCL_upperDepth
+
+
+# filter out the strange year and site
+features <-
+	subset(features,year>1997 & lake %in% c("ER","HU","SU","ON","MI")) %>%
+	arrange(site,year)
+
+# merge with water chemistry 
+features <- merge(features,waterChemistry,by.x = c("fileId","site","year"),by.y = c("fid","site","year")) %>%
+	arrange(site,year)
+
+
+features$fluoRatio <- features$DCL_conc/features$epi_mean_Fluorescence
+qplot(lake,fluoRatio,data = features)+geom_boxplot()+geom_text(aes(lake,fluoRatio,label = paste(site,year)),data =features)
+
+
+SUData <- subset(features,lake == "SU")
+
+
+plot_gly(SUData,"DCL_conc")
+plot_gly(SUData,"DCL_depth")
+plot_gly(SUData,"TRM_segment")
+plot_gly(SUData,"LEP_segment")
+plot_gly(SUData,"UHY_segment")
+plot_gly(SUData,"TRM_num_segment")
+plot_gly(SUData,"UHY_num")
+
+plot_gly(SUData,"fluoRatio")
+
+#tapply(features$fluoRatio,features$lake,summary)
+
+# plot the boxplot of the differences between algorithm and expert notes
+
+feature_stat(features,varName = "DCL")
+feature_stat(features,varName = "TRM")
+feature_stat(features,varName = "UHY")
+feature_stat(features,varName = "LEP")
+
+feature_stat()
 
 
 
@@ -96,6 +133,23 @@ feature_stat <- function(df,varName = "TRM"){
 # }
 
 
+### adding differences between 
+algorithmDiff <- function(feature,lake_=NULL,var = "TRM"){
+	expertVar <- paste("expert",var,sep="_")
+	algorithmVar <- paste(var,"segment",sep="_")
+	if(var =="DCL"){
+		algorithmVar <- "DCL_depth"
+	}
+	feature$diff <- feature[,expertVar]-feature[,algorithmVar]
+	feature$ratio <- round((feature[,expertVar]-feature[,algorithmVar])/feature[,expertVar]*100,2)
+	
+	if(is.null(lake_))
+		subdata <- arrange(feature,diff,site,year)
+	else
+		subdata <- subset(feature,lake==lake_) %>% arrange(diff,site,year)
+	
+	return(subdata[,c("diff","site","year","ratio","lake",expertVar,algorithmVar)])
+}
 
 
 

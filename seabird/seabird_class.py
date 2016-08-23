@@ -32,6 +32,7 @@ class seabird:
 		self.expert = {"TRM":None,"LEP":None,"UHY":None,"DCL":None}
 		self.fileId = None
 		self.saveModel = False
+		self.waterChemistry = {}
 
 	def loadData(self,dataFile = None,fileId = None, dbEngine = None):
 		
@@ -91,6 +92,22 @@ class seabird:
 		self.features.update(DCL_features)
 
 
+	# def extractWaterChemistry(self):
+	# 	if self.features is None:
+	# 		raise ValueError("Please detect features first")
+
+	# 	if self.features["LEP_segment"] is not None:
+	# 		self.waterChemistry["LEP_Temperature"] = 
+	# 		self.waterChemistry["LEP_Fluorescence"] = 
+	# 		self.waterChemistry["LEP_temperature"] = 
+
+	# 	if self.features["TRM_segment"] is not None:
+	# 		self.waterChemistry["LEP_temperature"] = 
+
+	# 	if self.features["UHY_segment"] is not None:
+	# 		self.waterChemistry["LEP_temperature"] = 
+
+
 	def plot(self, legend=True, pt=None, OtherFeatures=None, bottle=None, filename=None,meta=True):
 		if pt is None:
 			pt = plt.figure(figsize=(6, 7), dpi=80)
@@ -113,7 +130,7 @@ class seabird:
 			pass;
 
 		else:
-			colors = ["r","b","y"]
+			colors = ["r","b","y","g"]
 			for i,depth in enumerate([self.features["TRM_segment"],self.features["LEP_segment"],self.features["UHY_segment"]]):
 				ax1.axhline(y = -1*depth if depth is not None else -999,color = colors[i])
 
@@ -121,7 +138,7 @@ class seabird:
 				for i,depth in enumerate([self.features["TRM_threshold"],self.features["LEP_threshold"],self.features["UHY_HMM"]]):
 					ax1.axhline(y = -1*depth if depth is not None else -999,color = colors[i],ls = ":")
 
-			for i,depth in enumerate([self.expert["TRM"],self.expert["LEP"],self.expert["UHY"]]):
+			for i,depth in enumerate([self.expert["TRM"],self.expert["LEP"],self.expert["UHY"],self.expert["DCL"]]):
 				ax1.axhline(y = -1*depth if depth is not None else -999,color = colors[i],ls="--")
 
 

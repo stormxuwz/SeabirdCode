@@ -2,9 +2,13 @@ library(GGally)
 library(ggplot2)
 library(dplyr)
 
-plot_gly <- function(feature,variable){
+plot_gly <- function(feature,variable, reverse = TRUE){
 	feature <- arrange(feature,year)
 	feature[,variable] <- ifelse(feature[,variable]<0,NA,feature[,variable])
+	
+	if(reverse){
+		feature[,variable] <- -feature[,variable]
+	}
 	temp.gly <- glyphs(feature, "Long", "year", "Lat", variable , height=0.25,width = 0.5)
 	ggplot(temp.gly, ggplot2::aes(gx, gy, group = gid)) +add_ref_lines(temp.gly, color = "grey90") +add_ref_boxes(temp.gly, color = "grey90") +geom_path() + geom_point()+theme_bw() + labs(x = "", y = "")
 }

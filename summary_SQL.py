@@ -4,7 +4,7 @@ import numpy as np
 from seabird.seabird_class import seabird
 import traceback
 import cPickle as pickle
-
+import sys
 class summary(object):
 	def __init__(self,engine,config):
 		self.engine = engine
@@ -23,7 +23,7 @@ class summary(object):
 
 	def findEntry(self,station,year):
 		subStation = station[:4]
-		sql_meta = '''select systemUploadTime,datcnv_date,fileId,stationInfered, year(systemUpLoadTime) as Year from summer_meta where stationInfered = '%s' And year(systemUpLoadTime) = %d''' %(subStation,year)
+		sql_meta = '''select systemUploadTime,datcnv_date,fileId,stationInfered, year(systemUpLoadTime) as Year from summer_meta where stationInfered = '%s' And year(systemUpLoadTime) = %d And badProfile = 0''' %(subStation,year)
 		sql_expertnotes = '''select `index`,SAMPLING_DATE,STATION,YEAR,DepthCode,SMPL_DEPTH as Depth from expertNotes where STATION = '%s' And YEAR = %d AND DepthCode in ('LEP','TRM','UHY','DCL') AND MONTH(SAMPLING_DATE) IN (6,7,8,9,10); ''' %(station,year)
 		meta_res = self.sqlQuery(sql_meta)
 		expertnotes_res = self.sqlQuery(sql_expertnotes)
@@ -70,8 +70,7 @@ class summary(object):
 				if meta_res.shape[0]>0:
 					fileId_ = self.filterDup(meta_res)  # choose the depth profile with maximum depth
 					print fileId_  
-					# for fileId_ in meta_res.fileId:
-						# print fileId_
+
 					try:
 						mySeabird=seabird(config = self.config)
 						mySeabird.loadData(fileId = fileId_)
@@ -89,14 +88,15 @@ class summary(object):
 						for d in ["LEP","UHY","TRM","DCL"]:
 							res["expert_"+d] = expertNotes[d]
 
-						fname = "/Users/WenzhaoXu/Developer/Seabird/output/meta/"+mySeabird.site+"_"+str(mySeabird.time)+"_"+str(fileId_)
+						fname = "/Users/WenzhaoXu/Developer/Seabird/output/meta/"+mySeabird.site+"_"+str(year)+"_"+str(fileId_)
 						
 						pickle.dump(mySeabird,open(fname+".p","wb"))  # pickle the data
 						mySeabird.plot(filename = fname+".png") # plot the results
 						
 					except:
-						res = {"site":station,"year":year}
+						res = {"site":station,"year":year,"fileId":fileId_}
 						errorFileId.append(fileId_)
+						traceback.print_exc()
 				
 				else:
 					res = {"site":station,"year":year}
@@ -112,13 +112,68 @@ class summary(object):
 		print duplicateExpertNotes
 		print errorFileId
 
+
+
+def extractWaterChemistryData(featureFile):
+
+	feature = pd.read_csv(featureFile)
+
+	varList = ["DO","Temperature","Specific_Conductivity","Fluorescence","Beam_Attenuation"]
+	epilimnionFeature = np.zeros((feature.shape[0],2*len(varList)))-1
+	hypolimnionFeature = np.zeros((feature.shape[0],2*len(varList)))-1
+
+	metaArray = []
+
+	for i in range(feature.shape[0]):
+		site = feature.site[i] 
+		year = feature.year[i]
+		LEP = feature.LEP_segment[i]
+		UHY = feature.UHY_segment[i]
+		fid = feature.fileId[i]
+		print fid
+		metaArray.append([fid,site,year])
+		
+		try:
+			mySeabird = pickle.load(open("/Users/WenzhaoXu/Developer/Seabird/output/meta/%s_%d_%d.p" %(site,int(year),int(fid)),"rb"))
+			data = mySeabird.cleanData
+			# print data.columns.values
+			for var in varList:
+				if var not in data.columns.values:
+					print var
+					# print data.columns.values
+					data[var]=np.nan
+
+			if LEP is not None:
+				epilimnion = data[data.Depth<LEP][varList]
+				epilimnionFeature[i,:len(varList)] = epilimnion.mean()
+				epilimnionFeature[i,len(varList):] = epilimnion.var()
+			if UHY is not None:
+				hypolimnion = data[data.Depth>UHY][varList]
+				hypolimnionFeature[i,:len(varList)] = hypolimnion.mean()
+				hypolimnionFeature[i,len(varList):] = hypolimnion.var()
+
+		except:
+			print "Unexpected error:", sys.exc_info()[0]
+			traceback.print_exc()
+			pass
+
+	epilimnionFeature = pd.DataFrame(epilimnionFeature,columns=["epi_mean_"+name for name in varList] + ["epi_var_"+name for name in varList])
+	hypolimnionFeature = pd.DataFrame(hypolimnionFeature,columns =["hyp_mean_"+name for name in varList] + ["hyp_var_"+name for name in varList])
+	# print epilimnionFeature
+	waterChemistryFeature = pd.concat([epilimnionFeature,hypolimnionFeature],axis=1)
+
+	metaArray = pd.DataFrame(metaArray,columns = ["fid","site","year"]) # create meta array
+	waterChemistryFeature = pd.concat([metaArray,waterChemistryFeature],axis = 1) # create final water chemistry
+
+	waterChemistryFeature.to_csv("../output/waterFeature.csv")
+
 if __name__ == '__main__':
 	import json
 	engine = create_engine('mysql+mysqldb://root:XuWenzhaO@localhost/Seabird')
 	config = json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/config.json'))
-	GLSummary = summary(engine,config)
-
-	GLSummary.detect()
+	#GLSummary = summary(engine,config)
+	#GLSummary.detect()
+	extractWaterChemistryData("/Users/WenzhaoXu/Developer/Seabird/output/detectedFeatures.csv")
 	# print GLSummary.allStations.STATION
 	# allTables = GLSummary.writeAllAlignments()
 	# allTables.to_csv("/Users/WenzhaoXu/Desktop/test2.csv")
