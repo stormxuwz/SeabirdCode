@@ -10,7 +10,11 @@ plot_gly <- function(feature,variable, reverse = TRUE){
 		feature[,variable] <- -feature[,variable]
 	}
 	temp.gly <- glyphs(feature, "Long", "year", "Lat", variable , height=0.25,width = 0.5)
-	ggplot(temp.gly, ggplot2::aes(gx, gy, group = gid)) +add_ref_lines(temp.gly, color = "grey90") +add_ref_boxes(temp.gly, color = "grey90") +geom_path() + geom_point()+theme_bw() + labs(x = "", y = "")
+	
+	pdf(sprintf("../../output/%s_glymaps.pdf",variable),height = 5, width = 8)
+	print(ggplot(temp.gly, ggplot2::aes(gx, gy, group = gid)) +add_ref_lines(temp.gly, color = "grey90") +add_ref_boxes(temp.gly, color = "grey90") +geom_path() + geom_point(size = 0.8)+theme_bw() + labs(x = "lon", y = "lat"))
+	dev.off()
+	
 }
 
 #plot_gly(feature,"DCL_depth")

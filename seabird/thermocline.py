@@ -40,7 +40,7 @@ class thermocline_segmentation(thermocline_base):
 		maxGradient_index = np.argmax(gradient)
 
 
-		if gradient[maxGradient_index]>1/4: # TRM exist
+		if gradient[maxGradient_index]>self.config["Algorithm"]["segment"]["minTRM_gradient"]: # TRM exist
 
 			# Detect TRM
 			self.TRM = data.Depth[int(np.mean(segmentList[maxGradient_index][1]))]

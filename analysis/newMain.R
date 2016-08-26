@@ -40,13 +40,19 @@ feature_stat <- function(df,varName = "TRM"){
 	res <- group_by(df,lake) %>% summarise(totalN = n(),only_pred = sum(only_pred),only_expert = sum(only_expert),allExist = sum(pred_expert))
 	print(res)
 
-	pdf(sprintf("../../output/%s_diff.pdf",varName),height = 50, width = 30)
+	pdf(sprintf("../../output/%s_diff_meta.pdf",varName),height = 50, width = 30)
 	print(qplot(lake,df[,diffVar],data = df)+geom_boxplot()+geom_text(aes(lake,df[,diffVar],label = paste(site,year)),data =df))
+	dev.off()
+	
+	pdf(sprintf("../../output/%s_diff.pdf",varName),height = 4, width = 7)
+	print(
+		qplot(lake,abs(df[,diffVar]),data = df)+geom_boxplot(size = 1)+theme_bw()+xlab("Lake")+ylab("Absolute Depth Differences (m)")
+	)
 	dev.off()
 }
 
 
-clusteringAlgorithm <- function()
+clusteringAlgorithm <- function(){}
 
 
 
@@ -91,15 +97,17 @@ qplot(lake,fluoRatio,data = features)+geom_boxplot()+geom_text(aes(lake,fluoRati
 SUData <- subset(features,lake == "SU")
 
 
-plot_gly(SUData,"DCL_conc")
-plot_gly(SUData,"DCL_depth")
-plot_gly(SUData,"TRM_segment")
-plot_gly(SUData,"LEP_segment")
-plot_gly(SUData,"UHY_segment")
-plot_gly(SUData,"TRM_num_segment")
-plot_gly(SUData,"UHY_num")
+plot_gly(SUData,"DCL_conc",reverse = FALSE)
+plot_gly(SUData,"DCL_depth",reverse = TRUE)
+plot_gly(SUData,"TRM_segment",reverse = TRUE)
+plot_gly(SUData,"LEP_segment",reverse = TRUE)
+plot_gly(SUData,"UHY_segment",reverse = TRUE)
+plot_gly(SUData,"TRM_num_segment",reverse = FALSE)
+plot_gly(SUData,"UHY_num",reverse = FALSE)
+plot_gly(SUData,"TRM_gradient_segment",reverse = TRUE)
 
-plot_gly(SUData,"fluoRatio")
+plot_gly(SUData,"fluoRatio", reverse = TRUE)
+plot_gly(SUData,"DCL_size", reverse = TRUE)
 
 #tapply(features$fluoRatio,features$lake,summary)
 
@@ -110,7 +118,6 @@ feature_stat(features,varName = "TRM")
 feature_stat(features,varName = "UHY")
 feature_stat(features,varName = "LEP")
 
-feature_stat()
 
 
 

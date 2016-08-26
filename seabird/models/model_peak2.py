@@ -232,7 +232,6 @@ class peak(object):
 			rightShape_diff = rightData[0]-min(rightData)
 			
 			# recheck left boundary
-
 			if i ==1:
 				maxSlope = 0
 				leftDataRange = max(leftData)-min(leftData)
@@ -245,7 +244,7 @@ class peak(object):
 					# print slope_tmp
 					maxSlope = max(maxSlope,slope_tmp)
 					# maxSlope = max(maxSlope,slope)
-					if slope < self.config["slope"]*maxSlope and SNR > self.config["SNR"] and dataDiff < leftDataRange *0.1:
+					if slope < self.config["slope"]*maxSlope and SNR > self.config["SNR"] and dataDiff < leftDataRange *0.2:
 						leftBoundary = middleNode - j
 						# print "left",leftBoundary
 						print "left",slope,SNR
@@ -266,7 +265,7 @@ class peak(object):
 					# maxSlope = max(maxSlope,slope)
 					#print "cond1",slope < self.config["slope"]*maxSlope
 					#print "cond2",SNR > self.config["SNR"]
-					#print "cond3",dataDiff < rightDataRange*0.1
+					#print "cond3",dataDiff < rightDataRange*0.1  # why we need cond3?
 					if slope < self.config["slope"]*maxSlope and SNR > self.config["SNR"] and dataDiff < rightDataRange*0.2: # 0.01 is a parameter, 0.02 is a parameter
 						rightBoundary = middleNode+j
 						#print rightData[j:]
