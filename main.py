@@ -32,6 +32,20 @@ def test():
 	plt.show()
 
 
+def outputData(fid,csvFolder = "/Users/WenzhaoXu/Desktop/"):
+	from seabird.seabird_class import seabird
+	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/config.json'))
+	mySeabird = seabird(config = config)
+	mySeabird.loadData(fileId=1268)
+	mySeabird.preprocessing()
+
+	cleanData = np.array(mySeabird.cleanData[["Fluorescence","Temperature"]])
+	rawData = np.array(mySeabird.downCastRawData[["Fluorescence","Temperature"]])
+
+	np.savetxt("%s/%d_raw.csv" %(csvFolder,fid),rawData)
+	np.savetxt("%s/%d_clean.csv" %(csvFolder,fid),cleanData)
+
+
 def plotProfile(fid,var="DCL",site = None,year = None,folder = '/Users/WenzhaoXu/Developer/Seabird/output/meta/',legendLoc = 4):
 	from seabird.seabird_class import seabird
 
@@ -102,4 +116,5 @@ def runApp():
 
 if __name__ == '__main__':
 	# test()
-	plotProfile(1767,var = "None",legendLoc = 4)
+	# plotProfile(1767,var = "None",legendLoc = 4)
+	outputData(1767)

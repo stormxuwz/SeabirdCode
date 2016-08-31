@@ -136,7 +136,6 @@ class bottomUp(timeSeriesSegmentation):
 		line = self.createLine(allSeg)
 		return self.calculate_error(line, allSeg)
 
-
 	def mergeRight(self,segList,index):
 		segList[index]=segList[index]+segList[index+1] # merge 
 		segList.pop(index+1) # pop the right segment

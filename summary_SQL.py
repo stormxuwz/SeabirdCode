@@ -5,10 +5,12 @@ from seabird.seabird_class import seabird
 import traceback
 import cPickle as pickle
 import sys
+
+
 class summary(object):
-	def __init__(self,engine,config):
+	def __init__(self,engine,config): 
 		self.engine = engine
-		self.allYears = range(1996,2014)
+		self.allYears = range(1996,2014)  # [1996, 2013]
 		self.allStations = self.getAllStations()
 		print self.allStations
 		self.config = config
@@ -42,6 +44,7 @@ class summary(object):
 		return allTables
 
 	def filterDup(self,meta_res):
+		# Find the duplicate profiles
 		maxDepth = []
 		for fileId_ in meta_res.fileId:
 			sql_data = "Select * from summer_data where fileId = %d Order By 'index' ASC" %(fileId_)
@@ -52,6 +55,7 @@ class summary(object):
 		return meta_res.fileId[whichMax]
 
 	def detect(self):
+		# Detect the features
 		duplicateExpertNotes = []
 		errorFileId = []
 		results = []
@@ -99,7 +103,7 @@ class summary(object):
 						traceback.print_exc()
 				
 				else:
-					res = {"site":station,"year":year}
+					res = {"site":station,"year":year,"fileId":None}
 
 				results.append(res)
 
@@ -113,9 +117,8 @@ class summary(object):
 		print errorFileId
 
 
-
 def extractWaterChemistryData(featureFile):
-
+	# Extract Water chemistry data
 	feature = pd.read_csv(featureFile)
 
 	varList = ["DO","Temperature","Specific_Conductivity","Fluorescence","Beam_Attenuation"]
@@ -125,13 +128,17 @@ def extractWaterChemistryData(featureFile):
 	metaArray = []
 
 	for i in range(feature.shape[0]):
-		site = feature.site[i] 
+		site = feature.site[i]
 		year = feature.year[i]
+		fid = feature.fileId[i]
+		metaArray.append([fid,site,year])
+		print fid
+
+		if fid  is None:
+			continue
+
 		LEP = feature.LEP_segment[i]
 		UHY = feature.UHY_segment[i]
-		fid = feature.fileId[i]
-		print fid
-		metaArray.append([fid,site,year])
 		
 		try:
 			mySeabird = pickle.load(open("/Users/WenzhaoXu/Developer/Seabird/output/meta/%s_%d_%d.p" %(site,int(year),int(fid)),"rb"))
@@ -171,9 +178,10 @@ if __name__ == '__main__':
 	import json
 	engine = create_engine('mysql+mysqldb://root:XuWenzhaO@localhost/Seabird')
 	config = json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/config.json'))
-	#GLSummary = summary(engine,config)
-	#GLSummary.detect()
+	GLSummary = summary(engine,config)
+	GLSummary.detect()
 	extractWaterChemistryData("/Users/WenzhaoXu/Developer/Seabird/output/detectedFeatures.csv")
+	
 	# print GLSummary.allStations.STATION
 	# allTables = GLSummary.writeAllAlignments()
 	# allTables.to_csv("/Users/WenzhaoXu/Desktop/test2.csv")

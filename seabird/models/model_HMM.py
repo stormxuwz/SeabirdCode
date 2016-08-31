@@ -11,7 +11,8 @@ class hmmModel(object):
 		# data contains 
 		np.random.seed()
 		n = dataSet.shape[0]
-		HMM_data = pp.scale(dataSet[["Var","Power"]])
+		# HMM_data = pp.scale(dataSet[["Var","Power"]])
+		HMM_data = pp.scale(dataSet[["Var","Gradient"]])
 		# print HMM_data
 		if self.nc == 3:
 			# Initial Transition Matrix
@@ -43,7 +44,7 @@ class hmmModel(object):
 		
 		model = hmm.GaussianHMM(
 			n_components=self.nc,
-			covariance_type="diag",
+			covariance_type="diag",  # diagnoal matrix
 			n_iter=2000,
 			params='cmt',
 			init_params='c',
@@ -62,7 +63,8 @@ class hmmModel(object):
 		diff = h[1:] - h[:-1]
 		changePoint = np.argwhere(diff != 0).flatten()
 
-		feature_index = [dataSet.Power.argmax()] # add thermocline
+		# feature_index = [dataSet.Power.argmax()] # add thermocline using power
+		feature_index = [dataSet.Gradient.argmax()]  # add thermocline using gradient
 
 		for point in changePoint:
 			feature_index.append(point)

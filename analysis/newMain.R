@@ -96,6 +96,7 @@ qplot(lake,fluoRatio,data = features)+geom_boxplot()+geom_text(aes(lake,fluoRati
 
 SUData <- subset(features,lake == "SU")
 
+# tapply(features$TRM_diff,features$lake,summary)
 
 plot_gly(SUData,"DCL_conc",reverse = FALSE)
 plot_gly(SUData,"DCL_depth",reverse = TRUE)

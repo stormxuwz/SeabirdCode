@@ -29,8 +29,8 @@ class seabird:
 		self.cleanData = None
 		self.bottleFile = None # maybe useful
 		self.features = None
-		self.expert = {"TRM":None,"LEP":None,"UHY":None,"DCL":None}
-		self.fileId = None
+		self.expert = {"TRM":None,"LEP":None,"UHY":None,"DCL":None}   # expert notes
+		self.fileId = None  # file id
 		self.saveModel = False
 		self.waterChemistry = {}
 
@@ -80,7 +80,7 @@ class seabird:
 		# return self.thermocline.tsSeg_epi<self.DCL_future.peakDepth
 	
 	def identify(self,saveModel = True):
-		self.saveModel = True
+		self.saveModel = saveModel
 		TRM_features = self.thermocline.detect(data = self.cleanData[["Depth","Temperature"]],\
 		                                       saveModel = saveModel)
 		DCL_features = self.DCL.detect(data = self.cleanData[["Depth","Fluorescence"]],\
@@ -89,7 +89,7 @@ class seabird:
 
 		# print self.thermocline.models["segmentation"].segmentList
 		self.features = TRM_features.copy()
-		self.features.update(DCL_features)
+		self.features.update(DCL_features)  # add DCL features
 
 
 	# def extractWaterChemistry(self):
@@ -109,6 +109,7 @@ class seabird:
 
 
 	def plot(self, legend=True, pt=None, OtherFeatures=None, bottle=None, filename=None,meta=True):
+		# plot the TRM and DCL
 		if pt is None:
 			pt = plt.figure(figsize=(6, 7), dpi=80)
 
@@ -157,15 +158,35 @@ class seabird:
 				ax2.plot(self.downCastRawData.Fluorescence, -self.downCastRawData.Depth, "g--", alpha=0.5)
 				
 				if self.saveModel and meta:
-					for i, shape_res in enumerate(self.DCL.model.shape_fit):
-						ax2.plot(shape_res["left_data"],-self.cleanData.Depth[shape_res["left_index"]])
-						ax2.plot(shape_res["right_data"],-self.cleanData.Depth[shape_res["right_index"]])
+					# plot the shape fitted values
+					# for i, shape_res in enumerate(self.DCL.model.shape_fit):
+						# ax2.plot(shape_res["left_data"],-self.cleanData.Depth[shape_res["left_index"]])
+						# ax2.plot(shape_res["right_data"],-self.cleanData.Depth[shape_res["right_index"]])
+					meta_allPeaks = self.DCL.model.allPeaks
+					# print "allPeaks",meta_allPeaks
+					if meta_allPeaks is not None:
+
+						for i in range(len(meta_allPeaks["peakIndex"])):
+							# plot the left data
+							leftShapeFit = meta_allPeaks["leftShapeFit"][i]
+							rightShapeFit = meta_allPeaks["rightShapeFit"][i]
+
+							peakIndex = meta_allPeaks["peakIndex"][i]
+
+							leftShapeIndex = range(peakIndex-len(leftShapeFit),peakIndex)
+							rightShapeIndex = range(peakIndex,peakIndex+len(rightShapeFit))
+
+							ax2.plot(leftShapeFit,-self.cleanData.Depth[leftShapeIndex])
+							ax2.plot(rightShapeFit,-self.cleanData.Depth[rightShapeIndex])
+
 
 				# for peakDepth in self.DCL_future.peakDepth:
 				if self.features["DCL_depth"] is not None:
 					ax2.axhline(y=-self.features["DCL_depth"],color="g")
-					ax2.axhline(y=-self.features["DCL_upperDepth"],color = "g")
-					ax2.axhline(y=-self.features["DCL_bottomDepth"],color = "g")
+					ax2.axhline(y=-self.features["DCL_upperDepth_fit"],color = "g")
+					ax2.axhline(y=-self.features["DCL_bottomDepth_fit"],color = "g")
+					ax2.axhline(y=-self.features["DCL_upperDepth_gradient"],color = "m")
+					ax2.axhline(y=-self.features["DCL_bottomDepth_gradient"],color = "m")
 				# for i in range(len(self.DCL_future.boundaryDepth)):
 				# 	ax2.plot(self.DCL_future.boundaryMagnitude, -1*np.array(self.DCL_future.boundaryDepth), "ro")
 

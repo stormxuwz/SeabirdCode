@@ -62,7 +62,7 @@ def dwt_smooth(x, smoothing_para={'wavelet':'bior3.1','level':0}):
 	else:  # level==0
 		level = max(1, maxlevel - 3)
 
-	coeffs = pywt.wavedec(x, wavelet, 'cpd', level=level)
+	coeffs = pywt.wavedec(x, wavelet, 'cpd', level=level) # multilevel decomposition, return CA_n, CD_n, CD_n-1
 
 	coeffs_size = []
 	coeff_conj = []
@@ -80,9 +80,9 @@ def dwt_smooth(x, smoothing_para={'wavelet':'bior3.1','level':0}):
 	for i in range(level + 1):
 		new_coeff = coeff_zeros[:]
 		new_coeff[i] = coeffs[i]
-		reconstruct_new.append(pywt.waverec(new_coeff, wavelet))
+		reconstruct_new.append(pywt.waverec(new_coeff, wavelet)) # reconstruct the signal using CA_n + (CD_n +CD_n-1,...)
 
-	y = reconstruct_new[0]  # approximate
+	y = reconstruct_new[0]  # set the output as the approximate signal
 	
 	return y
 

@@ -20,6 +20,7 @@ class thermocline_base(object):
 		raise ValueError("not implementated")
 
 class thermocline_segmentation(thermocline_base):
+	# Class to detect TRM using time series segmentation methods
 	def __init__(self,config):
 		super(thermocline_segmentation, self).__init__(config)
 		self.TRM_gradient = None
@@ -40,7 +41,8 @@ class thermocline_segmentation(thermocline_base):
 		maxGradient_index = np.argmax(gradient)
 
 
-		if gradient[maxGradient_index]>self.config["Algorithm"]["segment"]["minTRM_gradient"]: # TRM exist
+		if gradient[maxGradient_index]>self.config["Algorithm"]["segment"]["minTRM_gradient"]: 
+			# TRM gradient is above the maximum gradient
 
 			# Detect TRM
 			self.TRM = data.Depth[int(np.mean(segmentList[maxGradient_index][1]))]
@@ -90,6 +92,7 @@ class thermocline_HMM(thermocline_base):
 		self.TRM = signal_data.Depth[res[0]]
 		self.LEP = signal_data.Depth[res[1]]
 		self.UHY = signal_data.Depth[res[2]]
+
 
 class thermocline_threshold(thermocline_base):
 	def detect(self,data):
@@ -145,6 +148,7 @@ class thermocline(object):
 			except Exception,err:
 				print "HMM Fail"
 				print(traceback.format_exc())
+
 
 		if "threshold" in methods:
 			try:
