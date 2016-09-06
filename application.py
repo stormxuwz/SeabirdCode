@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+# ps -fA | grep python
+
 import os
 from seabird.seabird_class import seabird
 import numpy as np
@@ -48,6 +50,8 @@ def seabirdAnalysis(filename = None):
     depth_LEP = None
     depth_UHY = None
     depth_DCL = None
+    Prop_DCL = None
+
     if filename is not None:
         config=json.load(open('./config.json'))
         mySeabird = seabird(config = config)
@@ -77,6 +81,8 @@ def seabirdAnalysis(filename = None):
         depth_LEP = mySeabird.features["LEP_segment"]
         depth_UHY = mySeabird.features["UHY_segment"]
         depth_DCL = mySeabird.features["DCL_depth"]
+        Prop_DCL = np.round(mySeabird.features["DCL_concProp_fit"],decimals=2)
+        # print(Prop_DCL,file=sys.stderr)
 
         TRM = Span(location=-mySeabird.features["TRM_segment"], dimension='width', line_color='red', line_width=1,line_dash = [3]) #red line at 0
         LEP = Span(location=-mySeabird.features["LEP_segment"], dimension='width', line_color='blue', line_width=1,line_dash = [3]) #red line at 0
@@ -120,6 +126,7 @@ def seabirdAnalysis(filename = None):
         depth_UHY = depth_UHY,
         depth_LEP = depth_LEP,
         depth_DCL = depth_DCL,
+        Prop_DCL = Prop_DCL,
         filename = filename
     )
     return encode_utf8(html)

@@ -33,8 +33,15 @@ class DCL(object):
 		"DCL_exists":None,
 		"DCL_leftShapeFitErr":None,
 		"DCL_rightShapeFitErr":None,
-		"DCL_upperDepth_fit":None,
-		"DCL_bottomDepth_fit":None}
+		"DCL_upperDepth_gradient":None,
+		"DCL_bottomDepth_gradient":None,
+		"DCL_concProp_fit":None,
+		"DCL_concProp_gradient":None,
+		"allConc":None}
+
+
+		features["allConc"] = np.sum((data.Fluorescence))
+		print "allCOnc",features["allConc"]
 
 		if self.allPeaks is None or self.allPeaks.shape[0]<1:
 			features["peakNums"] = 0
@@ -81,6 +88,14 @@ class DCL(object):
 			features["DCL_upperDepth_gradient"] = data.Depth[self.allPeaks.leftIndex_gradient[DCL_idx]]
 			features["DCL_bottomDepth_gradient"] = data.Depth[self.allPeaks.rightIndex_gradient[DCL_idx]]
 
+			# adding the DCL concentration
+			# print "test10",self.allPeaks.leftIndex_gradient[DCL_idx]
+			# print (self.allPeaks.rightIndex_gradient[DCL_idx]+1)
+			# print "test2",features["DCL_allConc"]
+			features["DCL_concProp_gradient"] = np.sum(data.Fluorescence[self.allPeaks.leftIndex_gradient[DCL_idx]:(self.allPeaks.rightIndex_gradient[DCL_idx]+1)]) / features["allConc"]
+			features["DCL_concProp_fit"] = np.sum(data.Fluorescence[self.allPeaks.leftIndex_fit[DCL_idx]:(self.allPeaks.rightIndex_fit[DCL_idx]+1)]) / features["allConc"]
+
+		print features
 		return features
 
 

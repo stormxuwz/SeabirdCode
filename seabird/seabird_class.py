@@ -91,7 +91,6 @@ class seabird:
 		self.features = TRM_features.copy()
 		self.features.update(DCL_features)  # add DCL features
 
-
 	# def extractWaterChemistry(self):
 	# 	if self.features is None:
 	# 		raise ValueError("Please detect features first")
