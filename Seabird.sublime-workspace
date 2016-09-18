@@ -439,6 +439,14 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "summary_SQL.py",
+			"settings":
+			{
+				"buffer_size": 6942,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -750,13 +758,11 @@
 	"expanded_folders":
 	[
 		"/Users/WenzhaoXu/Developer/Seabird/SeabirdCode",
-		"/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/analysis",
-		"/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/seabird",
-		"/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/seabird/models",
-		"/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/seabird/tools"
+		"/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/seabird"
 	],
 	"file_history":
 	[
+		"/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/test.py",
 		"/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/seabird/seabird_class.py",
 		"/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/main.py",
 		"/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/indicatorKriging.R",
@@ -883,8 +889,7 @@
 		"/Users/WenzhaoXu/Desktop/badFile.csv",
 		"/Users/WenzhaoXu/Developer/Seabird/seabird_plot.py",
 		"/Users/WenzhaoXu/Developer/DO_visualization/ui.R",
-		"/Users/WenzhaoXu/Developer/DO_Sensor_data/R_sql.R",
-		"/Users/WenzhaoXu/Developer/DO_Sensor_data/findBathy.R"
+		"/Users/WenzhaoXu/Developer/DO_Sensor_data/R_sql.R"
 	],
 	"find":
 	{
@@ -984,8 +989,38 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "summary_SQL.py",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 6942,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								396,
+								396
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -1041,6 +1076,10 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"te",
+				"test.py"
+			],
 			[
 				"seabird",
 				"seabird/seabird_class.py"
@@ -1180,10 +1219,6 @@
 			[
 				"ma",
 				"main.py"
-			],
-			[
-				"te",
-				"test.py"
 			],
 			[
 				"tes",

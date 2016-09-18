@@ -14,31 +14,18 @@
 
   </head>
   <body>
-    <!-- A simple form for changing the graph -->
+    
     <p> Please upload your SeaBird CNV file </p>
+
     <form name="filebutton" method=post enctype=multipart/form-data>
-        <!-- Color: -->
-        <!-- <select name="color"> -->
-            <!-- <option value="Red">Red</option> -->
-            <!-- <option value="Green">Green</option> -->
-            <!-- <option value="Blue">Blue</option> -->
-            <!-- <option selected="selected" value="Black">Black</option> -->
-            
-        <!-- </select> -->
-        <!-- <br> -->
-        <!-- From: -->
-        <!-- <input type="text" name="_from" value="{{ _from }}"> -->
-        <!-- <br> -->
-        <!-- To: -->
-        <!-- <input type="text" name="to" value="{{ to }}"> -->
-        <!-- <br> -->
         <input type="file" name="file">
-        <input type="submit" value = Upload>
+        <input type="submit" value = "Identify/Clean">
     </form>
-    <p>TRM: {{depth_TRM}} m</p>
-    <p>LEP: {{depth_LEP}} m</p>
-    <p>UHY: {{depth_UHY}} m</p>
-    <p>DCL: {{depth_DCL}} m</p>
+    
+    <p>TRM(Red): {{depth_TRM}} m</p>
+    <p>LEP(Blue): {{depth_LEP}} m</p>
+    <p>UHY(Black): {{depth_UHY}} m</p>
+    <p>DCL(Green): {{depth_DCL}} m</p>
     <p>DCL Propo: {{Prop_DCL}} </p>
    
     {{ plot_div|indent(4)|safe }}
