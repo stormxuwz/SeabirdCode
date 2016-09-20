@@ -25,6 +25,7 @@ ALLOWED_EXTENSIONS = set(['CNV',"cnv"])
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 30 * 1024 * 1024
 
 def getitem(obj, item, default):
     if item not in obj:
