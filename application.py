@@ -116,7 +116,7 @@ def seabirdAnalysis(filename = None):
         
         fig.renderers.extend([TRM,LEP,UHY,DCL])
         # fig.renderers.extend([TRM,DCL,DCL_bottom,DCL_upper])
-        fig.legend.orientation = "bottom_right"
+        fig.legend.location = "bottom_right"
         os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     
     else:
