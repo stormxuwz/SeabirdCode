@@ -231,10 +231,10 @@ def createDataBase_main():
 	# expertFile.sendtoDatabase(SQLEngine, "expertNotes")
 	# expertFile.saveToCSV("/Users/WenzhaoXu/Desktop/expert.csv")
 
-def test(filename):
-	SQLEngine=create_engine('mysql+mysqldb://root:XuWenzhaO@localhost/Seabird')
-	parser = seabird_file_parser()
-	parser.readFile(filename)
+# def test(filename):
+# 	SQLEngine=create_engine('mysql+mysqldb://root:XuWenzhaO@localhost/Seabird')
+# 	parser = seabird_file_parser()
+# 	parser.readFile(filename)
 	# print parser.meta
 	# print parser.sensordata
 	# parser.sendtoDatabase(SQLEngine,tableName = {"meta":"summer_meta","data":"summer_data"})

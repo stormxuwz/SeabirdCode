@@ -44,6 +44,7 @@ def seabirdAnalysis(filename = None):
     depth_UHY = None
     depth_DCL = None
     Prop_DCL = None
+    conc_DCL = None
 
     if filename is not None:
         # print("I have the file"+filename,file=sys.stderr)
@@ -71,7 +72,7 @@ def seabirdAnalysis(filename = None):
         depth_LEP = mySeabird.features["LEP_segment"]
         depth_UHY = mySeabird.features["UHY_segment"]
         depth_DCL = mySeabird.features["DCL_depth"]
-            
+        conc_DCL = np.round(mySeabird.features["DCL_conc"]  ,decimals =2)
         # depth_TRM = -99 if depth_TRM is None else depth_TRM
         # depth_LEP = -99 if depth_LEP is None else depth_LEP
         # depth_UHY = -99 if depth_UHY is None else depth_UHY
@@ -142,6 +143,7 @@ def seabirdAnalysis(filename = None):
         depth_UHY = depth_UHY,
         depth_LEP = depth_LEP,
         depth_DCL = depth_DCL,
+        conc_DCL = conc_DCL,
         Prop_DCL = Prop_DCL,
         filename = filename
     )

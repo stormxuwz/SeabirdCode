@@ -141,7 +141,7 @@ def extractWaterChemistryData(featureFile):
 		UHY = feature.UHY_segment[i]
 		
 		try:
-			mySeabird = pickle.load(open("/Users/WenzhaoXu/Developer/Seabird/output/meta/%s_%d_%d.p" %(site,int(year),int(fid)),"rb"))
+			mySeabird = pickle.load(open("/Users/wenzhaoxu/Developer/Seabird/output/meta/%s_%d_%d.p" %(site,int(year),int(fid)),"rb"))
 			data = mySeabird.cleanData
 			# print data.columns.values
 			for var in varList:

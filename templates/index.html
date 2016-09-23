@@ -11,22 +11,44 @@
     {{ css_resources|indent(4)|safe }}
 
     {{ plot_script|indent(4)|safe }}
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+</style>
 
   </head>
   <body>
     
-    <p> Please upload your SeaBird CNV file </p>
+    <p>  This is a good example to upload the Seabird CNV files. 
+      (1) Select the files and click the button </p>
 
     <form name="filebutton" method=post enctype=multipart/form-data>
-        <input type="file" name="file">
-        <input type="submit" value = "Identify/Clean">
+        <div class="form-group">
+            <p class="help-block">Upload the CNV file</p>
+            <input type="file" name="file">
+            
+        </div>
+        <input class="btn btn-default" type="submit" value = "Identify/Clean">
     </form>
+    <br>
     
-    <p>TRM(Red): {{depth_TRM}} m</p>
-    <p>LEP(Blue): {{depth_LEP}} m</p>
-    <p>UHY(Black): {{depth_UHY}} m</p>
-    <p>DCL(Green): {{depth_DCL}} m</p>
-    <p>DCL Propo: {{Prop_DCL}} </p>
+    <div class="row">
+      <div class="col-xs-2">
+        <p>TRM (<font color="red" font- weight ="bold">---</font>): {{depth_TRM}} m</p>
+        <p>LEP (<font color="blue" font- weight ="bold">---</font>): {{depth_LEP}} m</p>
+        <p>UHY (<font color="black" font- weight ="bold">---</font>):{{depth_UHY}} m</p>
+      </div>
+
+      <div class = "col-xs-2">
+      <p>DCL (<font color="green" font- weight ="bold">---</font>): {{depth_DCL}} m</p>
+        <p>DCL Conc: {{conc_DCL}} mg/L</p>
+        <p>DCL Propo: {{Prop_DCL}} </p>
+    
+      </div>    
+    </div>
+
+    
+    <br>
    
     {{ plot_div|indent(4)|safe }}
    
