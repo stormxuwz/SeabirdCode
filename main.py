@@ -11,12 +11,13 @@ import os
 
 def test():
 	from seabird.seabird_class import seabird
-	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/config.json'))
+	config=json.load(open('/Users/wenzhaoxu/Developer/Seabird/SeabirdCode/config.json'))
 	mySeabird = seabird(config = config)
 
 	# mySeabird.loadData(dataFile = "/Users/WenzhaoXu/Developer/Seabird/input/history_data/1996/SUMMER96/SU04SU96.CNV")
 	# mySeabird.loadData(dataFile="sample.cnv")
-	mySeabird.loadData(fileId=1268)
+	mySeabird.loadData(fileId=865)
+	print mySeabird.site, mySeabird.time
 	# mySeabird.loadData(dataFile= "./sample.cnv")
 	# mySeabird.loadData("")
 	mySeabird.preprocessing()
@@ -32,9 +33,9 @@ def test():
 	plt.show()
 
 
-def outputData(fid,csvFolder = "/Users/WenzhaoXu/Desktop/"):
+def outputData(fid,csvFolder = "/Users/wenzhaoxu/Desktop/"):
 	from seabird.seabird_class import seabird
-	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/config.json'))
+	config=json.load(open('/Users/wenzhaoxu/Developer/Seabird/SeabirdCode/config.json'))
 	mySeabird = seabird(config = config)
 	mySeabird.loadData(fileId=1268)
 	mySeabird.preprocessing()
@@ -46,7 +47,7 @@ def outputData(fid,csvFolder = "/Users/WenzhaoXu/Desktop/"):
 	np.savetxt("%s/%d_clean.csv" %(csvFolder,fid),cleanData)
 
 
-def plotProfile(fid,var="DCL",site = None,year = None,folder = '/Users/WenzhaoXu/Developer/Seabird/output/meta/',legendLoc = 4):
+def plotProfile(fid,var="DCL",site = None,year = None,folder = '/Users/wenzhaoxu/Developer/Seabird/output/meta/',legendLoc = 4):
 	from seabird.seabird_class import seabird
 
 	if site is None or year is None:
@@ -98,7 +99,7 @@ def plotProfile(fid,var="DCL",site = None,year = None,folder = '/Users/WenzhaoXu
 	lines, labels = ax1.get_legend_handles_labels()
 	lines2, labels2 = ax2.get_legend_handles_labels()
 	ax1.legend(lines + lines2, labels + labels2, loc=legendLoc,prop={'size':11})
-	plt.savefig("/Users/WenzhaoXu/Developer/Seabird/output/focus/%s_%s.pdf" %(os.path.splitext(os.path.basename(fname))[0],var))
+	plt.savefig("/Users/wenzhaoxu/Developer/Seabird/output/focus/%s_%s.pdf" %(os.path.splitext(os.path.basename(fname))[0],var))
 	plt.close()
 
 def runApp():
@@ -115,6 +116,6 @@ def runApp():
 
 
 if __name__ == '__main__':
-	# test()
+	test()
 	# plotProfile(1767,var = "None",legendLoc = 4)
-	outputData(1767)
+	# outputData(1767)

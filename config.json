@@ -3,8 +3,9 @@
 		"csvFolder":"/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/"
 	},
 	"SmoothingMethod":{
-		"Temperature":["window",11],
-		"Fluorescence":["dwt","db2",0],
+		"Temperature":["window",9],
+		"Fluorescence":["window",9],
+		"Fluorescence_old":["dwt","db2",0],
 		"Other":["spline",1]
 	},
 	"Preprocessing":{
@@ -18,7 +19,7 @@
 			"minPeakMagnitude": 0.3,
 			"minBoundaryValue": 0.2,
 			"maxBoundaryGradient": 0.1,
-			"peakHeight": 0.25,
+			"peakHeight": 0.2,
 			"tailTol": 0.2,
 			"peakFitTol":0.05,
 			"SNR":10,

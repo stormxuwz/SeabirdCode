@@ -84,6 +84,7 @@ class seabird:
 		TRM_features = self.thermocline.detect(data = self.cleanData[["Depth","Temperature"]],\
 		                                       saveModel = saveModel)
 		DCL_features = self.DCL.detect(data = self.cleanData[["Depth","Fluorescence"]],\
+									   rawData = self.downCastRawData[["Depth","Fluorescence"]],\
 		                               depthThreshold = TRM_features["LEP_segment"],\
 		                               saveModel = saveModel)
 

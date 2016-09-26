@@ -27,7 +27,38 @@ class thermocline_segmentation(thermocline_base):
 		self.num_segments = None
 		self.num_belowTRM = None
 		self.model = None
-	
+		self.depthInterval = self.config["Preprocessing"]["Interval"]
+		self.positiveSeg = []
+		self.doubleTRM = []
+
+	def getGradientFromSegment(self,seg):
+		return (seg[0][1]-seg[0][0])/self.depthInterval
+
+	def detectDoubleTRM(self,segmentList):
+		# detect double thermocline from the segmentList
+		for i in range(1,len(segmentList)-1):
+			segGradient = self.getGradientFromSegment(segmentList[i])
+			previousSegGradient = self.getGradientFromSegment(segmentList[i-1])
+			nextSegGradient = self.getGradientFromSegment(segmentList[i+1])
+
+			if abs(segGradient) < self.config["Algorithm"]["segment"]["stable_gradient"] and \
+				abs(previousSegGradient) > self.config["Algorithm"]["segment"]["minTRM_gradient"] and \
+				abs(nextSegGradient) > self.config["Algorithm"]["segment"]["minTRM_gradient"]:
+
+
+				self.doubleTRM.append(i)
+
+		if len(self.doubleTRM)>0:
+			print "detected double thermocline", self.doubleTRM
+
+	def detectPositiveGradient(self,segmentList):
+		# detect positive gradient, since positive gradient is abnormal
+		self.positiveSeg = []
+		for i, seg in enumerate(segmentList):
+			gradient = self.getGradientFromSegment(seg)
+			if gradient > self.config["Algorithm"]["segment"]["stable_gradient"]:
+				self.positiveSeg.append(i)
+
 	def detect(self,data,saveModel = False):
 		model = bottomUp(max_error = self.config["Algorithm"]["segment"]["max_error"])
 		model.fit_predict(data.Temperature)
@@ -36,7 +67,7 @@ class thermocline_segmentation(thermocline_base):
 		depthInterval = data.Depth[1]-data.Depth[0]
 		
 		# segmentList is a list of [fitted line,point index]
-		gradient = [(seg[0][0]-seg[0][1])/depthInterval for seg in model.segmentList]
+		gradient = [self.getGradientFromSegment(seg) for seg in model.segmentList]
 
 		maxGradient_index = np.argmax(gradient)
 
@@ -80,6 +111,9 @@ class thermocline_segmentation(thermocline_base):
 		self.TRM_gradient = max(gradient)
 		self.num_segments = len(segmentList)
 		self.TRM_idx = maxGradient_index
+		
+		self.detectDoubleTRM(segmentList)
+		self.detectPositiveGradient(segmentList)
 
 		if saveModel:
 			self.model = model
@@ -129,14 +163,15 @@ class thermocline(object):
 				features["UHY_segment"] = model.UHY
 				features["TRM_num_segment"] = model.num_segments
 				features["TRM_idx"] = model.TRM_idx
+				features["doubleTRM"] = len(model.doubleTRM)
+				features["positiveTRM"] = len(model.positiveSeg)
+
 				if saveModel:
 					self.models["segmentation"] = model.model
+
 			except Exception,err:
 				print "segmentation Fail"
 				print(traceback.format_exc())
-
-			
-
 
 		if "HMM" in methods:
 			try:
@@ -148,7 +183,6 @@ class thermocline(object):
 			except Exception,err:
 				print "HMM Fail"
 				print(traceback.format_exc())
-
 
 		if "threshold" in methods:
 			try:

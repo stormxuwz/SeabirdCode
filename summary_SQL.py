@@ -26,7 +26,7 @@ class summary(object):
 	def findEntry(self,station,year):
 		subStation = station[:4]
 		sql_meta = '''select systemUploadTime,datcnv_date,fileId,stationInfered, year(systemUpLoadTime) as Year from summer_meta where stationInfered = '%s' And year(systemUpLoadTime) = %d And badProfile = 0''' %(subStation,year)
-		sql_expertnotes = '''select `index`,SAMPLING_DATE,STATION,YEAR,DepthCode,SMPL_DEPTH as Depth from expertNotes where STATION = '%s' And YEAR = %d AND DepthCode in ('LEP','TRM','UHY','DCL') AND MONTH(SAMPLING_DATE) IN (6,7,8,9,10); ''' %(station,year)
+		sql_expertnotes = '''select `index`,SAMPLING_DATE,STATION,YEAR,DepthCode,SMPL_DEPTH as Depth from expertNotes where STATION = '%s' And YEAR = %d AND DepthCode in ('LEP','TRM','UHY','DCL'); ''' %(station,year) #  AND MONTH(SAMPLING_DATE) IN (6,7,8,9,10)
 		meta_res = self.sqlQuery(sql_meta)
 		expertnotes_res = self.sqlQuery(sql_expertnotes)
 		return meta_res,expertnotes_res

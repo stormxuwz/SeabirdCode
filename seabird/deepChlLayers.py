@@ -9,8 +9,18 @@ class DCL(object):
 		self.DCL_idx = None
 		self.model = None
 		
-	def detect(self,data,depthThreshold = None,saveModel = True):
+	def correctConc(self,DCLDepth,rawData):
+		# rawData is dataFrame with Depth and Fluorescence
+		print DCLDepth
+		print rawData
+		DCLConc_rawData = rawData.loc[(rawData.Depth< DCLDepth+0.5) & (rawData.Depth > DCLDepth-0.5),"Fluorescence"]
+		return np.max(DCLConc_rawData)
+
+
+
+	def detect(self,data,rawData,depthThreshold = None,saveModel = True):
 		# data is a data frame with "Depth" and "Fluorescence" columns
+		# rawData is dataFrame with Depth and Fluorescence. Raw Data are used to correct due to preprocessing
 		model = peak(self.config["Algorithm"]["Peak"])
 		
 		if saveModel:
@@ -68,6 +78,7 @@ class DCL(object):
 			# print data.Fluorescence[self.allPeaks.peakIndex]
 			DCL_idx = int(DCL_idx)
 			self.DCL_idx = DCL_idx
+
 			# print "DCL_index",DCL_idx
 			# print self.allPeaks.peakIndex
 			# print "data shape",data.shape
@@ -76,7 +87,12 @@ class DCL(object):
 			
 			features["DCL_exists"] = 1
 			features["DCL_depth"] = peakDepths[DCL_idx]
-			features["DCL_conc"] = data.Fluorescence[self.allPeaks.peakIndex[DCL_idx]]
+			# features["DCL_conc"] = data.Fluorescence[self.allPeaks.peakIndex[DCL_idx]]
+			features["DCL_conc"] = self.correctConc(peakDepths[DCL_idx], rawData)
+
+
+
+
 			features["DCL_upperConc"] = data.Fluorescence[self.allPeaks.leftIndex_gradient[DCL_idx]]
 			features["DCL_bottomConc"] = data.Fluorescence[self.allPeaks.rightIndex_gradient[DCL_idx]]
 			features["DCL_upperDepth_fit"]=  data.Depth[self.allPeaks.leftIndex_fit[DCL_idx]]
