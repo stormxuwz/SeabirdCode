@@ -32,7 +32,7 @@ class thermocline_segmentation(thermocline_base):
 		self.doubleTRM = []
 
 	def getGradientFromSegment(self,seg):
-		return (seg[0][1]-seg[0][0])/self.depthInterval
+		return (seg[0][0]-seg[0][1])/self.depthInterval
 
 	def detectDoubleTRM(self,segmentList):
 		# detect double thermocline from the segmentList
@@ -42,8 +42,8 @@ class thermocline_segmentation(thermocline_base):
 			nextSegGradient = self.getGradientFromSegment(segmentList[i+1])
 
 			if abs(segGradient) < self.config["Algorithm"]["segment"]["stable_gradient"] and \
-				abs(previousSegGradient) > self.config["Algorithm"]["segment"]["minTRM_gradient"] and \
-				abs(nextSegGradient) > self.config["Algorithm"]["segment"]["minTRM_gradient"]:
+				previousSegGradient > self.config["Algorithm"]["segment"]["minTRM_gradient"] and \
+				nextSegGradient > self.config["Algorithm"]["segment"]["minTRM_gradient"]:
 
 
 				self.doubleTRM.append(i)
@@ -56,7 +56,7 @@ class thermocline_segmentation(thermocline_base):
 		self.positiveSeg = []
 		for i, seg in enumerate(segmentList):
 			gradient = self.getGradientFromSegment(seg)
-			if gradient > self.config["Algorithm"]["segment"]["stable_gradient"]:
+			if gradient < -1*self.config["Algorithm"]["segment"]["stable_gradient"]:
 				self.positiveSeg.append(i)
 
 	def detect(self,data,saveModel = False):
@@ -108,6 +108,7 @@ class thermocline_segmentation(thermocline_base):
 				self.UHY = data.Depth[UHY_index]
 		else:
 			print "No TRM deteted"
+		
 		self.TRM_gradient = max(gradient)
 		self.num_segments = len(segmentList)
 		self.TRM_idx = maxGradient_index
@@ -164,7 +165,7 @@ class thermocline(object):
 				features["TRM_num_segment"] = model.num_segments
 				features["TRM_idx"] = model.TRM_idx
 				features["doubleTRM"] = len(model.doubleTRM)
-				features["positiveTRM"] = len(model.positiveSeg)
+				features["positiveGradient"] = len(model.positiveSeg)
 
 				if saveModel:
 					self.models["segmentation"] = model.model

@@ -92,7 +92,7 @@ class summary(object):
 						for d in ["LEP","UHY","TRM","DCL"]:
 							res["expert_"+d] = expertNotes[d]
 
-						fname = "/Users/WenzhaoXu/Developer/Seabird/output/meta/"+mySeabird.site+"_"+str(year)+"_"+str(fileId_)
+						fname = "/Users/wenzhaoxu/Developer/Seabird/output/meta/"+mySeabird.site+"_"+str(year)+"_"+str(fileId_)
 						
 						pickle.dump(mySeabird,open(fname+".p","wb"))  # pickle the data
 						mySeabird.plot(filename = fname+".png") # plot the results
@@ -109,9 +109,9 @@ class summary(object):
 
 		# print len(results)
 		results = pd.DataFrame(results)
-		results.to_csv("/Users/WenzhaoXu/Developer/Seabird/output/detectedFeatures.csv")
-		pickle.dump(duplicateExpertNotes,open("/Users/WenzhaoXu/Developer/Seabird/output/duplicateExpertNotes.p","wb"))
-		pickle.dump(errorFileId,open("/Users/WenzhaoXu/Developer/Seabird/output/errorFileId.p","wb"))
+		results.to_csv("/Users/wenzhaoxu/Developer/Seabird/output/detectedFeatures.csv")
+		pickle.dump(duplicateExpertNotes,open("/Users/wenzhaoxu/Developer/Seabird/output/duplicateExpertNotes.p","wb"))
+		pickle.dump(errorFileId,open("/Users/wenzhaoxu/Developer/Seabird/output/errorFileId.p","wb"))
 
 		print duplicateExpertNotes
 		print errorFileId

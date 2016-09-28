@@ -163,6 +163,15 @@ def slope_SNR(x):
 	# print SNR,slope
 	return abs(slope), SNR, dataDiff
 
+
+def fit_error(x,xhat):
+	# using R^2, Coefficient of determination
+
+	x_mean = np.mean(x)
+	SStot = sum((x - x_mean)**2)
+	SSres = sum((x-xhat)**2)
+	return 1-SSres/SStot
+
 class peak(object):
 	def __init__(self,config,method = "gaussian"):
 		print "Using Peak3 models"
@@ -271,12 +280,15 @@ class peak(object):
 
 			# for left shape
 			leftShape = fitShape(leftData, "left",self.method)
-			leftShape_err = np.mean(abs(leftShape[0]-leftShape[2]))/(max(x)-min(x)) # approximation level
+			# leftShape_err = np.mean(abs(leftShape[0]-leftShape[2]))/(max(x)-min(x)) # approximation level
+			leftShape_err = fit_error(x = leftShape[2], xhat = leftShape[0])
+
 			# leftShape_diff = leftShape[2][-1]-min(leftShape[2]) # using fitted shape
 			
 			# for right shape
 			rightShape = fitShape(rightData,"right",self.method)
-			rightShape_err = np.mean(abs(rightShape[0]-rightShape[2]))/(max(x)-min(x))
+			# rightShape_err = np.mean(abs(rightShape[0]-rightShape[2]))/(max(x)-min(x))
+			rightShape_err = fit_error(x = rightShape[2], xhat = rightShape[0])
 			# rightShape_diff = rightShape[2][0]-min(rightShape[2])
 			
 			# get peak boundary
