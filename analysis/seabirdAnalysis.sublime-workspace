@@ -1,0 +1,349 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "analysis_TRM.R",
+			"settings":
+			{
+				"buffer_size": 833,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/LaTeXing/LaTeX.sublime-build",
+					""
+				],
+				[
+					"Packages/LaTeXing/LaTeX.sublime-build",
+					"Clean up Files"
+				]
+			],
+			[
+				"Packages/LaTeXing/LaTeX.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "send",
+		"selected_items":
+		[
+			[
+				"send",
+				"SendREPL: Choose REPL Program"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"remove ",
+				"Package Control: Remove Package"
+			],
+			[
+				"sync",
+				"LaTeXing: Synchronise Remote Data"
+			],
+			[
+				"install pa",
+				"Package Control: Install Package"
+			],
+			[
+				"latexing sync",
+				"LaTeXing: Synchronise Remote Data"
+			],
+			[
+				"isnta",
+				"Package Control: Install Package"
+			],
+			[
+				"install ",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 467.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '261dd1222b4693ce6d4f85f9c827ac06' + '6d5ab8ebdd020086947172a8a1356bb6'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/wenzhaoxu/Library/Application Support/Sublime Text 3/Packages/User/R-Box.sublime-settings",
+		"/Users/wenzhaoxu/Documents/Research/Paper/paper_Seabird/draft.pdf",
+		"/Users/wenzhaoxu/Developer/Seabird/SeabirdCode/seabird/models/model_peak3.py",
+		"/Users/wenzhaoxu/Developer/Seabird/SeabirdCode/main.py",
+		"/Users/wenzhaoxu/Developer/Seabird/SeabirdCode/config.json",
+		"/Users/wenzhaoxu/Developer/Seabird/SeabirdCode/seabird/tools/seabird_preprocessing.py",
+		"/Users/wenzhaoxu/Documents/Research/Paper/paper_Seabird/draft.synctex.gz",
+		"/Users/wenzhaoxu/Documents/Research/Paper/paper_Seabird/draft.tex",
+		"/Users/wenzhaoxu/Documents/test/untitled.tex",
+		"/Users/wenzhaoxu/Library/Mobile Documents/com~apple~CloudDocs/Research/Paper/paper_Seabird/draft.tex",
+		"/Users/wenzhaoxu/Library/Application Support/Sublime Text 3/Packages/User/LaTeXing.sublime-settings",
+		"/Users/wenzhaoxu/Library/Mobile Documents/com~apple~CloudDocs/Research/Paper/paper_Seabird/results.tex",
+		"/Users/wenzhaoxu/Library/Application Support/Sublime Text 3/Packages/LaTeXTools/README.markdown",
+		"/Users/wenzhaoxu/Library/Application Support/Sublime Text 3/Packages/LaTeXing/LaTeXing.sublime-settings",
+		"/Users/wenzhaoxu/Library/Mobile Documents/com~apple~CloudDocs/Research/Paper/paper_Seabird/results.aux",
+		"/Users/wenzhaoxu/Developer/Hypoxia/Hypoxia_Lake_Erie/ui.R",
+		"/Users/wenzhaoxu/Developer/Hypoxia/Hypoxia_Lake_Erie/src/plot.R",
+		"/Users/wenzhaoxu/Developer/Hypoxia/Hypoxia_Lake_Erie/server.R",
+		"/Users/wenzhaoxu/Developer/Hypoxia/Hypoxia_Lake_Erie/main.R",
+		"/Users/wenzhaoxu/Developer/Hypoxia/Hypoxia_Lake_Erie/config.R",
+		"/Users/wenzhaoxu/Developer/Seabird/SeabirdCode/summary_SQL.py",
+		"/Users/wenzhaoxu/Library/Mobile Documents/com~apple~CloudDocs/Personal/Activities/Career/Job_2016/resume_2016.tex",
+		"/Users/wenzhaoxu/Library/Mobile Documents/com~apple~CloudDocs/Research/Paper/DCL_GreatLakes/draft.tex",
+		"/Users/wenzhaoxu/Library/Application Support/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/Users/wenzhaoxu/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings"
+	],
+	"find":
+	{
+		"height": 29.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"remote",
+			"zotero",
+			"pdf",
+			"zotero",
+			"online",
+			"zotero",
+			"data analysis"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "analysis_TRM.R",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 833,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								831,
+								831
+							]
+						],
+						"settings":
+						{
+							"r_box_status": false,
+							"syntax": "Packages/R-Box/syntax/R Extended.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 29.0
+	},
+	"input":
+	{
+		"height": 37.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 204.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.latextools":
+	{
+		"height": 136.0
+	},
+	"pinned_build_system": "",
+	"project": "seabirdAnalysis.sublime-project",
+	"replace":
+	{
+		"height": 54.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"method",
+				"methodology.tex"
+			],
+			[
+				"resu",
+				"results.tex"
+			],
+			[
+				"draf",
+				"draft.tex"
+			],
+			[
+				"der",
+				"draft.synctex.gz"
+			],
+			[
+				"dr",
+				"draft.tex"
+			],
+			[
+				"draft",
+				"draft.tex"
+			],
+			[
+				"result",
+				"results.tex"
+			],
+			[
+				"res",
+				"results.aux"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 331.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

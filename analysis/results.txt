@@ -1,0 +1,338 @@
+[1] "Doing algorithm validation"
+[1] "DCL"
+# A tibble: 5 × 5
+   lake totalN only_pred only_expert allExist
+  <chr>  <int>     <int>       <int>    <int>
+1    ER    352       132          16       19
+2    HU    288       148           3      104
+3    MI    336       175           0      108
+4    ON    208        79           4       70
+5    SU    368       166           4      179
+[1] "TRM"
+# A tibble: 5 × 5
+   lake totalN only_pred only_expert allExist
+  <chr>  <int>     <int>       <int>    <int>
+1    ER    352       195           0       81
+2    HU    288       181           0       93
+3    MI    336       248           0       76
+4    ON    208       141           0       50
+5    SU    368       239           4      108
+[1] "UHY"
+# A tibble: 5 × 5
+   lake totalN only_pred only_expert allExist
+  <chr>  <int>     <int>       <int>    <int>
+1    ER    352       184           4       49
+2    HU    288       182           0       87
+3    MI    336       262           0       53
+4    ON    208       129           0       44
+5    SU    368       263           4       80
+[1] "LEP"
+# A tibble: 5 × 5
+   lake totalN only_pred only_expert allExist
+  <chr>  <int>     <int>       <int>    <int>
+1    ER    352       131           4      145
+2    HU    288       157           0      117
+3    MI    336       235           0       89
+4    ON    208       125           0       66
+5    SU    368       206           4      141
+[1] "****************"
+[1] "****************"
+[1] "Doing DCL algorithm"
+[1] "****************"
+[1] "*******"
+[1] "ER"
+[1] "*******"
+[1] "good fit ratio 0.173295454545455"
+ DCL_upperSize    DCL_bottomSize   DCL_sizeRatio     
+ Min.   :-1.750   Min.   : 0.000   Min.   :-1.00000  
+ 1st Qu.: 1.500   1st Qu.: 2.000   1st Qu.:-0.37905  
+ Median : 2.750   Median : 3.250   Median :-0.00847  
+ Mean   : 4.109   Mean   : 4.975   Mean   :-0.01937  
+ 3rd Qu.: 5.375   3rd Qu.: 6.500   3rd Qu.: 0.32692  
+ Max.   :32.500   Max.   :22.250   Max.   : 1.33333  
+ NA's   :201      NA's   :201      NA's   :202       
+[1] "*******"
+[1] "HU"
+[1] "*******"
+[1] "good fit ratio 0.427083333333333"
+ DCL_upperSize   DCL_bottomSize  DCL_sizeRatio     
+ Min.   : 1.00   Min.   : 0.00   Min.   :-0.77315  
+ 1st Qu.:10.50   1st Qu.: 7.00   1st Qu.:-0.17830  
+ Median :15.25   Median :14.00   Median : 0.05468  
+ Mean   :16.68   Mean   :16.09   Mean   : 0.07817  
+ 3rd Qu.:21.56   3rd Qu.:23.25   3rd Qu.: 0.29726  
+ Max.   :47.00   Max.   :95.75   Max.   : 1.00000  
+ NA's   :36      NA's   :36      NA's   :36        
+[1] "*******"
+[1] "MI"
+[1] "*******"
+[1] "good fit ratio 0.419642857142857"
+ DCL_upperSize    DCL_bottomSize  DCL_sizeRatio     
+ Min.   : 0.250   Min.   : 0.50   Min.   :-0.98261  
+ 1st Qu.: 7.625   1st Qu.:10.50   1st Qu.:-0.40298  
+ Median :12.500   Median :17.75   Median :-0.15556  
+ Mean   :14.023   Mean   :19.71   Mean   :-0.14163  
+ 3rd Qu.:19.375   3rd Qu.:25.00   3rd Qu.: 0.09726  
+ Max.   :46.750   Max.   :72.00   Max.   : 0.87097  
+ NA's   :53       NA's   :53      NA's   :53        
+[1] "*******"
+[1] "ON"
+[1] "*******"
+[1] "good fit ratio 0.4375"
+ DCL_upperSize    DCL_bottomSize  DCL_sizeRatio    
+ Min.   :-9.750   Min.   : 0.75   Min.   :-1.0000  
+ 1st Qu.: 4.750   1st Qu.: 9.25   1st Qu.:-0.5507  
+ Median : 7.000   Median :14.50   Median :-0.3469  
+ Mean   : 7.409   Mean   :15.70   Mean   : 0.1914  
+ 3rd Qu.:10.000   3rd Qu.:20.25   3rd Qu.:-0.1026  
+ Max.   :21.500   Max.   :46.00   Max.   :77.0000  
+ NA's   :59       NA's   :59      NA's   :59       
+[1] "*******"
+[1] "SU"
+[1] "*******"
+[1] "good fit ratio 0.736413043478261"
+ DCL_upperSize   DCL_bottomSize  DCL_sizeRatio     
+ Min.   : 0.25   Min.   : 1.25   Min.   :-0.99038  
+ 1st Qu.:13.75   1st Qu.:21.50   1st Qu.:-0.42667  
+ Median :20.00   Median :29.50   Median :-0.20996  
+ Mean   :19.75   Mean   :30.72   Mean   :-0.19544  
+ 3rd Qu.:25.75   3rd Qu.:38.75   3rd Qu.: 0.02439  
+ Max.   :50.25   Max.   :79.50   Max.   : 0.85586  
+ NA's   :23      NA's   :23      NA's   :23        
+[1] "all data"
+ DCL_upperSize   DCL_bottomSize  DCL_sizeRatio     
+ Min.   :-9.75   Min.   : 1.25   Min.   :-0.92481  
+ 1st Qu.: 9.50   1st Qu.:14.25   1st Qu.:-0.37500  
+ Median :16.00   Median :22.25   Median :-0.16239  
+ Mean   :16.81   Mean   :24.23   Mean   :-0.03572  
+ 3rd Qu.:23.50   3rd Qu.:32.38   3rd Qu.: 0.05985  
+ Max.   :48.00   Max.   :79.50   Max.   :77.00000  
+   year site DCL_upperSize DCL_bottomSize DCL_depth DCL_upperDepth_fit DCL_bottomDepth_fit fileId
+1  2011 ON41         -9.75           9.50     16.50              26.25               26.00   1741
+2  2000 HU09         32.75           3.00     43.00              10.25               46.00    437
+3  2003 HU27         21.25           3.25     34.75              13.50               38.00    776
+4  2010 ER37         14.25           2.25     18.50               4.25               20.75   1563
+5  2011 HU06         24.50           4.00     36.00              11.50               40.00   1690
+6  2004 HU27         24.50           4.00     37.75              13.25               41.75    892
+7  2008 ER78         12.00           2.25     16.25               4.25               18.50   1340
+8  2010 HU95         19.00           3.75     44.25              25.25               48.00   1596
+9  2003 ER36         11.00           2.25     18.25               7.25               20.50    755
+10 2008 SU17         32.25           7.75     36.50               4.25               44.25   1433
+[1] "****************"
+[1] "Doing TRM analysis"
+[1] "*******"
+[1] "ER"
+[1] "*******"
+ TRM_num_segment TRM2UHY_segNum 
+ Min.   :3.000   Min.   :0.000  
+ 1st Qu.:3.000   1st Qu.:1.000  
+ Median :4.000   Median :2.000  
+ Mean   :4.359   Mean   :1.571  
+ 3rd Qu.:5.000   3rd Qu.:2.000  
+ Max.   :9.000   Max.   :5.000  
+ NA's   :23      NA's   :23     
+  site year doubleTRM
+1 ER36 2005         1
+   site year positiveGradient
+1  ER15 2007                1
+2  ER30 2013                1
+3  ER42 2004                1
+4  ER43 2004                1
+5  ER43 2010                1
+6  ER58 1998                1
+7  ER59 2008                1
+8  ER59 2010                1
+9  ER59 2013                1
+10 ER60 2002                1
+11 ER61 2001                1
+12 ER61 2007                1
+13 ER63 2011                1
+14 ER78 2012                1
+15 ER91 2009                1
+16 ER93 1998                1
+17 ER95 2008                1
+[1] "*******"
+[1] "HU"
+[1] "*******"
+ TRM_num_segment  TRM2UHY_segNum 
+ Min.   : 3.000   Min.   :0.000  
+ 1st Qu.: 5.000   1st Qu.:3.000  
+ Median : 6.000   Median :3.000  
+ Mean   : 6.101   Mean   :3.227  
+ 3rd Qu.: 7.000   3rd Qu.:4.000  
+ Max.   :30.000   Max.   :6.000  
+ NA's   :11       NA's   :11     
+  site year doubleTRM
+1 HU27 2001         1
+2 HU37 2006         1
+3 HU48 2001         1
+4 HU54 2005         1
+5 HU61 2010         1
+6 HU96 2004         1
+   site year positiveGradient
+1  HU61 2010               11
+2  HU15 2004                1
+3  HU27 2003                1
+4  HU37 2011                1
+5  HU38 2006                1
+6  HU48 2010                1
+7  HU48 2012                1
+8  HU53 2009                1
+9  HU98 1998                1
+10 HU98 2001                1
+[1] "*******"
+[1] "MI"
+[1] "*******"
+ TRM_num_segment TRM2UHY_segNum 
+ Min.   :3.000   Min.   :0.000  
+ 1st Qu.:5.000   1st Qu.:3.000  
+ Median :6.000   Median :3.000  
+ Mean   :6.096   Mean   :3.302  
+ 3rd Qu.:7.000   3rd Qu.:4.000  
+ Max.   :9.000   Max.   :6.000  
+ NA's   :12      NA's   :12     
+  site year doubleTRM
+1 MI42 2007         1
+2 MI46 2000         1
+3 MI47 2008         1
+   site year positiveGradient
+1  MI17 2009                1
+2  MI30 2001                1
+3  MI30 2013                1
+4  MI32 2005                1
+5  MI32 2008                1
+6  MI40 2003                1
+7  MI42 2007                1
+8  MI49 2007                1
+9  MI50 2009                1
+10 MI52 2005                1
+11 MI53 2009                1
+[1] "*******"
+[1] "ON"
+[1] "*******"
+ TRM_num_segment  TRM2UHY_segNum 
+ Min.   : 3.000   Min.   :0.000  
+ 1st Qu.: 5.000   1st Qu.:3.000  
+ Median : 6.000   Median :3.000  
+ Mean   : 5.888   Mean   :3.219  
+ 3rd Qu.: 7.000   3rd Qu.:4.000  
+ Max.   :12.000   Max.   :6.000  
+ NA's   :12       NA's   :12     
+[1] site      year      doubleTRM
+<0 rows> (or 0-length row.names)
+   site year positiveGradient
+1  ON33 2012                3
+2  ON12 2007                1
+3  ON25 2010                1
+4  ON33 2013                1
+5  ON41 2005                1
+6  ON41 2006                1
+7  ON65 2006                1
+8  ON65 2013                1
+9  ON67 2007                1
+10 ON69 2010                1
+[1] "*******"
+[1] "SU"
+[1] "*******"
+ TRM_num_segment TRM2UHY_segNum 
+ Min.   :3.000   Min.   :0.000  
+ 1st Qu.:5.000   1st Qu.:2.000  
+ Median :5.000   Median :3.000  
+ Mean   :5.369   Mean   :2.969  
+ 3rd Qu.:6.000   3rd Qu.:3.000  
+ Max.   :9.000   Max.   :7.000  
+ NA's   :10      NA's   :10     
+  site year doubleTRM
+1 SU03 2011         1
+2 SU04 2008         1
+3 SU16 2003         1
+  site year positiveGradient
+1 SU09 1998                2
+2 SU06 2001                1
+3 SU10 2007                1
+4 SU12 1999                1
+5 SU16 2008                1
+6 SU18 2003                1
+7 SU20 2010                1
+8 SU22 2008                1
+[1] "All data"
+ TRM_num_segment  TRM2UHY_segNum 
+ Min.   : 3.000   Min.   :0.000  
+ 1st Qu.: 5.000   1st Qu.:2.000  
+ Median : 6.000   Median :3.000  
+ Mean   : 5.509   Mean   :2.813  
+ 3rd Qu.: 6.000   3rd Qu.:4.000  
+ Max.   :30.000   Max.   :7.000  
+ NA's   :68       NA's   :68     
+   site year doubleTRM
+1  ER36 2005         1
+2  HU27 2001         1
+3  HU37 2006         1
+4  HU48 2001         1
+5  HU54 2005         1
+6  HU61 2010         1
+7  HU96 2004         1
+8  MI42 2007         1
+9  MI46 2000         1
+10 MI47 2008         1
+11 SU03 2011         1
+12 SU04 2008         1
+13 SU16 2003         1
+   site year positiveGradient
+1  HU61 2010               11
+2  ON33 2012                3
+3  SU09 1998                2
+4  ER15 2007                1
+5  ER30 2013                1
+6  ER42 2004                1
+7  ER43 2004                1
+8  ER43 2010                1
+9  ER58 1998                1
+10 ER59 2008                1
+11 ER59 2010                1
+12 ER59 2013                1
+13 ER60 2002                1
+14 ER61 2001                1
+15 ER61 2007                1
+16 ER63 2011                1
+17 ER78 2012                1
+18 ER91 2009                1
+19 ER93 1998                1
+20 ER95 2008                1
+21 HU15 2004                1
+22 HU27 2003                1
+23 HU37 2011                1
+24 HU38 2006                1
+25 HU48 2010                1
+26 HU48 2012                1
+27 HU53 2009                1
+28 HU98 1998                1
+29 HU98 2001                1
+30 MI17 2009                1
+31 MI30 2001                1
+32 MI30 2013                1
+33 MI32 2005                1
+34 MI32 2008                1
+35 MI40 2003                1
+36 MI42 2007                1
+37 MI49 2007                1
+38 MI50 2009                1
+39 MI52 2005                1
+40 MI53 2009                1
+41 ON12 2007                1
+42 ON25 2010                1
+43 ON33 2013                1
+44 ON41 2005                1
+45 ON41 2006                1
+46 ON65 2006                1
+47 ON65 2013                1
+48 ON67 2007                1
+49 ON69 2010                1
+50 SU06 2001                1
+51 SU10 2007                1
+52 SU12 1999                1
+53 SU16 2008                1
+54 SU18 2003                1
+55 SU20 2010                1
+56 SU22 2008                1
+[1] "****************"

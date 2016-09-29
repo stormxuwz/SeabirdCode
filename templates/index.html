@@ -4,41 +4,51 @@
     <meta charset='utf-8' />
     <meta http-equiv='content-type' content='text/html; charset=utf-8' />
 
-    <title>Embed Demo</title>
+    <title>Seabird CTD Features Automated Detection</title>
 
     {{ js_resources|indent(4)|safe }}
 
     {{ css_resources|indent(4)|safe }}
 
     {{ plot_script|indent(4)|safe }}
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+</style>
 
   </head>
   <body>
-    <!-- A simple form for changing the graph -->
-    <p> Please upload your SeaBird CNV file </p>
+    
+    <p>  This is a good example to upload the Seabird CNV files. 
+      (1) Select the files and click the button </p>
+
     <form name="filebutton" method=post enctype=multipart/form-data>
-        <!-- Color: -->
-        <!-- <select name="color"> -->
-            <!-- <option value="Red">Red</option> -->
-            <!-- <option value="Green">Green</option> -->
-            <!-- <option value="Blue">Blue</option> -->
-            <!-- <option selected="selected" value="Black">Black</option> -->
+        <div class="form-group">
+            <p class="help-block">Upload the CNV file</p>
+            <input type="file" name="file">
             
-        <!-- </select> -->
-        <!-- <br> -->
-        <!-- From: -->
-        <!-- <input type="text" name="_from" value="{{ _from }}"> -->
-        <!-- <br> -->
-        <!-- To: -->
-        <!-- <input type="text" name="to" value="{{ to }}"> -->
-        <!-- <br> -->
-        <input type="file" name="file">
-        <input type="submit" value = Upload>
+        </div>
+        <input class="btn btn-default" type="submit" value = "Identify/Clean">
     </form>
-    <p>TRM: {{depth_TRM}}</p>
-    <p>LEP: {{depth_LEP}}</p>
-    <p>UHY: {{depth_UHY}}</p>
-    <p>DCL: {{depth_DCL}} </p>
+    <br>
+    
+    <div class="row">
+      <div class="col-xs-2">
+        <p>TRM (<font color="red" font- weight ="bold">---</font>): {{depth_TRM}} m</p>
+        <p>LEP (<font color="blue" font- weight ="bold">---</font>): {{depth_LEP}} m</p>
+        <p>UHY (<font color="black" font- weight ="bold">---</font>):{{depth_UHY}} m</p>
+      </div>
+
+      <div class = "col-xs-2">
+      <p>DCL (<font color="green" font- weight ="bold">---</font>): {{depth_DCL}} m</p>
+        <p>DCL Conc: {{conc_DCL}} mg/L</p>
+        <p>DCL Propo: {{Prop_DCL}} </p>
+    
+      </div>    
+    </div>
+
+    
+    <br>
    
     {{ plot_div|indent(4)|safe }}
    

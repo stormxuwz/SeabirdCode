@@ -232,7 +232,6 @@ class peak(object):
 			rightShape_diff = rightData[0]-min(rightData)
 			
 			# recheck left boundary
-
 			if i ==1:
 				maxSlope = 0
 				leftDataRange = max(leftData)-min(leftData)
@@ -245,7 +244,7 @@ class peak(object):
 					# print slope_tmp
 					maxSlope = max(maxSlope,slope_tmp)
 					# maxSlope = max(maxSlope,slope)
-					if slope < self.config["slope"]*maxSlope and SNR > self.config["SNR"] and dataDiff < leftDataRange *0.1:
+					if slope < self.config["slope"]*maxSlope and SNR > self.config["SNR"] and dataDiff < leftDataRange *0.2:
 						leftBoundary = middleNode - j
 						# print "left",leftBoundary
 						print "left",slope,SNR
@@ -261,32 +260,22 @@ class peak(object):
 						next
 					slope,SNR,dataDiff = slope_SNR(rightData[j:])
 					slope_tmp,SNR_tmp,tmp = slope_SNR(rightData[(j-3):(j+3)])
-					# print slope_tmp
+					
 					maxSlope = max(maxSlope,slope_tmp)
 					# maxSlope = max(maxSlope,slope)
 					#print "cond1",slope < self.config["slope"]*maxSlope
 					#print "cond2",SNR > self.config["SNR"]
-					#print "cond3",dataDiff < rightDataRange*0.1
+					#print "cond3",dataDiff < rightDataRange*0.1  # why we need cond3?
 					if slope < self.config["slope"]*maxSlope and SNR > self.config["SNR"] and dataDiff < rightDataRange*0.2: # 0.01 is a parameter, 0.02 is a parameter
 						rightBoundary = middleNode+j
 						#print rightData[j:]
 						print "right",slope,maxSlope,SNR
 						break
-			# print leftBoundary,rightBoundary
-
+			
+			
 			boundaries.append([leftBoundary,rawPeak[i],rightBoundary])
-
-			# check right data					
-
-			# shape_fit.append({"left_index":rawPeak[i]-len(leftShape[1])+leftShape[1]+1,"left_data":leftShape[0],
-			#                   "right_index":rightShape[1]+rawPeak[i],"right_data":rightShape[0],
-			#                   "left_std":leftShape[3][1],"right_std":rightShape[3][1],
-			#                   "left_corr":leftShape_corr,"right_corr":rightShape_corr})
-
 			shape_height.append(min(rightShape_diff,leftShape_diff))  # take the minimum differences as the heights
-			# print "left,right corr",leftShape_corr,rightShape_corr
-			# print "shape_height",shape_height
-		# print "boundaryies", boundaries
+
 		return shape_fit,shape_height,boundaries
 
 	

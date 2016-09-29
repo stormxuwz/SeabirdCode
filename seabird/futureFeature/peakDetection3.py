@@ -158,7 +158,7 @@ class peak(object):
 			# print rightBoundary
 			leftShape = fitShape(leftData, "left",self.method)
 			leftShape_diff = leftShape[2][-1]-min(leftShape[2])
-			leftShape_corr = np.mean(abs(leftShape[0]-leftShape[2]))/(max(x)-min(x))
+			leftShape_corr = np.mean(abs(leftShape[0]-leftShape[2]))/(max(x)-min(x))  # the fit error term
 
 			if leftShape_corr>0.08:
 				# the shape is not fit very well

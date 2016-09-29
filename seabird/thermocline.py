@@ -20,13 +20,45 @@ class thermocline_base(object):
 		raise ValueError("not implementated")
 
 class thermocline_segmentation(thermocline_base):
+	# Class to detect TRM using time series segmentation methods
 	def __init__(self,config):
 		super(thermocline_segmentation, self).__init__(config)
 		self.TRM_gradient = None
 		self.num_segments = None
 		self.num_belowTRM = None
 		self.model = None
-	
+		self.depthInterval = self.config["Preprocessing"]["Interval"]
+		self.positiveSeg = []
+		self.doubleTRM = []
+
+	def getGradientFromSegment(self,seg):
+		return (seg[0][0]-seg[0][1])/self.depthInterval
+
+	def detectDoubleTRM(self,segmentList):
+		# detect double thermocline from the segmentList
+		for i in range(1,len(segmentList)-1):
+			segGradient = self.getGradientFromSegment(segmentList[i])
+			previousSegGradient = self.getGradientFromSegment(segmentList[i-1])
+			nextSegGradient = self.getGradientFromSegment(segmentList[i+1])
+
+			if abs(segGradient) < self.config["Algorithm"]["segment"]["stable_gradient"] and \
+				previousSegGradient > self.config["Algorithm"]["segment"]["minTRM_gradient"] and \
+				nextSegGradient > self.config["Algorithm"]["segment"]["minTRM_gradient"]:
+
+
+				self.doubleTRM.append(i)
+
+		if len(self.doubleTRM)>0:
+			print "detected double thermocline", self.doubleTRM
+
+	def detectPositiveGradient(self,segmentList):
+		# detect positive gradient, since positive gradient is abnormal
+		self.positiveSeg = []
+		for i, seg in enumerate(segmentList):
+			gradient = self.getGradientFromSegment(seg)
+			if gradient < -1*self.config["Algorithm"]["segment"]["stable_gradient"]:
+				self.positiveSeg.append(i)
+
 	def detect(self,data,saveModel = False):
 		model = bottomUp(max_error = self.config["Algorithm"]["segment"]["max_error"])
 		model.fit_predict(data.Temperature)
@@ -35,12 +67,13 @@ class thermocline_segmentation(thermocline_base):
 		depthInterval = data.Depth[1]-data.Depth[0]
 		
 		# segmentList is a list of [fitted line,point index]
-		gradient = [(seg[0][0]-seg[0][1])/depthInterval for seg in model.segmentList]
+		gradient = [self.getGradientFromSegment(seg) for seg in model.segmentList]
 
 		maxGradient_index = np.argmax(gradient)
 
 
-		if gradient[maxGradient_index]>1/4: # TRM exist
+		if gradient[maxGradient_index]>self.config["Algorithm"]["segment"]["minTRM_gradient"]: 
+			# TRM gradient is above the maximum gradient
 
 			# Detect TRM
 			self.TRM = data.Depth[int(np.mean(segmentList[maxGradient_index][1]))]
@@ -49,8 +82,9 @@ class thermocline_segmentation(thermocline_base):
 			epilimnion_seg = model.segmentList[0]
 			LEP_index = epilimnion_seg[1][-1]
 			
-			if maxGradient_index == 0: # if maximum gradient is the first segment 
-				LEP_index = epilimnion_seg[1][0]
+			if maxGradient_index == 0: # if maximum gradient is the first segment, change to no thermocline is detected
+				# LEP_index = epilimnion_seg[1][0]
+				LEP_index = None
 			elif abs(gradient[1]) < self.config["Algorithm"]["segment"]["stable_gradient"]: # if the first seg is anomaly and second seg is stable
 				LEP_index = model.segmentList[1][1][-1]
 		
@@ -75,9 +109,13 @@ class thermocline_segmentation(thermocline_base):
 				self.UHY = data.Depth[UHY_index]
 		else:
 			print "No TRM deteted"
+		
 		self.TRM_gradient = max(gradient)
 		self.num_segments = len(segmentList)
 		self.TRM_idx = maxGradient_index
+		
+		self.detectDoubleTRM(segmentList)
+		self.detectPositiveGradient(segmentList)
 
 		if saveModel:
 			self.model = model
@@ -90,6 +128,7 @@ class thermocline_HMM(thermocline_base):
 		self.TRM = signal_data.Depth[res[0]]
 		self.LEP = signal_data.Depth[res[1]]
 		self.UHY = signal_data.Depth[res[2]]
+
 
 class thermocline_threshold(thermocline_base):
 	def detect(self,data):
@@ -126,14 +165,15 @@ class thermocline(object):
 				features["UHY_segment"] = model.UHY
 				features["TRM_num_segment"] = model.num_segments
 				features["TRM_idx"] = model.TRM_idx
+				features["doubleTRM"] = len(model.doubleTRM)
+				features["positiveGradient"] = len(model.positiveSeg)
+
 				if saveModel:
 					self.models["segmentation"] = model.model
+
 			except Exception,err:
 				print "segmentation Fail"
 				print(traceback.format_exc())
-
-			
-
 
 		if "HMM" in methods:
 			try:

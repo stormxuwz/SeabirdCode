@@ -5,10 +5,12 @@ from seabird.seabird_class import seabird
 import traceback
 import cPickle as pickle
 import sys
+
+
 class summary(object):
-	def __init__(self,engine,config):
+	def __init__(self,engine,config): 
 		self.engine = engine
-		self.allYears = range(1996,2014)
+		self.allYears = range(1996,2014)  # [1996, 2013]
 		self.allStations = self.getAllStations()
 		print self.allStations
 		self.config = config
@@ -24,7 +26,7 @@ class summary(object):
 	def findEntry(self,station,year):
 		subStation = station[:4]
 		sql_meta = '''select systemUploadTime,datcnv_date,fileId,stationInfered, year(systemUpLoadTime) as Year from summer_meta where stationInfered = '%s' And year(systemUpLoadTime) = %d And badProfile = 0''' %(subStation,year)
-		sql_expertnotes = '''select `index`,SAMPLING_DATE,STATION,YEAR,DepthCode,SMPL_DEPTH as Depth from expertNotes where STATION = '%s' And YEAR = %d AND DepthCode in ('LEP','TRM','UHY','DCL') AND MONTH(SAMPLING_DATE) IN (6,7,8,9,10); ''' %(station,year)
+		sql_expertnotes = '''select `index`,SAMPLING_DATE,STATION,YEAR,DepthCode,SMPL_DEPTH as Depth from expertNotes where STATION = '%s' And YEAR = %d AND DepthCode in ('LEP','TRM','UHY','DCL'); ''' %(station,year) #  AND MONTH(SAMPLING_DATE) IN (6,7,8,9,10)
 		meta_res = self.sqlQuery(sql_meta)
 		expertnotes_res = self.sqlQuery(sql_expertnotes)
 		return meta_res,expertnotes_res
@@ -42,6 +44,7 @@ class summary(object):
 		return allTables
 
 	def filterDup(self,meta_res):
+		# Find the duplicate profiles
 		maxDepth = []
 		for fileId_ in meta_res.fileId:
 			sql_data = "Select * from summer_data where fileId = %d Order By 'index' ASC" %(fileId_)
@@ -52,6 +55,7 @@ class summary(object):
 		return meta_res.fileId[whichMax]
 
 	def detect(self):
+		# Detect the features
 		duplicateExpertNotes = []
 		errorFileId = []
 		results = []
@@ -88,7 +92,7 @@ class summary(object):
 						for d in ["LEP","UHY","TRM","DCL"]:
 							res["expert_"+d] = expertNotes[d]
 
-						fname = "/Users/WenzhaoXu/Developer/Seabird/output/meta/"+mySeabird.site+"_"+str(year)+"_"+str(fileId_)
+						fname = "/Users/wenzhaoxu/Developer/Seabird/output/meta/"+mySeabird.site+"_"+str(year)+"_"+str(fileId_)
 						
 						pickle.dump(mySeabird,open(fname+".p","wb"))  # pickle the data
 						mySeabird.plot(filename = fname+".png") # plot the results
@@ -99,23 +103,22 @@ class summary(object):
 						traceback.print_exc()
 				
 				else:
-					res = {"site":station,"year":year}
+					res = {"site":station,"year":year,"fileId":None}
 
 				results.append(res)
 
 		# print len(results)
 		results = pd.DataFrame(results)
-		results.to_csv("/Users/WenzhaoXu/Developer/Seabird/output/detectedFeatures.csv")
-		pickle.dump(duplicateExpertNotes,open("/Users/WenzhaoXu/Developer/Seabird/output/duplicateExpertNotes.p","wb"))
-		pickle.dump(errorFileId,open("/Users/WenzhaoXu/Developer/Seabird/output/errorFileId.p","wb"))
+		results.to_csv("/Users/wenzhaoxu/Developer/Seabird/output/detectedFeatures.csv")
+		pickle.dump(duplicateExpertNotes,open("/Users/wenzhaoxu/Developer/Seabird/output/duplicateExpertNotes.p","wb"))
+		pickle.dump(errorFileId,open("/Users/wenzhaoxu/Developer/Seabird/output/errorFileId.p","wb"))
 
 		print duplicateExpertNotes
 		print errorFileId
 
 
-
 def extractWaterChemistryData(featureFile):
-
+	# Extract Water chemistry data
 	feature = pd.read_csv(featureFile)
 
 	varList = ["DO","Temperature","Specific_Conductivity","Fluorescence","Beam_Attenuation"]
@@ -125,16 +128,20 @@ def extractWaterChemistryData(featureFile):
 	metaArray = []
 
 	for i in range(feature.shape[0]):
-		site = feature.site[i] 
+		site = feature.site[i]
 		year = feature.year[i]
+		fid = feature.fileId[i]
+		metaArray.append([fid,site,year])
+		print fid
+
+		if fid  is None:
+			continue
+
 		LEP = feature.LEP_segment[i]
 		UHY = feature.UHY_segment[i]
-		fid = feature.fileId[i]
-		print fid
-		metaArray.append([fid,site,year])
 		
 		try:
-			mySeabird = pickle.load(open("/Users/WenzhaoXu/Developer/Seabird/output/meta/%s_%d_%d.p" %(site,int(year),int(fid)),"rb"))
+			mySeabird = pickle.load(open("/Users/wenzhaoxu/Developer/Seabird/output/meta/%s_%d_%d.p" %(site,int(year),int(fid)),"rb"))
 			data = mySeabird.cleanData
 			# print data.columns.values
 			for var in varList:
@@ -171,9 +178,10 @@ if __name__ == '__main__':
 	import json
 	engine = create_engine('mysql+mysqldb://root:XuWenzhaO@localhost/Seabird')
 	config = json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/config.json'))
-	#GLSummary = summary(engine,config)
-	#GLSummary.detect()
+	GLSummary = summary(engine,config)
+	GLSummary.detect()
 	extractWaterChemistryData("/Users/WenzhaoXu/Developer/Seabird/output/detectedFeatures.csv")
+	
 	# print GLSummary.allStations.STATION
 	# allTables = GLSummary.writeAllAlignments()
 	# allTables.to_csv("/Users/WenzhaoXu/Desktop/test2.csv")

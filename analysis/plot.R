@@ -3,6 +3,7 @@ library(ggplot2)
 library(dplyr)
 
 plot_gly <- function(feature,variable, reverse = TRUE){
+	# plot the gly plots
 	feature <- arrange(feature,year)
 	feature[,variable] <- ifelse(feature[,variable]<0,NA,feature[,variable])
 	
@@ -10,19 +11,22 @@ plot_gly <- function(feature,variable, reverse = TRUE){
 		feature[,variable] <- -feature[,variable]
 	}
 	temp.gly <- glyphs(feature, "Long", "year", "Lat", variable , height=0.25,width = 0.5)
-	ggplot(temp.gly, ggplot2::aes(gx, gy, group = gid)) +add_ref_lines(temp.gly, color = "grey90") +add_ref_boxes(temp.gly, color = "grey90") +geom_path() + geom_point()+theme_bw() + labs(x = "", y = "")
+	
+	pdf(sprintf("../../output/%s_glymaps.pdf",variable),height = 5, width = 8)
+	print(ggplot(temp.gly, ggplot2::aes(gx, gy, group = gid)) +add_ref_lines(temp.gly, color = "grey90") +add_ref_boxes(temp.gly, color = "grey90") +geom_path() + geom_point(size = 0.8)+theme_bw() + labs(x = "lon", y = "lat"))
+	dev.off()
+	
 }
 
-#plot_gly(feature,"DCL_depth")
-#plot_gly(feature,"DCL_magnitude")
-#plot_gly(feature,"THM_segment")
 
 visGeoLocations <- function(locations){
+	# plot the location of each sensor
   leaflet(data = locations) %>% addTiles() %>% addMarkers(~Long, ~Lat, popup = ~as.character(Station))
 }
 
 
 plotSPData <- function(data,varName){
+	# plot the varName data spatially, with color as the value
   map <- ggmap(get_map(bbox,source="stamen"))
   data$var <- data[,varName]
   data <- subset(data,var>0)
@@ -44,8 +48,23 @@ plotSPData <- function(data,varName){
 }
 
 
-boxplot <- function(feature,varName){
-	ggplot(subset(totalSU,DCL_depth>0))+geom_boxplot(aes(x=as.factor(year),y=DCL_depth))+geom_text(aes(x=factor(year),y=DCL_depth,label = year))
+labeledBoxplot_ggplot <- function(df,diffVar,label = TRUE,outlier=TRUE){
+	# boxplot
+	if(outlier){
+		p <- qplot(lake,df[,diffVar],data = df)+geom_boxplot()
+	}else{
+		p <- qplot(lake,df[,diffVar],data = df)+geom_boxplot(outlier.shape = NA)+scale_y_continuous(limits = quantile(df[,diffVar], c(0.1, 0.9),na.rm = TRUE))
+	}
+	
+	if(label){
+		p <- p+	geom_text(aes(lake,df[,diffVar],label = paste(site,year)),data = df)
+	}
+	
+	return(p)
+}
+
+boxplot_base <- function(df,diffVar, outlier = TRUE){
+	boxplot(TRM_diff~lake,data = subset(df, is.na(TRM_diff)<1),outline = FALSE)
 }
 
 

@@ -10,7 +10,7 @@ if __name__ == '__main__':
 	import json
 	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/config.json'))
 	mySeabird = seabird(config = config)
-	mySeabird.loadData(fileId = 1632)
+	mySeabird.loadData(fileId = 1191)
 	print mySeabird.site
 	mySeabird.preprocessing()
 	
@@ -44,12 +44,18 @@ if __name__ == '__main__':
 
 	plt.figure()
 	plt.plot(Fluorescence,-depth)
-	# plt.axhline(-mySeabird.features["DCL_depth"])
-	# plt.axhline(-mySeabird.features["DCL_upperDepth"])
-	# plt.axhline(-mySeabird.features["DCL_bottomDepth"])
-	plt.show()
+	plt.axhline(-mySeabird.features["DCL_depth"])
+	plt.axhline(-mySeabird.features["DCL_upperDepth_gradient"])
+	plt.axhline(-mySeabird.features["DCL_bottomDepth_gradient"])
 
-	# plt.show()
+	plt.axhline(-mySeabird.features["DCL_upperDepth_fit"],c = "g")
+	plt.axhline(-mySeabird.features["DCL_bottomDepth_fit"],c = "g")
+
+
+	# plt.figure()
+	mySeabird.plot()
+	
+	plt.show()
 	# myPeak = peak(config)
 	# myPeak.detect(temperature)
 
