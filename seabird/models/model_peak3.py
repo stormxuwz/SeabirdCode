@@ -11,7 +11,7 @@ Peak detection algorithm, contains both gradient analysis results and shape fitt
 
 '''
 
-def gauss_function(x, a, x0, sigma,y0):
+def gauss_function(x, a, x0, sigma2,y0):
 	'''
 	x: x
 	a: magnitude
@@ -19,7 +19,7 @@ def gauss_function(x, a, x0, sigma,y0):
 	sigma: normalize factor/standard deviation
 	y0: background level
 	'''
-	return a*np.exp(-(x-x0)**2/(2*sigma**2))+y0
+	return a*np.exp(-(x-x0)**2/(2*sigma2))+y0
 
 def fitGaussian(x,y,x_mean,weight= None):
 	# Fit a gaussian functions
@@ -303,14 +303,16 @@ class peak(object):
 					# print "left shape not fit"
 				leftBoundary_gradient = middleNode - getBoundaryPoints(leftData, self.config["slope"], self.config["SNR"], self.config["stableDiff"])
 				# else:
-				leftBoundary_fit = max(1,middleNode - int(np.ceil(3*leftShape[3][1])))  # use three sigma as the peak half width
+				leftBoundary_fit = max(1,middleNode - int(np.ceil(3*np.sqrt(leftShape[3][1]))))  # use three sigma as the peak half width
 
+				# print leftBoundary_fit,middleNode,leftShape[3][1],leftShape[0],leftShape[2]
+			
 			if i == len(peaks) -2: # get the right boundary of the last peak
 				# if rightShape_err > self.config["peakFitTol"]: # If the Gaussian shape doesn't fit well
 					# print "right shape not fit"
 				rightBoundary_gradient = middleNode + getBoundaryPoints(rightData, self.config["slope"], self.config["SNR"], self.config["stableDiff"],"down")
 				# else:
-				rightBoundary_fit = min(len(x)-2,middleNode + int(np.ceil(3*rightShape[3][1])))  #  use three sigma as the peak half width
+				rightBoundary_fit = min(len(x)-2,middleNode + int(np.ceil(3*np.sqrt(rightShape[3][1]))))  #  use three sigma as the peak half width
 
 			boundaries.append({
 				"middleNode":middleNode,

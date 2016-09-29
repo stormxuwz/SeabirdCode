@@ -26,7 +26,10 @@ main_analysis_DCL <- function(features){
 	# qplot(lake,fluoRatio,data = features)+geom_boxplot()+geom_text(aes(lake,fluoRatio,label = paste(site,year)),data =features)
 	# analyze each lake
 	for(lake_ in allLakes){
+		print("*******")
 		print(lake_)
+		print("*******")
+
 		subData <- subset(features,lake == lake_)
 		goodFitData <- gaussianFit(subData,threshold = 0.8)
 		

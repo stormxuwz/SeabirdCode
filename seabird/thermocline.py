@@ -82,8 +82,9 @@ class thermocline_segmentation(thermocline_base):
 			epilimnion_seg = model.segmentList[0]
 			LEP_index = epilimnion_seg[1][-1]
 			
-			if maxGradient_index == 0: # if maximum gradient is the first segment 
-				LEP_index = epilimnion_seg[1][0]
+			if maxGradient_index == 0: # if maximum gradient is the first segment, change to no thermocline is detected
+				# LEP_index = epilimnion_seg[1][0]
+				LEP_index = None
 			elif abs(gradient[1]) < self.config["Algorithm"]["segment"]["stable_gradient"]: # if the first seg is anomaly and second seg is stable
 				LEP_index = model.segmentList[1][1][-1]
 		

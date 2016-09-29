@@ -10,6 +10,7 @@ source("./lakeSU.R")
 source("./analysis_DCL.R")
 source("./analysis_TRM.R")
 source("./global.R") # some global varialbes
+source("./seg_comparison.R")
 
 otherData <- function(){
 	waterChemistry <- 
@@ -25,16 +26,26 @@ main<- function(){
 	features <- read.csv("../../output/detectedFeatures.csv") %>%
 		preprocessing(locations = locations, waterChemistry = waterChemistry)
 	
-	# main_expertValidation(features)
-	# main_analysis_DCL(features)
-	main_analysis_TRM(features)
+	print("Doing algorithm validation")
+	#main_expertValidation(features)
+	print("****************")
+	main_seg_comparison(features)
+	print("****************")
+	print("Doing DCL algorithm")
+	print("****************")
+	#main_analysis_DCL(features)
+	print("****************")
+	print("Doing TRM analysis")
+	#main_analysis_TRM(features)
+	print("****************")
 }
 
 
 
 
-
-main()
+#sink("./results.txt")
+#main()
+#sink()
 
 
 
