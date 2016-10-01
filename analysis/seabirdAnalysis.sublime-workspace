@@ -7,17 +7,8 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "analysis_TRM.R",
-			"settings":
-			{
-				"buffer_size": 833,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		}
 	],
-	"build_system": "",
+	"build_system": "Packages/R/R.sublime-build",
 	"build_system_choices":
 	[
 		[
@@ -49,6 +40,22 @@
 			],
 			[
 				"Packages/Python/Python.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/R/R.sublime-build",
+					""
+				],
+				[
+					"Packages/SendREPL/R - Source File.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/R/R.sublime-build",
 				""
 			]
 		]
@@ -120,8 +127,16 @@
 		"side_bar_visible": false,
 		"status_bar_visible": false
 	},
+	"expanded_folders":
+	[
+		"/Users/wenzhaoxu/Developer/Seabird/SeabirdCode/analysis"
+	],
 	"file_history":
 	[
+		"/Users/wenzhaoxu/Developer/Seabird/SeabirdCode/analysis/main.R",
+		"/Users/wenzhaoxu/Developer/Seabird/SeabirdCode/analysis/analysis_DCL.R",
+		"/Users/wenzhaoxu/Developer/Seabird/SeabirdCode/analysis/analysis_TRM.R",
+		"/Users/wenzhaoxu/Developer/Seabird/SeabirdCode/analysis/results.txt",
 		"/Users/wenzhaoxu/Library/Application Support/Sublime Text 3/Packages/User/R-Box.sublime-settings",
 		"/Users/wenzhaoxu/Documents/Research/Paper/paper_Seabird/draft.pdf",
 		"/Users/wenzhaoxu/Developer/Seabird/SeabirdCode/seabird/models/model_peak3.py",
@@ -188,39 +203,8 @@
 	"groups":
 	[
 		{
-			"selected": 0,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "analysis_TRM.R",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 833,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								831,
-								831
-							]
-						],
-						"settings":
-						{
-							"r_box_status": false,
-							"syntax": "Packages/R-Box/syntax/R Extended.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				}
 			]
 		}
 	],
@@ -257,7 +241,7 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 204.0
+		"height": 182.0
 	},
 	"output.find_results":
 	{
@@ -280,6 +264,10 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"analysis",
+				"analysis_DCL.R"
+			],
 			[
 				"method",
 				"methodology.tex"

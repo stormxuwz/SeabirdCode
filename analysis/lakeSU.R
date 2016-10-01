@@ -1,6 +1,6 @@
 source("plot.R")
 
-lakeSU_main <- function(features){
+main_lakeSU <- function(features){
 	
 	SUData <- subset(features,lake == "SU")
 	
@@ -12,10 +12,10 @@ lakeSU_main <- function(features){
 	plot_gly(SUData,"LEP_segment",reverse = TRUE)
 	plot_gly(SUData,"UHY_segment",reverse = TRUE)
 	plot_gly(SUData,"TRM_num_segment",reverse = FALSE)
-	plot_gly(SUData,"UHY_num",reverse = FALSE)
+	# plot_gly(SUData,"UHY_num",reverse = FALSE)
 	plot_gly(SUData,"TRM_gradient_segment",reverse = FALSE)
 	
-	plot_gly(SUData,"fluoRatio", reverse = FALSE)
-	plot_gly(SUData,"DCL_size", reverse = TRUE)
+	#plot_gly(SUData,"fluoRatio", reverse = FALSE)
+	#plot_gly(SUData,"DCL_size", reverse = TRUE)
 }
 

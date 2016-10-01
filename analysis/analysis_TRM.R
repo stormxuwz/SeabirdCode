@@ -9,6 +9,8 @@ shapeAnalysis_TRM <- function(features){
 
 main_analysis_TRM <- function(features){
 	# features
+	
+	
 	for(lake_ in allLakes){
 		print("*******")
 		print(lake_)

@@ -27,25 +27,27 @@ main<- function(){
 		preprocessing(locations = locations, waterChemistry = waterChemistry)
 	
 	print("Doing algorithm validation")
-	#main_expertValidation(features)
+	main_expertValidation(features)
 	print("****************")
 	main_seg_comparison(features)
 	print("****************")
 	print("Doing DCL algorithm")
 	print("****************")
-	#main_analysis_DCL(features)
+	main_analysis_DCL(features)
 	print("****************")
 	print("Doing TRM analysis")
-	#main_analysis_TRM(features)
+	main_analysis_TRM(features)
 	print("****************")
+	print("Analyzing Lake SU")
+	main_lakeSU(features)
 }
 
 
 
 
-#sink("./results.txt")
-#main()
-#sink()
-
+sink("./results.txt")
+main()
+sink()
+sink()
 
 

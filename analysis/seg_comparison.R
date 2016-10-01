@@ -13,9 +13,9 @@ addingFeatures_diff_HMM_seg <- function(features){
 main_seg_comparison <- function(features){
 	features <- addingFeatures_diff_HMM_seg(features)
 	print(summary(features[,c("TRM_diff_HMM_seg","LEP_diff_HMM_seg","UHY_diff_HMM_seg")]))
-	print(arrange(features,desc(abs(TRM_diff_HMM_seg)))[,c("site","year","TRM_diff_HMM_seg")] %>% head(30))
-	print(arrange(features,desc(abs(LEP_diff_HMM_seg)))[,c("site","year","LEP_diff_HMM_seg")] %>% head(30))
-	print(arrange(features,desc(abs(UHY_diff_HMM_seg)))[,c("site","year","UHY_diff_HMM_seg")] %>% head(30))
+	print(arrange(features,desc(abs(TRM_diff_HMM_seg)))[,c("site","year","TRM_diff_HMM_seg")] %>% head(16))
+	print(arrange(features,desc(abs(LEP_diff_HMM_seg)))[,c("site","year","LEP_diff_HMM_seg")] %>% head(100))
+	print(arrange(features,desc(abs(UHY_diff_HMM_seg)))[,c("site","year","UHY_diff_HMM_seg")] %>% head(100))
 }
 
 
