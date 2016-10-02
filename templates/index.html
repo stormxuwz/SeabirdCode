@@ -19,39 +19,44 @@
   </head>
   <body>
     
-    <p>  This is a good example to upload the Seabird CNV files. 
-      (1) Select the files and click the button </p>
-
-    <form name="filebutton" method=post enctype=multipart/form-data>
-        <div class="form-group">
-            <p class="help-block">Upload the CNV file</p>
-            <input type="file" name="file">
-            
-        </div>
-        <input class="btn btn-default" type="submit" value = "Identify/Clean">
-    </form>
-    <br>
+    <div class="row">
+      <div class="col-xs-8">
+        <p>This is a program to automatically detect the depths of thermocline (TRM), lower epilimnion(LEP), upper hypolimnion and deep chlorophyll layers (DCL) and fluorescence concentration at DCL</p>
+      </div>
+    </div>
+   
+   <br>
     
     <div class="row">
-      <div class="col-xs-2">
+      <div class="col-xs-3">
+        
+        <br>
+        <form name="filebutton" method=post enctype=multipart/form-data>
+            <div class="form-group">
+                <p class="help-block">Select the files (SeaBird CNV file) and click the button </p>
+                <input type="file" name="file">
+                
+            </div>
+            <br>
+            <input class="btn btn-default" type="submit" value = "Identify/Clean">
+        </form>
+        <br>
+        <br>
         <p>TRM (<font color="red" font- weight ="bold">---</font>): {{depth_TRM}} m</p>
         <p>LEP (<font color="blue" font- weight ="bold">---</font>): {{depth_LEP}} m</p>
         <p>UHY (<font color="black" font- weight ="bold">---</font>):{{depth_UHY}} m</p>
-      </div>
-
-      <div class = "col-xs-2">
-      <p>DCL (<font color="green" font- weight ="bold">---</font>): {{depth_DCL}} m</p>
+        <p>DCL (<font color="green" font- weight ="bold">---</font>): {{depth_DCL}} m</p>
         <p>DCL Conc: {{conc_DCL}} mg/L</p>
         <p>DCL Propo: {{Prop_DCL}} </p>
-    
-      </div>    
-    </div>
+        <p>DCL upper shape fit R^2 {{leftShapeR2}} </p>
+        <p>DCL bottom shape fit R^2: {{rightShapeR2}} </p>
+      </div>
 
     
-    <br>
-   
-    {{ plot_div|indent(4)|safe }}
-   
+      <div class = "col-xs-4">
+        {{ plot_div|indent(4)|safe }}
+      </div>
+    </div>
 
   </body>
 </html>

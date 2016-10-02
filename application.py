@@ -45,7 +45,8 @@ def seabirdAnalysis(filename = None):
     depth_DCL = None
     Prop_DCL = None
     conc_DCL = None
-
+    rightShapeR2 = None
+    leftShapeR2 = None
     if filename is not None:
         # print("I have the file"+filename,file=sys.stderr)
         config=json.load(open('./config.json')) # load 
@@ -73,6 +74,10 @@ def seabirdAnalysis(filename = None):
         depth_UHY = mySeabird.features["UHY_segment"]
         depth_DCL = mySeabird.features["DCL_depth"]
         conc_DCL = np.round(mySeabird.features["DCL_conc"]  ,decimals =2)
+
+        rightShapeR2 = np.round(mySeabird.features["DCL_rightShapeFitErr"],decimals=2)
+        leftShapeR2 = np.round(mySeabird.features["DCL_leftShapeFitErr"],decimals=2)
+
         # depth_TRM = -99 if depth_TRM is None else depth_TRM
         # depth_LEP = -99 if depth_LEP is None else depth_LEP
         # depth_UHY = -99 if depth_UHY is None else depth_UHY
@@ -145,7 +150,9 @@ def seabirdAnalysis(filename = None):
         depth_DCL = depth_DCL,
         conc_DCL = conc_DCL,
         Prop_DCL = Prop_DCL,
-        filename = filename
+        filename = filename,
+        rightShapeR2 = rightShapeR2,
+        leftShapeR2 = leftShapeR2
     )
     return encode_utf8(html)
 
