@@ -10,7 +10,8 @@ if __name__ == '__main__':
 	import json
 	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/config.json'))
 	mySeabird = seabird(config = config)
-	mySeabird.loadData(fileId = 1191)
+	mySeabird.loadData(fileId = 229)
+	# 1544, 904, 1741,222, 1682, 652, 1000, 546
 	print mySeabird.site
 	mySeabird.preprocessing()
 	
@@ -42,14 +43,14 @@ if __name__ == '__main__':
 	plt.plot(Fluorescence)
 
 
-	plt.figure()
-	plt.plot(Fluorescence,-depth)
-	plt.axhline(-mySeabird.features["DCL_depth"])
-	plt.axhline(-mySeabird.features["DCL_upperDepth_gradient"])
-	plt.axhline(-mySeabird.features["DCL_bottomDepth_gradient"])
+	# plt.figure()
+	# plt.plot(Fluorescence,-depth)
+	# plt.axhline(-mySeabird.features["DCL_depth"])
+	# plt.axhline(-mySeabird.features["DCL_upperDepth_gradient"])
+	# plt.axhline(-mySeabird.features["DCL_bottomDepth_gradient"])
 
-	plt.axhline(-mySeabird.features["DCL_upperDepth_fit"],c = "g")
-	plt.axhline(-mySeabird.features["DCL_bottomDepth_fit"],c = "g")
+	# plt.axhline(-mySeabird.features["DCL_upperDepth_fit"],c = "g")
+	# plt.axhline(-mySeabird.features["DCL_bottomDepth_fit"],c = "g")
 
 
 	# plt.figure()
@@ -71,7 +72,7 @@ if __name__ == '__main__':
 	
 	# ax2 = plt.subplot(132, sharey=ax1)
 	# ax2.plot(BV_idx,-np.array(BV_depth))
-	# ax2.axhline(-mySeabird.features["TRM_segment"],color = "r")
+	# ax2.axhline(-mySeabird.feaobjecttures["TRM_segment"],color = "r")
 	# ax2.axhline(-mySeabird.features["LEP_segment"],color = "g")
 	# ax2.axhline(-mySeabird.features["UHY_segment"],color = "y")
 	

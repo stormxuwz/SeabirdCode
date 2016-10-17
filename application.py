@@ -72,11 +72,7 @@ def seabirdAnalysis(filename = None):
         depth_TRM = mySeabird.features["TRM_segment"]
         depth_LEP = mySeabird.features["LEP_segment"]
         depth_UHY = mySeabird.features["UHY_segment"]
-        depth_DCL = mySeabird.features["DCL_depth"]
-        conc_DCL = np.round(mySeabird.features["DCL_conc"]  ,decimals =2)
 
-        rightShapeR2 = np.round(mySeabird.features["DCL_rightShapeFitErr"],decimals=2)
-        leftShapeR2 = np.round(mySeabird.features["DCL_leftShapeFitErr"],decimals=2)
 
         # depth_TRM = -99 if depth_TRM is None else depth_TRM
         # depth_LEP = -99 if depth_LEP is None else depth_LEP
@@ -85,6 +81,10 @@ def seabirdAnalysis(filename = None):
 
         
         if mySeabird.features["DCL_concProp_fit"] is not None:
+            depth_DCL = mySeabird.features["DCL_depth"]
+            conc_DCL = np.round(mySeabird.features["DCL_conc"]  ,decimals =2)
+            rightShapeR2 = np.round(mySeabird.features["DCL_rightShapeFitErr"],decimals=2)
+            leftShapeR2 = np.round(mySeabird.features["DCL_leftShapeFitErr"],decimals=2)
             Prop_DCL = np.round(mySeabird.features["DCL_concProp_fit"],decimals=2)
             peak_box = BoxAnnotation(bottom=-mySeabird.features["DCL_bottomDepth_fit"], \
                 top=-mySeabird.features["DCL_upperDepth_fit"], fill_alpha=0.1, fill_color='green')

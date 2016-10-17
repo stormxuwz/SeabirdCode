@@ -64,8 +64,8 @@ class hmmModel(object):
 		changePoint = np.argwhere(diff != 0).flatten()
 
 		# feature_index = [dataSet.Power.argmax()] # add thermocline using power
-		feature_index = [dataSet.Gradient.argmax()]  # add thermocline using gradient
-
+		feature_index = [dataSet.Gradient.argmin()]  # add thermocline using gradient
+	
 		for point in changePoint:
 			feature_index.append(point)
 

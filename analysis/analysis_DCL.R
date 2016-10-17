@@ -12,12 +12,19 @@ shapeAnalysis_DCL <- function(features){
 	
 	features$DCL_upperSize <- features$DCL_depth-features$DCL_upperDepth_fit
 	features$DCL_bottomSize <- features$DCL_bottomDepth_fit-features$DCL_depth
+	
+	features$DCL_size <- features$DCL_bottomDepth_fit+features$DCL_depth
 	# features$DCL_sizeRatio <- features$DCL_upperSize/features$DCL_bottomSize
 	features$DCL_sizeRatio <- (features$DCL_upperSize - features$DCL_bottomSize)/(features$DCL_upperSize + features$DCL_bottomSize)
 	# features$DCL_upperConc <- features$DCL_upperDepth_fit
 	# features$DCL_bottomConc <- features$DCL_bottomDepth_fit
 	#features <- subset(features,DCL_sizeRatio<Inf & DCL_sizeRatio>0)
-	print(summary(features[,c("DCL_upperSize","DCL_bottomSize","DCL_sizeRatio")]))
+	print(summary(features[,c("DCL_upperSize","DCL_bottomSize","DCL_sizeRatio","DCL_size")]))
+	
+	print("peak size")
+	print(head(arrange(features,desc(DCL_size))[,c("year","site","DCL_size","DCL_upperSize","DCL_bottomSize","DCL_depth","DCL_upperDepth_fit","DCL_bottomDepth_fit","fileId")],10))
+	
+	
 	return(features)
 }
 
@@ -47,7 +54,7 @@ main_analysis_DCL <- function(features){
 		goodFitData <- gaussianFit(subData,threshold = 0.8)
 		
 		print(paste("good fit ratio",nrow(goodFitData)/nrow(subData)))
-		shapeAnalysis_DCL(subData)
+		shapeAnalysis_DCL(goodFitData)
 	}
 	
 	# analyze as a whole
@@ -61,6 +68,17 @@ main_analysis_DCL <- function(features){
 	
 	
 	allGoodFit <- gaussianFit(features) %>% shapeAnalysis_DCL()
-	print(head(arrange(allGoodFit,desc(DCL_sizeRatio))[,c("year","site","DCL_upperSize","DCL_bottomSize","DCL_depth","DCL_upperDepth_fit","DCL_bottomDepth_fit","fileId")],10))
+	print("sizeRatio descrease")
+	print(head(arrange(allGoodFit,desc(DCL_sizeRatio))[,c("year","site","DCL_sizeRatio","DCL_upperSize","DCL_bottomSize","DCL_depth","DCL_upperDepth_fit","DCL_bottomDepth_fit","fileId")],10))
+	print("sizeRatio increase")
+	print(head(arrange(allGoodFit,DCL_sizeRatio)[,c("year","site","DCL_sizeRatio","DCL_upperSize","DCL_bottomSize","DCL_depth","DCL_upperDepth_fit","DCL_bottomDepth_fit","fileId")],10))
+	
+	print("sizeRatio middle")
+	print(head(subset(allGoodFit,DCL_sizeRatio<0.05 & DCL_sizeRatio>-0.05)[,c("year","site","DCL_sizeRatio","DCL_upperSize","DCL_bottomSize","DCL_depth","DCL_upperDepth_fit","DCL_bottomDepth_fit","fileId")],10))
+	
+	#print("peak size")
+	#print(head(arrange(allGoodFit,desc(DCL_size))[,c("year","site","DCL_size","DCL_upperSize","DCL_bottomSize","DCL_depth","DCL_upperDepth_fit","DCL_bottomDepth_fit","fileId")],10))
+	
+	
 	labeledBoxplot_ggplot(allGoodFit, "DCL_sizeRatio", outlier = TRUE)
 }

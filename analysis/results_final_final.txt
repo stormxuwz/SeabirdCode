@@ -1,11 +1,11 @@
 [1] "Doing algorithm validation"
 [1] "print difference with expert "
    site year DCL_diff fileId
-1  ER63 1999    12.95    311
-2  ER10 2010     7.00   1556
-3  ER15 1999     5.25    297
-4  ER10 2003    -3.50    750
-5  ER15 2009    -2.15   1444
+1  ER63 1999    12.95    311  mislabeled
+2  ER10 2010     7.00   1556  mislabeled
+3  ER15 1999     5.25    297  mislabeled
+4  ER10 2003    -3.50    750  large peak
+5  ER15 2009    -2.15   1444  large peak
 6  ER31 1999    -1.65    300
 7  ER09 2003     1.25    749
 8  ER78 1999    -1.00    314
@@ -23,18 +23,18 @@
 20 ER15 2005     0.00    984
 [1] "print difference with expert "
    site year DCL_diff fileId
-1  HU45 2011    36.05   1700
-2  HU32 2011    28.75   1696
-3  HU48 2011    28.50   1701
-4  HU06 2009   -19.50   1465
-5  HU15 2011    16.00   1694
-6  HU32 2004     9.75    893
-7  HU37 2003     9.35    778
-8  HU54 2004    -5.50    901
-9  HU45 2004    -5.25    897
-10 HU37 2005     5.00   1012
-11 HU12 2006    -4.85   1120
-12 HU61 1999     4.50    337
+1  HU45 2011    36.05   1700  differnet peak
+2  HU32 2011    28.75   1696  differnet peak
+3  HU48 2011    28.50   1701  different peak
+4  HU06 2009   -19.50   1465  mislabeled  
+5  HU15 2011    16.00   1694  differnet peak
+6  HU32 2004     9.75    893  large peak
+7  HU37 2003     9.35    778  large peak
+8  HU54 2004    -5.50    901  large peak
+9  HU45 2004    -5.25    897  large peak
+10 HU37 2005     5.00   1012  large peak
+11 HU12 2006    -4.85   1120  large peak
+12 HU61 1999     4.50    337  large peak
 13 HU45 2008    -3.90   1356
 14 HU32 1999    -3.60    327
 15 HU32 2007     3.30   1239
@@ -45,13 +45,13 @@
 20 HU48 2006    -2.40   1129
 [1] "print difference with expert "
    site year DCL_diff fileId
-1  MI41 2010   -16.85   1611
-2  MI19 1999   -15.00    348
-3  MI32 2005    10.95   1035
-4  MI40 2005     9.25   1037
-5  MI17 2005    -7.75   1027
-6  MI19 2006    -6.80   1143
-7  MI17 2004     4.25    911
+1  MI41 2010   -16.85   1611  difference peak
+2  MI19 1999   -15.00    348  mislabeled
+3  MI32 2005    10.95   1035  large peak
+4  MI40 2005     9.25   1037  large peak
+5  MI17 2005    -7.75   1027  large peak/difference peak
+6  MI19 2006    -6.80   1143  large peak
+7  MI17 2004     4.25    911  mislabeled
 8  MI19 2011     4.25   1716
 9  MI32 2004     4.25    920
 10 MI19 2003    -3.55    796
@@ -67,8 +67,8 @@
 20 MI32 2010    -1.85   1608
 [1] "print difference with expert "
    site year DCL_diff fileId
-1  ON63 2011   -20.50   1746
-2  ON49 2011   -11.10   1742
+1  ON63 2011   -20.50   1746  different peak
+2  ON49 2011   -11.10   1742  different peak
 3  ON25 1999    -3.80    371
 4  ON60 2004    -3.75    946
 5  ON55 2007    -2.35   1287
@@ -89,15 +89,15 @@
 20 ON49 2006    -0.85   1200
 [1] "print difference with expert "
    site year DCL_diff fileId
-1  SU15 1999   -30.50    407
-2  SU09 2011   -12.60   1763
-3  SU13 2011    -8.60   1767
-4  SU16 2004    -7.75    973
-5  SU14 2004    -7.50    971
-6  SU18 2005    -7.10   1082
-7  SU15 2004    -7.00    972
-8  SU16 2003     6.85    855
-9  SU14 1999    -6.75    406
+1  SU15 1999   -30.50    407  mislabeled
+2  SU09 2011   -12.60   1763  mislabeled
+3  SU13 2011    -8.60   1767  mislabeled
+4  SU16 2004    -7.75    973  large peak
+5  SU14 2004    -7.50    971  large peak
+6  SU18 2005    -7.10   1082  large peak
+7  SU15 2004    -7.00    972  large peak
+8  SU16 2003     6.85    855  large peak
+9  SU14 1999    -6.75    406  
 10 SU19 2004     6.75    977
 11 SU17 2008     6.50   1433
 12 SU06 2010    -6.35   1645
@@ -130,30 +130,30 @@ $SU
 -30.5000  -1.5000  -0.6500  -0.9588   0.2500   6.8500      187 
 
      site year fileId expert_DCL DCL_diff DCL_depth
-13   ER09 2010   1555     21.100       NA        NA
-14   ER09 2011   1666     12.800       NA        NA
-45   ER15 2010   1558     23.100       NA        NA
-50   ER30 1999    299     17.100       NA        NA
-82   ER32 1999    301     17.100       NA        NA
-98   ER36 1999    302     17.800       NA        NA
-104  ER36 2005    989     15.000       NA        NA
-114  ER37 1999    303     18.500       NA        NA
-130  ER38 1999    304     13.000       NA        NA
-146  ER42 1999    305     15.900       NA        NA
-258  ER73 1999    312     17.000       NA        NA
-264  ER73 2005    999     17.500       NA        NA
-279  ER78 2004    882     19.000       NA        NA
-280  ER78 2005   1000     18.500       NA        NA
-413  HU15 2010   1583     44.100       NA        NA
-427  HU27 2008   1351     45.100       NA        NA
-445  HU32 2010   1585     40.000       NA        NA
-1042 ON49 1999    380     28.000       NA        NA
-1085 ON60 2010   1632     15.200       NA        NA
-1091 ON63 2000    491     18.232       NA        NA
-1098 ON63 2007   1290      8.300       NA        NA
-1100 ON63 2009   1520      9.800       NA        NA
-1367 SU12 2004    969     20.000       NA        NA
-1384 SU13 2005   1076     44.200       NA        NA
+13   ER09 2010   1555     21.100       NA        NA   too small peak
+14   ER09 2011   1666     12.800       NA        NA   not below LEP   
+45   ER15 2010   1558     23.100       NA        NA   mislabeled
+50   ER30 1999    299     17.100       NA        NA   mislabeled
+82   ER32 1999    301     17.100       NA        NA   mislabeled
+98   ER36 1999    302     17.800       NA        NA   mislabeled
+104  ER36 2005    989     15.000       NA        NA   smoothing reduce the conc
+114  ER37 1999    303     18.500       NA        NA   too small peak
+130  ER38 1999    304     13.000       NA        NA   mislabeled
+146  ER42 1999    305     15.900       NA        NA   mislabeled
+258  ER73 1999    312     17.000       NA        NA   mislabeled
+264  ER73 2005    999     17.500       NA        NA   smoothing reduce the conc
+279  ER78 2004    882     19.000       NA        NA   too small peak
+280  ER78 2005   1000     18.500       NA        NA   too small peak
+413  HU15 2010   1583     44.100       NA        NA   mislabeled
+427  HU27 2008   1351     45.100       NA        NA   mislabeled
+445  HU32 2010   1585     40.000       NA        NA   mislabeled
+1042 ON49 1999    380     28.000       NA        NA   mislabeled
+1085 ON60 2010   1632     15.200       NA        NA   not below LEP
+1091 ON63 2000    491     18.232       NA        NA   too small peak
+1098 ON63 2007   1290      8.300       NA        NA   not below LEP
+1100 ON63 2009   1520      9.800       NA        NA   not below LEP
+1367 SU12 2004    969     20.000       NA        NA   mislabeled
+1384 SU13 2005   1076     44.200       NA        NA   too small peak
 [1] "DCL"
 # A tibble: 5 × 5
    lake totalN only_pred only_expert allExist
@@ -196,12 +196,12 @@ $names
 
 [1] "print difference with expert "
    site year TRM_diff fileId
-1  ER15 1999    4.750    297
-2  ER78 2007    4.650   1227
-3  ER15 2001    3.500    544
-4  ER63 2002   -3.500    658
-5  ER10 2002   -2.800    644
-6  ER10 1999    2.750    296
+1  ER15 1999    4.750    297  mislabeled
+2  ER78 2007    4.650   1227  definition
+3  ER15 2001    3.500    544  definition
+4  ER63 2002   -3.500    658  definition
+5  ER10 2002   -2.800    644  definition
+6  ER10 1999    2.750    296  definition
 7  ER09 2000   -2.713    415
 8  ER15 2000   -2.607    417
 9  ER10 2001    2.250    543
@@ -218,40 +218,40 @@ $names
 20 ER73 1998   -1.000    205
 [1] "print difference with expert "
    site year TRM_diff fileId
-1  HU37 1998  -12.250    223
-2  HU48 2002  -11.250    674
-3  HU38 2001  -10.550    572
-4  HU06 1998  -10.500    215
-5  HU12 2001   -8.750    566
-6  HU45 2000   -7.659    446
-7  HU54 2010   -6.750   1592
-8  HU53 2000   -6.295    449
-9  HU09 2002   -6.100    666
-10 HU45 2009   -5.700   1475
-11 HU93 2001   -5.250    578
-12 HU45 2006    4.700   1127
-13 HU54 2007   -4.600   1246
-14 HU37 2001   -4.200    571
-15 HU54 2005    4.050   1018
-16 HU15 2001   -4.000    567
-17 HU48 1998   -4.000    227
-18 HU45 1998   -3.900    225
-19 HU45 2007   -3.850   1242
-20 HU12 2000   -3.739    438
+1  HU37 1998  -12.250    223  mislabeled
+2  HU48 2002  -11.250    674  definition
+3  HU38 2001  -10.550    572  definition
+4  HU06 1998  -10.500    215  mislabeled
+5  HU12 2001   -8.750    566  definition
+6  HU45 2000   -7.659    446  mislabeled/definition
+7  HU54 2010   -6.750   1592  definition
+8  HU53 2000   -6.295    449  definition
+9  HU09 2002   -6.100    666  definition
+10 HU45 2009   -5.700   1475  definition
+11 HU93 2001   -5.250    578  definition
+12 HU45 2006    4.700   1127  mislabeled
+13 HU54 2007   -4.600   1246  definition
+14 HU37 2001   -4.200    571  definition
+15 HU54 2005    4.050   1018  mislabeled
+16 HU15 2001   -4.000    567  definition
+17 HU48 1998   -4.000    227  mislabeled
+18 HU45 1998   -3.900    225  mislabeled
+19 HU45 2007   -3.850   1242  definition
+20 HU12 2000   -3.739    438  definition
 [1] "print difference with expert "
    site year TRM_diff fileId
-1  MI18 2011   -9.000   1715
-2  MI41 1998   -7.500    249
-3  MI27 2006    7.350   1145
-4  MI11 1998   -5.821    239
-5  MI23 1998   -4.800    244
-6  MI34 2002   -4.750    693
-7  MI41 2010   -4.550   1611
-8  MI47 2002    4.550    698
-9  MI18 2003   -4.500    795
-10 MI27 2002   -4.500    690
-11 MI18 2001   -4.450    585
-12 MI40 1998   -4.350    248
+1  MI18 2011   -9.000   1715  definition
+2  MI41 1998   -7.500    249  definition
+3  MI27 2006    7.350   1145  mislabeled
+4  MI11 1998   -5.821    239  definition/mislabeled
+5  MI23 1998   -4.800    244  definition/mislabeled
+6  MI34 2002   -4.750    693  definition
+7  MI41 2010   -4.550   1611  definition
+8  MI47 2002    4.550    698  definition
+9  MI18 2003   -4.500    795  definition
+10 MI27 2002   -4.500    690  definition
+11 MI18 2001   -4.450    585  definition
+12 MI40 1998   -4.350    248  definition
 13 MI27 2010   -4.300   1605
 14 MI19 1998   -4.250    243
 15 MI40 1999    4.250    356
@@ -262,16 +262,16 @@ $names
 20 MI18 2008   -3.100   1370
 [1] "print difference with expert "
    site year TRM_diff fileId
-1  ON63 1998  -11.750    264
-2  ON25 1998  -10.000    256
-3  ON25 2000   -6.734    482
-4  ON33 2001   -5.450    609
-5  ON55 1999   -4.850    383
-6  ON25 1999   -4.850    371
-7  ON49 1999    4.500    380
-8  ON55 2004   -4.500    944
-9  ON55 2001   -4.250    614
-10 ON41 2000   -3.907    485
+1  ON63 1998  -11.750    264  mislabeled
+2  ON25 1998  -10.000    256  mislabeled
+3  ON25 2000   -6.734    482  definition
+4  ON33 2001   -5.450    609  definition
+5  ON55 1999   -4.850    383  definition
+6  ON25 1999   -4.850    371  definition
+7  ON49 1999    4.500    380  definition
+8  ON55 2004   -4.500    944  definition
+9  ON55 2001   -4.250    614  mislabeled
+10 ON41 2000   -3.907    485  definition
 11 ON55 2003    3.750    824
 12 ON60 1999   -3.750    386
 13 ON60 2000   -3.710    490
@@ -284,26 +284,26 @@ $names
 20 ON55 2002   -2.000    717
 [1] "print difference with expert "
    site year TRM_diff fileId
-1  SU12 1998  -17.600    284
-2  SU09 2002  -16.150    734
-3  SU08 2002   10.600    733
-4  SU16 1999   -9.800    408
-5  SU06 2002    8.950    731
-6  SU15 1998   -8.850    287
-7  SU12 1999   -8.000    404
-8  SU01 2004    7.000    955
-9  SU03 1998   -6.550    274
-10 SU05 2000    6.278    501
-11 SU06 1998   -6.250    279
-12 SU17 2003   -6.150    857
-13 SU13 1998   -6.100    285
-14 SU14 1998   -5.800    286
-15 SU17 2004   -5.750    974
-16 SU01 2011   -5.300   1753
-17 SU17 2005   -5.000   1081
-18 SU14 2000   -4.590    511
-19 SU06 2000   -4.274    502
-20 SU03 1999   -4.250    393
+1  SU12 1998  -17.600    284  definition
+2  SU09 2002  -16.150    734  definition
+3  SU08 2002   10.600    733  definition
+4  SU16 1999   -9.800    408  definition
+5  SU06 2002    8.950    731  definition
+6  SU15 1998   -8.850    287  definition
+7  SU12 1999   -8.000    404  definition
+8  SU01 2004    7.000    955  definition
+9  SU03 1998   -6.550    274  definition
+10 SU05 2000    6.278    501  definition
+11 SU06 1998   -6.250    279  definition
+12 SU17 2003   -6.150    857  definition
+13 SU13 1998   -6.100    285  definition
+14 SU14 1998   -5.800    286  definition
+15 SU17 2004   -5.750    974  definition
+16 SU01 2011   -5.300   1753  definition
+17 SU17 2005   -5.000   1081  definition
+18 SU14 2000   -4.590    511  definition
+19 SU06 2000   -4.274    502  definition
+20 SU03 1999   -4.250    393  definition
 $ER
     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
 -3.50000 -0.50000 -0.09800 -0.04801  0.25000  4.75000      271 
@@ -365,16 +365,16 @@ $names
 
 [1] "print difference with expert "
    site year UHY_diff fileId
-1  ER15 2001   10.500    544
-2  ER15 2010   10.200   1558
-3  ER15 2000    9.871    417
-4  ER15 1998   -8.000    190
-5  ER15 2011    7.600   1668
-6  ER63 2001    7.400    557
-7  ER09 2001    4.000    542
-8  ER73 2000    3.488    431
-9  ER15 2003   -3.000    751
-10 ER15 2007   -2.800   1212
+1  ER15 2001   10.500    544  mislabeled
+2  ER15 2010   10.200   1558  parameter
+3  ER15 2000    9.871    417  parameter
+4  ER15 1998   -8.000    190  mislabeled??
+5  ER15 2011    7.600   1668  parameter
+6  ER63 2001    7.400    557  mislabeled
+7  ER09 2001    4.000    542  parameter
+8  ER73 2000    3.488    431  mislabeled
+9  ER15 2003   -3.000    751  normal
+10 ER15 2007   -2.800   1212  normal
 11 ER38 2000    2.586    423
 12 ER09 2002   -2.500    643
 13 ER10 2002   -2.200    644
@@ -387,92 +387,93 @@ $names
 20 ER78 2004    1.500    882
 [1] "print difference with expert "
    site year UHY_diff fileId
-1  HU93 1998     25.5    233
-2  HU32 1998     25.2    222
-3  HU15 1998     24.0    218
-4  HU54 1998    -22.0    230
-5  HU45 2011     17.7   1700
-6  HU12 1998     17.5    217
-7  HU32 2002    -17.5    670
-8  HU15 2002     13.0    668
-9  HU93 2001    -12.9    578
-10 HU12 2002    -12.7    667
-11 HU45 2010     12.3   1589
-12 HU48 2002    -12.0    674
-13 HU53 2001    -12.0    575
-14 HU37 1998    -11.1    223
-15 HU45 2003     11.0    781
-16 HU48 1998    -10.2    227
-17 HU15 2006     10.0   1121
-18 HU45 2007      9.8   1242
-19 HU15 2007      9.8   1236
-20 HU27 2001      9.7    569
+1  HU93 1998     25.5    233  definition
+2  HU32 1998     25.2    222  definition
+3  HU15 1998     24.0    218  definition 
+4  HU54 1998    -22.0    230  definition **
+5  HU45 2011     17.7   1700  definition
+6  HU12 1998     17.5    217  definition
+7  HU32 2002    -17.5    670  definition/mislabeled
+8  HU15 2002     13.0    668  mislabeled
+9  HU93 2001    -12.9    578  definition
+10 HU12 2002    -12.7    667  definition
+11 HU45 2010     12.3   1589  definition
+12 HU48 2002    -12.0    674  definition
+13 HU53 2001    -12.0    575  definition
+14 HU37 1998    -11.1    223  definition
+15 HU45 2003     11.0    781  definition/mislabeled
+16 HU48 1998    -10.2    227  definition
+17 HU15 2006     10.0   1121  definition
+18 HU45 2007      9.8   1242  definition
+19 HU15 2007      9.8   1236  definition
+20 HU27 2001      9.7    569  definition
 [1] "print difference with expert "
    site year UHY_diff fileId
-1  MI41 2002   33.800    705
-2  MI11 1998  -24.937    239
-3  MI47 1998   21.300    253
-4  MI41 2000  -20.631    470
-5  MI40 2001  -19.000    595
-6  MI34 2001  -18.500    594
-7  MI27 2000   17.891    464
-8  MI19 2000   17.666    462
-9  MI18 2001   17.100    585
-10 MI34 1998  -17.100    247
-11 MI17 2000   16.987    459
-12 MI18 2009  -16.600   1489
-13 MI32 2000   15.951    467
-14 MI41 2003  -13.500    806
-15 MI23 2000   12.897    463
-16 MI41 2007  -12.300   1268
-17 MI41 2009  -10.500   1500
-18 MI47 2001    9.500    600
-19 MI23 2002   -8.200    689
-20 MI11 2002   -8.100    684
+1  MI41 2002   33.800    705  mislabeled
+2  MI11 1998  -24.937    239  definition
+3  MI47 1998   21.300    253  definition
+4  MI41 2000  -20.631    470  definition
+5  MI40 2001  -19.000    595  definition
+6  MI34 2001  -18.500    594  definition
+7  MI27 2000   17.891    464  mislabeled
+8  MI19 2000   17.666    462  definition
+9  MI18 2001   17.100    585  definition***
+10 MI34 1998  -17.100    247  definition
+11 MI17 2000   16.987    459  definition/mislabeled
+12 MI18 2009  -16.600   1489  definition
+13 MI32 2000   15.951    467  mislabeled
+14 MI41 2003  -13.500    806  definition
+15 MI23 2000   12.897    463  mislabeled
+16 MI41 2007  -12.300   1268  definition
+17 MI41 2009  -10.500   1500  definition
+18 MI47 2001    9.500    600  definition
+19 MI23 2002   -8.200    689  definition
+20 MI11 2002   -8.100    684  definition
 [1] "print difference with expert "
    site year UHY_diff fileId
-1  ON55 1998  -37.500    261
-2  ON33 1998   24.500    257
-3  ON63 2001   23.500    617
-4  ON60 1998  -23.000    263
-5  ON63 1999   21.500    387
-6  ON55 2001   19.500    614
-7  ON49 2002   18.700    716
-8  ON60 2001   13.000    616
-9  ON41 2000   12.818    485
-10 ON55 1999   12.700    383
-11 ON60 2002   10.500    719
-12 ON33 2006   10.000   1197
-13 ON55 2003   10.000    824
-14 ON63 2002   10.000    720
-15 ON55 2000    8.947    487
-16 ON12 2002    8.500    711
-17 ON41 1998    8.000    259
-18 ON33 2001    7.500    609
-19 ON55 2006    5.900   1201
-20 ON25 2002    5.500    712
+1  ON55 1998  -37.500    261  definition
+2  ON33 1998   24.500    257  definition ***
+3  ON63 2001   23.500    617  mislabeled
+4  ON60 1998  -23.000    263  definition
+5  ON63 1999   21.500    387  mislabeled
+6  ON55 2001   19.500    614  mislabeled
+7  ON49 2002   18.700    716  mislabeled/definition
+8  ON60 2001   13.000    616  definition
+9  ON41 2000   12.818    485  definition
+10 ON55 1999   12.700    383  definition ***
+11 ON60 2002   10.500    719  mislabeled
+12 ON33 2006   10.000   1197  definition
+13 ON55 2003   10.000    824  definition
+14 ON63 2002   10.000    720  definition
+15 ON55 2000    8.947    487  mislabeled
+16 ON12 2002    8.500    711  definition
+17 ON41 1998    8.000    259  definition
+18 ON33 2001    7.500    609  definition
+19 ON55 2006    5.900   1201  definition
+20 ON25 2002    5.500    712  definition
+
 [1] "print difference with expert "
    site year UHY_diff fileId
-1  SU08 2009  -39.000   1537
-2  SU09 1998   33.400    281
-3  SU12 2002   28.000    737
-4  SU01 2001   22.500    622
-5  SU17 2002   22.100    742
-6  SU15 2000   21.627    512
-7  SU16 2001   20.800    637
-8  SU04 2001  -18.400    625
-9  SU08 2001  -17.600    629
-10 SU02 2001  -17.000    623
-11 SU12 2001  -16.600    633
-12 SU11 2002   15.900    736
-13 SU17 2003  -15.000    857
-14 SU19 2002   14.900    744
-15 SU09 2001  -14.500    630
-16 SU08 2002   14.400    733
-17 SU07 2002   12.500    732
-18 SU15 2002   12.400    740
-19 SU01 2005   12.000   1064
-20 SU04 2002   11.500    729
+1  SU08 2009  -39.000   1537  definition
+2  SU09 1998   33.400    281  noise
+3  SU12 2002   28.000    737  mislabeled
+4  SU01 2001   22.500    622  noise
+5  SU17 2002   22.100    742  definition
+6  SU15 2000   21.627    512  definition ***
+7  SU16 2001   20.800    637  definition
+8  SU04 2001  -18.400    625  definition
+9  SU08 2001  -17.600    629  parameters
+10 SU02 2001  -17.000    623  definition
+11 SU12 2001  -16.600    633  definition
+12 SU11 2002   15.900    736  mislabeled
+13 SU17 2003  -15.000    857  definition
+14 SU19 2002   14.900    744  mislabeled
+15 SU09 2001  -14.500    630  definition/middle
+16 SU08 2002   14.400    733  mislabeled
+17 SU07 2002   12.500    732  mislabeled
+18 SU15 2002   12.400    740  mislabeled
+19 SU01 2005   12.000   1064  definition
+20 SU04 2002   11.500    729  definition
 $ER
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
 -8.0000 -0.9980  0.3000  0.8208  1.2220 10.5000     309 
@@ -494,16 +495,16 @@ $SU
 -39.0000  -6.0000  -0.2810   0.5687   6.0500  33.4000      284 
 
     site year fileId expert_UHY UHY_diff UHY_segment
-68  ER31 2001    546       17.2       NA          NA
-81  ER32 1998    193       21.4       NA          NA
-84  ER32 2001    547       18.5       NA          NA
-97  ER36 1998    194       17.0       NA          NA
-113 ER37 1998    195       12.0       NA          NA
-132 ER38 2001    550       15.0       NA          NA
-145 ER42 1998    197       17.0       NA          NA
-148 ER42 2001    551       16.6       NA          NA
-273 ER78 1998    206       21.0       NA          NA
-276 ER78 2001    559       16.5       NA          NA
+68  ER31 2001    546       17.2       NA          NA  gradient large
+81  ER32 1998    193       21.4       NA          NA  no sampling range
+84  ER32 2001    547       18.5       NA          NA  small hypolimnion
+97  ER36 1998    194       17.0       NA          NA  strange shape
+113 ER37 1998    195       12.0       NA          NA  strange shape
+132 ER38 2001    550       15.0       NA          NA  mislabeled
+145 ER42 1998    197       17.0       NA          NA  gradient
+148 ER42 2001    551       16.6       NA          NA  gradient/mislabeled
+273 ER78 1998    206       21.0       NA          NA  no sampling range
+276 ER78 2001    559       16.5       NA          NA  no sampling range
 [1] "UHY"
 # A tibble: 5 × 5
    lake totalN only_pred only_expert allExist
@@ -541,41 +542,41 @@ $names
 
 [1] "print difference with expert "
    site year LEP_diff fileId
-1  ER10 2003   -12.25    750
-2  ER37 2007    -9.05   1217
-3  ER43 2007    -7.85   1220
-4  ER31 2001    -7.55    546
-5  ER43 2001    -7.05    552
-6  ER36 2001    -6.25    548
-7  ER32 2005    -5.75    988
-8  ER63 2001    -5.45    557
-9  ER32 2001    -5.35    547
-10 ER10 1998    -4.75    189
-11 ER10 2001    -4.75    543
-12 ER42 2001    -4.75    551
-13 ER63 2003    -4.75    764
-14 ER15 2001    -4.25    544
-15 ER78 2009    -4.25   1459
-16 ER32 2007    -3.85   1215
-17 ER30 2004    -3.25    868
-18 ER15 1999     2.75    297
-19 ER30 2001    -2.75    545
-20 ER31 2005    -2.75    987
+1  ER10 2003   -12.25    750  double thermoline
+2  ER37 2007    -9.05   1217  definition/strange shape
+3  ER43 2007    -7.85   1220  gradient parameter
+4  ER31 2001    -7.55    546  gradient parameter
+5  ER43 2001    -7.05    552  double thermoline
+6  ER36 2001    -6.25    548  mislabeled
+7  ER32 2005    -5.75    988  strange shape
+8  ER63 2001    -5.45    557  definition
+9  ER32 2001    -5.35    547  gradient
+10 ER10 1998    -4.75    189  definition
+11 ER10 2001    -4.75    543  definition/parameter
+12 ER42 2001    -4.75    551  definition/parameter
+13 ER63 2003    -4.75    764  definition
+14 ER15 2001    -4.25    544  definition
+15 ER78 2009    -4.25   1459  definition/shape
+16 ER32 2007    -3.85   1215  definition
+17 ER30 2004    -3.25    868  mislabeled
+18 ER15 1999     2.75    297  definition
+19 ER30 2001    -2.75    545  
+20 ER31 2005    -2.75    987  gradient
 [1] "print difference with expert "
    site year LEP_diff fileId
-1  HU12 2004   -9.750    889
-2  HU27 2003   -8.750    776
-3  HU37 2004   -6.750    895
-4  HU15 2004   -6.250    890
-5  HU48 1999   -5.750    333
-6  HU37 2005    5.550   1012
-7  HU09 2004   -4.750    888
-8  HU53 2003   -4.250    783
-9  HU38 1998    3.850    224
-10 HU45 2004   -3.750    897
-11 HU53 1998    3.650    229
-12 HU09 1998    2.750    216
-13 HU15 1998   -2.750    218
+1  HU12 2004   -9.750    889  parameter
+2  HU27 2003   -8.750    776  mislabeled
+3  HU37 2004   -6.750    895  mislabeled
+4  HU15 2004   -6.250    890  noise/definition
+5  HU48 1999   -5.750    333  definition
+6  HU37 2005    5.550   1012  definition
+7  HU09 2004   -4.750    888  definition
+8  HU53 2003   -4.250    783  mislabeled
+9  HU38 1998    3.850    224  normal
+10 HU45 2004   -3.750    897  mislabeled
+11 HU53 1998    3.650    229  mislabeled
+12 HU09 1998    2.750    216  normal
+13 HU15 1998   -2.750    218  normal
 14 HU54 2008    2.750   1359
 15 HU48 2000   -2.620    448
 16 HU09 2000    2.573    437
@@ -585,14 +586,14 @@ $names
 20 HU15 2007    2.250   1236
 [1] "print difference with expert "
    site year LEP_diff fileId
-1  MI27 2004   -6.750    916
-2  MI18 2005   -5.750   1028
-3  MI18 1998    5.450    241
-4  MI27 2003   -4.750    799
-5  MI41 2011   -4.750   1726
-6  MI34 2006   -4.650   1150
-7  MI11 1999    3.750    344
-8  MI17 1999    3.750    345
+1  MI27 2004   -6.750    916  mislabeled
+2  MI18 2005   -5.750   1028  double shape
+3  MI18 1998    5.450    241  mislabeled
+4  MI27 2003   -4.750    799  definition
+5  MI41 2011   -4.750   1726  definition
+6  MI34 2006   -4.650   1150  double shape
+7  MI11 1999    3.750    344  mislabeled
+8  MI17 1999    3.750    345  mislabeled
 9  MI32 1998    3.750    246
 10 MI41 1999    3.750    359
 11 MI27 2001   -3.250    589
@@ -607,15 +608,15 @@ $names
 20 MI47 2003   -2.250    809
 [1] "print difference with expert "
    site year LEP_diff fileId
-1  ON63 2003   -9.250    826
-2  ON25 2007   -4.350   1281
-3  ON41 2005   -4.150   1053
-4  ON33 2005   -4.050   1051
-5  ON60 2003   -3.750    825
-6  ON12 2000    3.716    481
-7  ON63 2000    3.432    491
-8  ON25 2006    3.250   1195
-9  ON60 2007   -3.250   1289
+1  ON63 2003   -9.250    826  definition
+2  ON25 2007   -4.350   1281  definition
+3  ON41 2005   -4.150   1053  shape
+4  ON33 2005   -4.050   1051  double shape
+5  ON60 2003   -3.750    825  definition
+6  ON12 2000    3.716    481  definition
+7  ON63 2000    3.432    491  definition
+8  ON25 2006    3.250   1195  definition
+9  ON60 2007   -3.250   1289  double shape
 10 ON60 2000    2.941    490
 11 ON33 2001   -2.750    609
 12 ON41 1998    2.750    259
@@ -629,26 +630,26 @@ $names
 20 ON49 1999   -1.850    380
 [1] "print difference with expert "
    site year LEP_diff fileId
-1  SU06 2003    -6.75    844
-2  SU05 1999    -5.75    395
-3  SU09 2004     5.25    966
-4  SU08 1998     4.75    293
-5  SU11 2004    -4.75    968
-6  SU14 2004     4.75    971
-7  SU19 2007    -4.65   1318
-8  SU01 2003    -4.25    839
-9  SU08 2003    -4.25    847
-10 SU10 1999    -4.25    401
-11 SU15 1999    -4.25    407
-12 SU16 2005    -4.25   1079
-13 SU01 2004     3.75    955
-14 SU02 1998     3.75    273
-15 SU02 2004    -3.75    957
-16 SU05 2004     3.75    961
-17 SU12 1999    -3.75    404
-18 SU01 2009    -3.65   1528
-19 SU06 1998     3.35    279
-20 SU08 2005    -3.25   1072
+2  SU06 2003    -6.75    844  definition
+3  SU05 1999    -5.75    395  definition
+3  SU09 2004     5.25    966  definition
+4  SU08 1998     4.75    293  error
+5  SU11 2004    -4.75    968  definition
+6  SU14 2004     4.75    971  definition  
+7  SU19 2007    -4.65   1318  mislabeled
+8  SU01 2003    -4.25    839  mislabeled
+9  SU08 2003    -4.25    847  definition
+10 SU10 1999    -4.25    401  shape
+11 SU15 1999    -4.25    407  mislabeled
+12 SU16 2005    -4.25   1079  mislabeled
+13 SU01 2004     3.75    955  mislabeled
+14 SU02 1998     3.75    273  definition
+15 SU02 2004    -3.75    957  mislabeled
+16 SU05 2004     3.75    961  normal
+17 SU12 1999    -3.75    404  mislabeled
+18 SU01 2009    -3.65   1528  mislabeled
+19 SU06 1998     3.35    279  normal
+20 SU08 2005    -3.25   1072  definition
 $ER
     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
 -12.2500  -0.7500   0.1500  -0.6742   0.5750   2.7500      212 
@@ -670,45 +671,45 @@ $SU
 -6.7500 -0.3500  0.6500  0.3207  1.5500  5.2500     234 
 
      site year fileId expert_LEP LEP_diff LEP_segment
-33   ER15 1998    190     20.000       NA          NA
-44   ER15 2009   1444     12.400       NA          NA
-65   ER31 1998    192     15.000       NA          NA
-113  ER37 1998    195      7.000       NA          NA
-178  ER58 1999    307      3.300       NA          NA
-195  ER59 2000    427      3.276       NA          NA
-211  ER60 2000    428      3.209       NA          NA
-226  ER61 1999    310      2.700       NA          NA
-260  ER73 2001    558     15.000       NA          NA
-306  ER92 1999    317      3.500       NA          NA
-309  ER92 2002    662      4.000       NA          NA
-374  HU09 2003    773      8.000       NA          NA
-439  HU32 2004    893     13.000       NA          NA
-470  HU38 2003    779      7.300       NA          NA
-502  HU48 2003    782      6.000       NA          NA
-504  HU48 2005   1016      6.500       NA          NA
-536  HU54 2005   1018      9.200       NA          NA
-683  MI18 2008   1370      9.000       NA          NA
-686  MI18 2011   1715      9.300       NA          NA
-777  MI32 2006   1149      7.100       NA          NA
-826  MI41 2007   1268      8.900       NA          NA
-977  ON12 1998    255     10.000       NA          NA
-978  ON12 1999    370      6.000       NA          NA
-993  ON25 1998    256     10.000       NA          NA
-994  ON25 1999    371      4.800       NA          NA
-998  ON25 2003    818      3.000       NA          NA
-1010 ON33 1999    372     10.200       NA          NA
-1014 ON33 2003    820      4.000       NA          NA
-1198 SU01 2011   1753      9.100       NA          NA
-1223 SU03 2004    958     12.000       NA          NA
-1287 SU07 2004    963      6.000       NA          NA
-1346 SU11 1999    402      5.000       NA          NA
-1378 SU13 1999    405      8.000       NA          NA
-1383 SU13 2004    970      5.000       NA          NA
-1442 SU17 1999    409     12.000       NA          NA
-1450 SU17 2007   1315      8.800       NA          NA
-1458 SU18 1999    410      5.000       NA          NA
-1479 SU19 2004    977      4.000       NA          NA
-1481 SU19 2006   1185      7.000       NA          NA
+33   ER15 1998    190     20.000       NA          NA   gradient
+44   ER15 2009   1444     12.400       NA          NA   gradient   
+65   ER31 1998    192     15.000       NA          NA   gradient
+113  ER37 1998    195      7.000       NA          NA   gradient
+178  ER58 1999    307      3.300       NA          NA   bad data
+195  ER59 2000    427      3.276       NA          NA   bad data
+211  ER60 2000    428      3.209       NA          NA   bad data
+226  ER61 1999    310      2.700       NA          NA   bad data
+260  ER73 2001    558     15.000       NA          NA   gradient
+306  ER92 1999    317      3.500       NA          NA   bad data
+309  ER92 2002    662      4.000       NA          NA   bad data
+374  HU09 2003    773      8.000       NA          NA   gradient
+439  HU32 2004    893     13.000       NA          NA   gradient
+470  HU38 2003    779      7.300       NA          NA   gradient
+502  HU48 2003    782      6.000       NA          NA   gradient
+504  HU48 2005   1016      6.500       NA          NA   gradient
+536  HU54 2005   1018      9.200       NA          NA   shape
+683  MI18 2008   1370      9.000       NA          NA   gradient
+686  MI18 2011   1715      9.300       NA          NA   gradient
+777  MI32 2006   1149      7.100       NA          NA   gradient
+826  MI41 2007   1268      8.900       NA          NA   gradient
+977  ON12 1998    255     10.000       NA          NA   gradient
+978  ON12 1999    370      6.000       NA          NA   gradient
+993  ON25 1998    256     10.000       NA          NA   mislabeled
+994  ON25 1999    371      4.800       NA          NA   mislabeled
+998  ON25 2003    818      3.000       NA          NA   limitation
+1010 ON33 1999    372     10.200       NA          NA   noise
+1014 ON33 2003    820      4.000       NA          NA   gradient
+1198 SU01 2011   1753      9.100       NA          NA   definition
+1223 SU03 2004    958     12.000       NA          NA   mislabeled
+1287 SU07 2004    963      6.000       NA          NA   definition/gradient
+1346 SU11 1999    402      5.000       NA          NA   small EPI
+1378 SU13 1999    405      8.000       NA          NA   gradient
+1383 SU13 2004    970      5.000       NA          NA   mislabeled
+1442 SU17 1999    409     12.000       NA          NA   gradient
+1450 SU17 2007   1315      8.800       NA          NA   gradient
+1458 SU18 1999    410      5.000       NA          NA   gradient
+1479 SU19 2004    977      4.000       NA          NA   range
+1481 SU19 2006   1185      7.000       NA          NA   gradient
 [1] "LEP"
 # A tibble: 5 × 5
    lake totalN only_pred only_expert allExist

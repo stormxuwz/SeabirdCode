@@ -104,19 +104,32 @@ def separate(sensordata):
 
 
 def resample(sensordata, interval=0.25):
-	depth = sensordata.Depth
+	depth = np.array(sensordata.Depth)
 
 	featureNum = sensordata.shape[1] - 1
 	new_depth = np.arange(np.ceil(depth.min()), depth.max(), interval)
 	new_sensordata = np.zeros((len(new_depth), sensordata.shape[1]-1))
 	new_sensordata[:, 0] = new_depth
 
+	
+	dataAgged = True
+	meanRange = []
+
+	if min(np.abs(np.diff(depth)))<= 2*interval:
+		dataAgged = False
+		meanRange = [(depth >= d-interval) * (depth<=d+interval) >0 for d in new_depth]
+
 	for i in range(1, sensordata.shape[1]-1):
-		if sum(~sensordata.iloc[:,i].isnull())<1:
+		if sum(~sensordata.iloc[:,i].isnull())<1: # no data 
 			new_sensordata[:, i] = np.nan
 		else:
-			new_sensordata[:, i] = np.interp(new_depth, depth, sensordata.iloc[:, i])
-
+			# new_sensordata[:, i] = np.interp(new_depth, depth, sensordata.iloc[:, i])
+			if dataAgged:
+				new_sensordata[:, i] = np.interp(new_depth, depth, sensordata.iloc[:, i])
+			else:
+				oldFeatures = np.array(sensordata.iloc[:, i])
+				new_sensordata[:, i] = [np.mean(oldFeatures[meanRange[j]]) for j in range(len(new_depth))]
+				
 	return pd.DataFrame(new_sensordata,columns=sensordata.columns.values[:-1])
 
 
@@ -161,6 +174,7 @@ def preprocessing(data,config):
 		pre_data_resample = pre_data_resample.iloc[:-1, :]
 
 	filtered_data = filter(pre_data_resample, config)
+	# filtered_data = pre_data_resample
 
 	return downcast, filtered_data
 	

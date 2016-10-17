@@ -22,6 +22,13 @@ feature_stat <- function(df,varName = "TRM"){
 	
 	diffVar <- paste(varName,"diff",sep ="_")
 	
+	for(lake_ in allLakes){
+		data <- subset(df,lake==lake_)
+		print("print difference with expert ")
+		arrange_(data,sprintf("desc(abs(%s))",diffVar))[,c("site","year",diffVar,"fileId")]%>%head(20)%>%print()
+	}
+	
+	print(tapply(df[,diffVar], df$lake, summary))
 	
 	expertExist <- !is.na(df[,expertVar])
 	predExist <- !is.na(df[,predVar])
@@ -29,6 +36,9 @@ feature_stat <- function(df,varName = "TRM"){
 	df$only_pred <- predExist == TRUE & expertExist !=TRUE  # you only have expert
 	df$only_expert <- predExist == FALSE & expertExist == TRUE # you only have predication
 	df$pred_expert <- predExist == TRUE & expertExist == TRUE
+	
+	
+	print(subset(df,only_expert)[,c("site","year","fileId",expertVar,diffVar,predVar)])
 	
 	print(varName)
 	res <- group_by(df,lake) %>% summarise(totalN = n(),only_pred = sum(only_pred),only_expert = sum(only_expert),allExist = sum(pred_expert))
@@ -40,9 +50,16 @@ feature_stat <- function(df,varName = "TRM"){
 	
 	pdf(sprintf("../../output/%s_diff.pdf",varName),height = 4, width = 7)
 	print(
-		qplot(lake,abs(df[,diffVar]),data = df)+geom_boxplot(size = 1)+theme_bw()+xlab("Lake")+ylab("Absolute Depth Differences (m)")
+		qplot(lake,df[,diffVar],data = df)+geom_boxplot(size = 1)+theme_bw()+xlab("Lake")+ylab("Absolute Depth Differences (m)")
 	)
 	dev.off()
+
+	pdf(sprintf("../../output/%s_diff_NoOutlier.pdf",varName),height = 4, width = 7)
+	print(
+		boxplot(as.formula(paste(diffVar,"lake",sep="~")),data = df,outline = FALSE,xlab = "Lake",ylab = "Depth Differences")
+	)
+	dev.off()
+
 }
 
 main_expertValidation <- function(features){

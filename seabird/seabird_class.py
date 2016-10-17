@@ -136,7 +136,7 @@ class seabird:
 				ax1.axhline(y = -1*depth if depth is not None else -999,color = colors[i])
 
 			if meta:
-				for i,depth in enumerate([self.features["TRM_threshold"],self.features["LEP_HMM"],self.features["UHY_HMM"]]):
+				for i,depth in enumerate([self.features["TRM_HMM"],self.features["LEP_HMM"],self.features["UHY_HMM"]]):
 					ax1.axhline(y = -1*depth if depth is not None else -999,color = colors[i],ls = ":")
 
 			for i,depth in enumerate([self.expert["TRM"],self.expert["LEP"],self.expert["UHY"],self.expert["DCL"]]):

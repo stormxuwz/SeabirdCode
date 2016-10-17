@@ -1,0 +1,2070 @@
+[1] "Doing algorithm validation"
+[1] "print difference with expert "
+   site year DCL_diff fileId
+1  ER63 1999    12.95    311  mislabeled
+2  ER10 2010     7.00   1556  mislabeled
+3  ER15 1999     5.25    297  mislabeled
+4  ER10 2003    -3.50    750  large peak
+5  ER15 2009    -2.15   1444  large peak
+6  ER31 1999    -1.65    300
+7  ER09 2003     1.25    749
+8  ER78 1999    -1.00    314
+9  ER10 1999     0.85    296
+10 ER63 2003     0.55    764
+11 ER09 2009    -0.50   1441
+12 ER31 2005     0.50    987
+13 ER37 2005     0.50    990
+14 ER37 2008     0.45   1330
+15 ER43 1999     0.45    306
+16 ER63 2009     0.30   1457
+17 ER42 2006    -0.10   1101
+18 ER10 2004     0.00    866
+19 ER10 2005     0.00    983
+20 ER15 2005     0.00    984
+[1] "print difference with expert "
+   site year DCL_diff fileId
+1  HU45 2011    36.05   1700  differnet peak
+2  HU32 2011    28.75   1696  differnet peak
+3  HU48 2011    28.50   1701  different peak
+4  HU06 2009   -19.50   1465  mislabeled  
+5  HU15 2011    16.00   1694  differnet peak
+6  HU32 2004     9.75    893  large peak
+7  HU37 2003     9.35    778  large peak
+8  HU54 2004    -5.50    901  large peak
+9  HU45 2004    -5.25    897  large peak
+10 HU37 2005     5.00   1012  large peak
+11 HU12 2006    -4.85   1120  large peak
+12 HU61 1999     4.50    337  large peak
+13 HU45 2008    -3.90   1356
+14 HU32 1999    -3.60    327
+15 HU32 2007     3.30   1239
+16 HU93 2008    -2.70   1362
+17 HU54 2007     2.65   1246
+18 HU45 2010    -2.60   1589
+19 HU15 2005    -2.50   1008
+20 HU48 2006    -2.40   1129
+[1] "print difference with expert "
+   site year DCL_diff fileId
+1  MI41 2010   -16.85   1611  difference peak
+2  MI19 1999   -15.00    348  mislabeled
+3  MI32 2005    10.95   1035  large peak
+4  MI40 2005     9.25   1037  large peak
+5  MI17 2005    -7.75   1027  large peak/difference peak
+6  MI19 2006    -6.80   1143  large peak
+7  MI17 2004     4.25    911  mislabeled
+8  MI19 2011     4.25   1716
+9  MI32 2004     4.25    920
+10 MI19 2003    -3.55    796
+11 MI41 2004     3.50    923
+12 MI41 2005     3.50   1038
+13 MI18 2007     3.45   1257
+14 MI40 2003    -2.75    804
+15 MI17 2009     2.55   1487
+16 MI17 1999    -2.25    345
+17 MI27 1999    -2.25    350
+18 MI19 2005     2.00   1029
+19 MI34 2008     1.90   1378
+20 MI32 2010    -1.85   1608
+[1] "print difference with expert "
+   site year DCL_diff fileId
+1  ON63 2011   -20.50   1746  different peak
+2  ON49 2011   -11.10   1742  different peak
+3  ON25 1999    -3.80    371
+4  ON60 2004    -3.75    946
+5  ON55 2007    -2.35   1287
+6  ON55 2005    -1.95   1055
+7  ON25 2006    -1.80   1195
+8  ON33 2008    -1.70   1395
+9  ON41 1999     1.50    377
+10 ON41 2004    -1.50    942
+11 ON41 2010    -1.50   1628
+12 ON55 2004     1.50    944
+13 ON12 2011    -1.25   1737
+14 ON33 2009     1.25   1514
+15 ON60 2011    -1.25   1745
+16 ON33 2006    -1.20   1197
+17 ON49 2010    -1.15   1629
+18 ON55 2008    -1.00   1399
+19 ON33 1999     0.90    372
+20 ON49 2006    -0.85   1200
+[1] "print difference with expert "
+   site year DCL_diff fileId
+1  SU15 1999   -30.50    407  mislabeled
+2  SU09 2011   -12.60   1763  mislabeled
+3  SU13 2011    -8.60   1767  mislabeled
+4  SU16 2004    -7.75    973  large peak
+5  SU14 2004    -7.50    971  large peak
+6  SU18 2005    -7.10   1082  large peak
+7  SU15 2004    -7.00    972  large peak
+8  SU16 2003     6.85    855  large peak
+9  SU14 1999    -6.75    406  
+10 SU19 2004     6.75    977
+11 SU17 2008     6.50   1433
+12 SU06 2010    -6.35   1645
+13 SU06 1999    -6.25    396
+14 SU09 2006    -6.00   1174
+15 SU02 2006     5.00   1166
+16 SU03 2004    -5.00    958
+17 SU14 2007    -4.70   1312
+18 SU14 2009    -4.40   1543
+19 SU14 2008    -4.20   1429
+20 SU05 2008     4.05   1419
+     site year fileId expert_DCL DCL_diff DCL_depth
+13   ER09 2010   1555     21.100       NA        NA   too small peak
+14   ER09 2011   1666     12.800       NA        NA   not below LEP   
+45   ER15 2010   1558     23.100       NA        NA   mislabeled
+50   ER30 1999    299     17.100       NA        NA   mislabeled
+82   ER32 1999    301     17.100       NA        NA   mislabeled
+98   ER36 1999    302     17.800       NA        NA   mislabeled
+104  ER36 2005    989     15.000       NA        NA   smoothing reduce the conc
+114  ER37 1999    303     18.500       NA        NA   too small peak
+130  ER38 1999    304     13.000       NA        NA   mislabeled
+146  ER42 1999    305     15.900       NA        NA   mislabeled
+258  ER73 1999    312     17.000       NA        NA   mislabeled
+264  ER73 2005    999     17.500       NA        NA   smoothing reduce the conc
+279  ER78 2004    882     19.000       NA        NA   too small peak
+280  ER78 2005   1000     18.500       NA        NA   too small peak
+413  HU15 2010   1583     44.100       NA        NA   mislabeled
+427  HU27 2008   1351     45.100       NA        NA   mislabeled
+445  HU32 2010   1585     40.000       NA        NA   mislabeled
+1042 ON49 1999    380     28.000       NA        NA   mislabeled
+1085 ON60 2010   1632     15.200       NA        NA   not below LEP
+1091 ON63 2000    491     18.232       NA        NA   too small peak
+1100 ON63 2009   1520      9.800       NA        NA   not below LEP
+1367 SU12 2004    969     20.000       NA        NA   mislabeled
+1384 SU13 2005   1076     44.200       NA        NA   too small peak
+[1] "DCL"
+# A tibble: 5 × 5
+   lake totalN only_pred only_expert allExist
+  <chr>  <int>     <int>       <int>    <int>
+1    ER    352       129          14       21
+2    HU    288       147           3      103
+3    MI    336       183           0      106
+4    ON    208        82           4       69
+5    SU    368       165           2      181
+$stats
+      [,1]   [,2]  [,3]  [,4]  [,5]
+[1,] -1.00 -2.500 -2.75 -1.50 -3.60
+[2,] -0.10 -0.725 -1.00 -0.65 -1.50
+[3,]  0.30 -0.050 -0.25 -0.25 -0.65
+[4,]  0.55  0.500  0.40  0.00  0.25
+[5,]  1.25  2.250  2.00  0.90  2.55
+
+$n
+[1]  21 103 106  69 181
+
+$conf
+           [,1]       [,2]        [,3]       [,4]       [,5]
+[1,] 0.07589023 -0.2407105 -0.46484843 -0.3736363 -0.8555208
+[2,] 0.52410977  0.1407105 -0.03515157 -0.1263637 -0.4444792
+
+$out
+ [1]  -3.50   7.00   5.25  -2.15  -1.65  12.95 -19.50  -4.85  16.00  -3.60   9.75   3.30  28.75   9.35   5.00  -5.25
+[17]  -3.90  -2.60  36.05  28.50  -5.50   2.65   4.50  -2.70   4.25  -7.75   2.55   3.45 -15.00  -3.55  -6.80   4.25
+[33]   4.25  10.95   9.25   3.50   3.50 -16.85  -3.80  -1.80  -1.70   1.25   1.50 -11.10   1.50  -1.95  -2.35  -3.75
+[49] -20.50   3.25   5.00  -5.00   4.05  -6.25  -6.35  -6.00 -12.60   3.25  -8.60  -6.75  -7.50  -4.70  -4.20  -4.40
+[65] -30.50  -7.00   3.25   6.85  -7.75   3.35   6.50  -7.10   6.75
+
+$group
+ [1] 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 3 3 3 3 3 4 4 4 4 4 4 4 4 4 4 4 5 5 5 5 5 5 5 5 5
+[59] 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5
+
+$names
+[1] "ER" "HU" "MI" "ON" "SU"
+
+[1] "print difference with expert "
+   site year TRM_diff fileId
+1  ER15 1999    4.750    297  mislabeled
+2  ER78 2007    4.650   1227  definition
+3  ER15 2001    3.500    544  definition
+4  ER63 2002   -3.500    658  definition
+5  ER10 2002   -2.800    644  definition
+6  ER10 1999    2.750    296  definition
+7  ER09 2000   -2.713    415
+8  ER15 2000   -2.607    417
+9  ER10 2001    2.250    543
+10 ER73 2000    2.165    431
+11 ER15 2006   -2.150   1093
+12 ER63 1998   -2.000    204
+13 ER15 2003   -1.700    751
+14 ER09 1998   -1.500    188
+15 ER15 1998   -1.250    190
+16 ER43 2001   -1.100    552
+17 ER10 2000    1.017    416
+18 ER09 2001    1.000    542
+19 ER37 1998    1.000    195
+20 ER73 1998   -1.000    205
+[1] "print difference with expert "
+   site year TRM_diff fileId
+1  HU37 1998  -12.250    223  mislabeled
+2  HU48 2002  -11.250    674  definition
+3  HU38 2001  -10.550    572  definition
+4  HU06 1998  -10.500    215  mislabeled
+5  HU12 2001   -8.750    566  definition
+6  HU45 2000   -7.659    446  mislabeled/definition
+7  HU54 2010   -6.750   1592  definition
+8  HU53 2000   -6.295    449  definition
+9  HU09 2002   -6.100    666  definition
+10 HU45 2009   -5.700   1475  definition
+11 HU93 2001   -5.250    578  definition
+12 HU45 2006    4.700   1127  mislabeled
+13 HU54 2007   -4.600   1246  definition
+14 HU37 2001   -4.200    571  definition
+15 HU54 2005    4.050   1018  mislabeled
+16 HU15 2001   -4.000    567  definition
+17 HU48 1998   -4.000    227  mislabeled
+18 HU45 1998   -3.900    225  mislabeled
+19 HU45 2007   -3.850   1242  definition
+20 HU12 2000   -3.739    438  definition
+[1] "print difference with expert "
+   site year TRM_diff fileId
+1  MI18 2011   -9.000   1715  definition
+2  MI41 1998   -7.500    249  definition
+3  MI27 2006    7.350   1145  mislabeled
+4  MI11 1998   -5.821    239  definition/mislabeled
+5  MI23 1998   -4.800    244  definition/mislabeled
+6  MI34 2002   -4.750    693  definition
+7  MI41 2010   -4.550   1611  definition
+8  MI47 2002    4.550    698  definition
+9  MI18 2003   -4.500    795  definition
+10 MI27 2002   -4.500    690  definition
+11 MI18 2001   -4.450    585  definition
+12 MI40 1998   -4.350    248  definition
+13 MI27 2010   -4.300   1605
+14 MI19 1998   -4.250    243
+15 MI40 1999    4.250    356
+16 MI27 2011   -4.200   1719
+17 MI34 1998   -3.550    247
+18 MI17 1998   -3.300    240
+19 MI18 2004   -3.250    912
+20 MI18 2008   -3.100   1370
+[1] "print difference with expert "
+   site year TRM_diff fileId
+1  ON63 1998  -11.750    264  mislabeled
+2  ON25 1998  -10.000    256  mislabeled
+3  ON25 2000   -6.734    482  definition
+4  ON33 2001   -5.450    609  definition
+5  ON55 1999   -4.850    383  definition
+6  ON25 1999   -4.850    371  definition
+7  ON49 1999    4.500    380  definition
+8  ON55 2004   -4.500    944  definition
+9  ON55 2001   -4.250    614  mislabeled
+10 ON41 2000   -3.907    485  definition
+11 ON55 2003    3.750    824
+12 ON60 1999   -3.750    386
+13 ON60 2000   -3.710    490
+14 ON55 2000   -3.313    487
+15 ON25 2001   -2.750    608
+16 ON33 2004   -2.750    940
+17 ON33 1999   -2.700    372
+18 ON49 2001   -2.700    612
+19 ON33 2009   -2.250   1514
+20 ON55 2002   -2.000    717
+[1] "print difference with expert "
+   site year TRM_diff fileId
+1  SU12 1998  -17.600    284  definition
+2  SU09 2002  -16.150    734  definition
+3  SU08 2002   10.600    733  definition
+4  SU16 1999   -9.800    408  definition
+5  SU06 2002    8.950    731  definition
+6  SU15 1998   -8.850    287  definition
+7  SU12 1999   -8.000    404  definition
+8  SU01 2004    7.000    955  definition
+9  SU03 1998   -6.550    274  definition
+10 SU05 2000    6.278    501  definition
+11 SU06 1998   -6.250    279  definition
+12 SU17 2003   -6.150    857  definition
+13 SU13 1998   -6.100    285  definition
+14 SU14 1998   -5.800    286  definition
+15 SU17 2004   -5.750    974  definition
+16 SU01 2011   -5.300   1753  definition
+17 SU17 2005   -5.000   1081  definition
+18 SU14 2000   -4.590    511  definition
+19 SU06 2000   -4.274    502  definition
+20 SU03 1999   -4.250    393  definition
+[1] site        year        fileId      expert_TRM  TRM_diff    TRM_segment
+<0 rows> (or 0-length row.names)
+[1] "TRM"
+# A tibble: 5 × 5
+   lake totalN only_pred only_expert allExist
+  <chr>  <int>     <int>       <int>    <int>
+1    ER    352       208           0       81
+2    HU    288       181           0       93
+3    MI    336       248           0       74
+4    ON    208       142           0       49
+5    SU    368       244           0      112
+$stats
+       [,1]  [,2]   [,3]   [,4]    [,5]
+[1,] -1.500 -6.75 -7.500 -5.450 -6.5500
+[2,] -0.500 -2.75 -3.050 -2.750 -2.4545
+[3,] -0.098 -1.15 -1.056 -1.000 -0.4665
+[4,]  0.250  0.50  0.250 -0.250  0.8250
+[5,]  1.017  4.70  4.550  1.114  3.5000
+
+$n
+[1]  81  93  74  49 112
+
+$conf
+            [,1]       [,2]       [,3]       [,4]        [,5]
+[1,] -0.22966667 -1.6824747 -1.6621152 -1.5642857 -0.95611612
+[2,]  0.03366667 -0.6175253 -0.4498848 -0.4357143  0.02311612
+
+$out
+ [1]  -2.713   2.750   2.250  -2.800   4.750  -2.607   3.500  -1.700  -2.150  -2.000  -3.500   2.165   4.650 -10.500
+[15]  -8.750 -12.250 -10.550  -7.659 -11.250  -9.000   7.350 -10.000  -6.734   4.500   3.750 -11.750   7.000   6.278
+[29]   8.950  10.600 -16.150 -17.600  -8.000  -8.850  -9.800
+
+$group
+ [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 3 3 4 4 4 4 4 5 5 5 5 5 5 5 5 5
+
+$names
+[1] "ER" "HU" "MI" "ON" "SU"
+
+[1] "print difference with expert "
+   site year UHY_diff fileId
+1  ER15 2009   12.900   1444  parameter
+2  ER15 2001   10.500    544  mislabeled
+3  ER15 2010   10.200   1558  parameter
+4  ER15 2000    9.871    417  parameter
+5  ER15 1998   -8.000    190  mislabeled
+6  ER15 2011    7.600   1668  parameter ??
+7  ER63 2001    7.400    557  mislabeled
+8  ER09 2001    4.000    542  parameter
+9  ER73 2000    3.488    431  mislabeled
+10 ER15 2003   -3.000    751  
+11 ER15 2007   -2.800   1212
+12 ER38 2000    2.586    423
+13 ER09 2002   -2.500    643
+14 ER10 2002   -2.200    644
+15 ER09 1998   -2.000    188
+16 ER37 2000   -1.679    422
+17 ER30 1998   -1.500    191
+18 ER36 2000    1.500    421
+19 ER38 1998   -1.500    196
+20 ER63 1998   -1.500    204
+[1] "print difference with expert "
+   site year UHY_diff fileId
+1  HU93 1998   39.500    233  definition
+2  HU53 1998   31.600    229  definition
+3  HU53 1999   28.000    334  definition
+4  HU32 1998   25.200    222  parameter
+5  HU15 1998   24.000    218  definition
+6  HU48 1998   22.800    227  definition
+7  HU37 2002   22.500    671  definition
+8  HU45 2004   22.000    897  parameter
+9  HU15 2009   21.600   1469  definition
+10 HU45 2011   17.700   1700  definition
+11 HU54 2000   17.523    450  definition
+12 HU12 1998   17.500    217  definition
+13 HU32 2002  -17.500    670  definition
+14 HU53 2000   17.064    449  definition
+15 HU54 2005   17.000   1018  definition
+16 HU54 2008   16.100   1359  definition
+17 HU15 2005   15.500   1008  definition
+18 HU54 2009   15.500   1479  definition
+19 HU93 1999   15.000    338  definition
+20 HU45 2006   13.700   1127  definition
+[1] "print difference with expert "
+   site year UHY_diff fileId
+1  MI47 1998   34.800    253  mislabeled
+2  MI41 2002   33.800    705  mislabeled
+3  MI27 2001   27.000    589  definition
+4  MI27 2008   24.700   1373  definition
+5  MI41 2000  -20.631    470  definition
+6  MI41 2007   19.700   1268  definition
+7  MI40 2001  -19.000    595  definition
+8  MI34 2001  -18.500    594  definition
+9  MI17 2001   18.000    584  definition
+10 MI27 2000   17.891    464  mislabeled
+11 MI19 2000   17.666    462  definition
+12 MI18 2001   17.100    585  definition ???
+13 MI34 1998  -17.100    247  definition
+14 MI17 2000   16.987    459  mislabeled
+15 MI32 2000   15.951    467  mislabeled
+16 MI23 2000   12.897    463  mislabeled
+17 MI32 2002   12.500    692  definition
+18 MI32 2001   11.500    593  definition
+19 MI47 2001    9.500    600  definition
+20 MI18 2006    8.600   1141  definition
+[1] "print difference with expert "
+   site year UHY_diff fileId
+1  ON55 2001   44.000    614  mislabeled
+2  ON63 2001   40.500    617  mislabeled/definition
+3  ON41 2000   28.818    485  definition
+4  ON41 1998   26.500    259  definition
+5  ON33 1998   24.500    257  definition ???
+6  ON60 2002   24.000    719  mislabeled
+7  ON63 1999   21.500    387  mislabeled
+8  ON49 2002   18.700    716  mislabeled/definition
+9  ON55 2002   18.000    717  definition
+10 ON41 2001   16.700    611  definition
+11 ON12 2000   15.014    481  definition
+12 ON25 2000   14.555    482  definition
+13 ON60 2001   13.000    616  mislabeled
+14 ON55 1999   12.700    383  definition
+15 ON33 2006   10.000   1197  definition
+16 ON55 2003   10.000    824  definition
+17 ON63 2002   10.000    720  definition
+18 ON55 2000    8.947    487
+19 ON12 2002    8.500    711
+20 ON33 2001    7.500    609
+[1] "print difference with expert "
+   site year UHY_diff fileId
+1  SU15 1998   40.300    287  definition/mislabeled  
+2  SU08 2009  -39.000   1537  mislabeled
+3  SU09 1998   33.400    281  bad temperature
+4  SU11 2002   32.900    736  mislabeled
+5  SU14 2002   32.500    739  mislabeled
+6  SU12 2002   28.000    737  mislabeled
+7  SU16 2002   25.800    741  mislabeled
+8  SU05 2002   24.200    730  mislabeled/definition
+9  SU13 2002   22.600    738  mislabeled
+10 SU01 2001   22.500    622  definition/shape
+11 SU17 2002   22.100    742  definition
+12 SU15 2000   21.627    512  definition
+13 SU06 2002   21.000    731  definition
+14 SU16 2001   20.800    637  definition/mislabeled
+15 SU05 2000   20.562    501  definition
+16 SU02 2001  -17.000    623  definition
+17 SU10 2000   16.844    506  definition
+18 SU01 2000   16.520    497  definition
+19 SU06 2001   15.500    627  definition
+20 SU13 1998   15.300    285  definition
+    site year fileId expert_UHY UHY_diff UHY_segment
+68  ER31 2001    546       17.2       NA          NA  gradient large
+81  ER32 1998    193       21.4       NA          NA  no sampling range
+84  ER32 2001    547       18.5       NA          NA  small hypolimnion
+97  ER36 1998    194       17.0       NA          NA  strange shape
+113 ER37 1998    195       12.0       NA          NA  strange shape
+132 ER38 2001    550       15.0       NA          NA  mislabeled
+145 ER42 1998    197       17.0       NA          NA  gradient
+148 ER42 2001    551       16.6       NA          NA  gradient/mislabeled
+273 ER78 1998    206       21.0       NA          NA  no sampling range
+276 ER78 2001    559       16.5       NA          NA  no sampling range
+[1] "UHY"
+# A tibble: 5 × 5
+   lake totalN only_pred only_expert allExist
+  <chr>  <int>     <int>       <int>    <int>
+1    ER    352       171          10       43
+2    HU    288       182           0       87
+3    MI    336       258           0       53
+4    ON    208       127           0       43
+5    SU    368       271           0       84
+$stats
+       [,1]   [,2]  [,3]    [,4]    [,5]
+[1,] -3.000 -17.50 -17.1 -6.0000 -17.000
+[2,] -0.998  -0.50   0.0 -0.7000  -2.400
+[3,]  0.300   5.90   3.8  5.9000   4.301
+[4,]  1.472  11.65  11.5 14.7845  12.500
+[5,]  4.000  28.00  27.0 28.8180  33.400
+
+$n
+[1] 43 87 53 43 84
+
+$conf
+           [,1]     [,2]     [,3]     [,4]     [,5]
+[1,] -0.2951409 3.841866 1.304159 2.169045 1.732357
+[2,]  0.8951409 7.958134 6.295841 9.630955 6.869643
+
+$out
+ [1]  -8.000   9.871  10.500  12.900  10.200   7.600   7.400  31.600  39.500 -18.500 -19.000 -20.631  33.800  34.800
+[15]  44.000  40.500 -39.000  40.300
+
+$group
+ [1] 1 1 1 1 1 1 1 2 2 3 3 3 3 3 4 4 5 5
+
+$names
+[1] "ER" "HU" "MI" "ON" "SU"
+
+[1] "print difference with expert "
+   site year LEP_diff fileId
+1  ER10 2003   -12.25    750  double thermoline
+2  ER37 2007    -9.05   1217  definition/strange shape
+3  ER43 2007    -7.85   1220  gradient parameter
+4  ER31 2001    -7.55    546  gradient parameter
+5  ER43 2001    -7.05    552  double thermoline
+6  ER36 2001    -6.25    548  mislabeled
+7  ER32 2005    -5.75    988  strange shape
+8  ER63 2001    -5.45    557  definition
+9  ER32 2001    -5.35    547  gradient
+10 ER10 1998    -4.75    189  definition
+11 ER10 2001    -4.75    543  definition/parameter
+12 ER42 2001    -4.75    551  definition/parameter
+13 ER63 2003    -4.75    764  definition
+14 ER15 2001    -4.25    544  definition
+15 ER78 2009    -4.25   1459  definition/shape
+16 ER32 2007    -3.85   1215  definition
+17 ER30 2004    -3.25    868  mislabeled
+18 ER15 1999     2.75    297  definition
+19 ER30 2001    -2.75    545  
+20 ER31 2005    -2.75    987  gradient
+[1] "print difference with expert "
+   site year LEP_diff fileId
+1  HU12 2004   -9.750    889  ????
+2  HU27 2003   -8.750    776  mislabeled??
+3  HU37 2004   -6.750    895  definition
+4  HU15 2004   -6.250    890  definition
+5  HU48 1999   -5.750    333  definition
+6  HU37 2005    5.550   1012  definition
+7  HU09 2004   -4.750    888  definition
+8  HU53 2003   -4.250    783  mislabeled
+9  HU45 2004   -3.750    897  mislabeled
+10 HU53 1998    3.650    229  mislabeled
+11 HU09 1998    2.750    216  mislabeled
+12 HU15 1998   -2.750    218
+13 HU54 2008    2.750   1359
+14 HU48 2000   -2.620    448
+15 HU09 2000    2.573    437
+16 HU54 2007    2.350   1246
+17 HU12 1999    2.250    323
+18 HU15 1999    2.250    324
+19 HU15 2007    2.250   1236
+20 HU38 1999    2.250    330
+[1] "print difference with expert "
+   site year LEP_diff fileId
+1  MI27 2004   -6.750    916  mislabeled
+2  MI18 2005   -5.750   1028  double shape
+3  MI18 1998    5.450    241  mislabeled
+4  MI27 2003   -4.750    799  definition
+5  MI41 2011   -4.750   1726  definition
+6  MI34 2006   -4.650   1150  double shape
+7  MI11 1999    3.750    344  mislabeled
+8  MI17 1999    3.750    345  mislabeled
+9  MI32 1998    3.750    246
+10 MI41 1999    3.750    359
+11 MI27 2001   -3.250    589
+12 MI41 2001    3.250    596
+13 MI34 2005    3.050   1036
+14 MI18 1999    2.750    346
+15 MI40 1999    2.750    356
+16 MI11 1998    2.544    239
+17 MI18 2006   -2.450   1141
+18 MI23 1999    2.250    349
+19 MI23 2004   -2.250    915
+20 MI47 2003   -2.250    809
+[1] "print difference with expert "
+   site year LEP_diff fileId
+1  ON63 2003   -9.250    826  definition
+2  ON25 2007   -4.350   1281  definition
+3  ON41 2005   -4.150   1053  shape
+4  ON33 2005   -4.050   1051  double shape
+5  ON60 2003   -3.750    825  definition
+6  ON12 2000    3.716    481  definition
+7  ON63 2000    3.432    491  definition
+8  ON25 2006    3.250   1195  definition
+9  ON60 2007   -3.250   1289  double shape
+10 ON60 2000    2.941    490
+11 ON33 2001   -2.750    609
+12 ON41 1998    2.750    259
+13 ON55 2001   -2.750    614
+14 ON55 2011   -2.750   1744
+15 ON41 2000   -2.679    485
+16 ON55 2003   -2.250    824
+17 ON55 1999    1.950    383
+18 ON63 1999    1.950    387
+19 ON41 2007    1.850   1285
+20 ON49 1999   -1.850    380
+[1] "print difference with expert "
+   site year LEP_diff fileId
+1  SU09 2004    -7.25    966  noise/shape
+2  SU06 2003    -6.75    844  definition
+3  SU05 1999    -5.75    395  definition
+4  SU08 1998     4.75    293  error
+5  SU11 2004    -4.75    968  definition
+6  SU14 2004     4.75    971  definition  
+7  SU19 2007    -4.65   1318  mislabeled
+8  SU01 2003    -4.25    839  mislabeled
+9  SU08 2003    -4.25    847  definition
+10 SU10 1999    -4.25    401  shape
+11 SU15 1999    -4.25    407  mislabeled
+12 SU16 2005    -4.25   1079  mislabeled
+13 SU01 2004     3.75    955  mislabeled
+14 SU02 1998     3.75    273  definition
+15 SU02 2004    -3.75    957  mislabeled
+16 SU05 2004     3.75    961  normal
+17 SU12 1999    -3.75    404  mislabeled
+18 SU01 2009    -3.65   1528  mislabeled
+19 SU06 1998     3.35    279  
+20 SU08 2005    -3.25   1072  definition
+
+     site year fileId expert_LEP LEP_diff LEP_segment
+33   ER15 1998    190     20.000       NA          NA   gradient
+44   ER15 2009   1444     12.400       NA          NA   gradient   
+65   ER31 1998    192     15.000       NA          NA   gradient
+113  ER37 1998    195      7.000       NA          NA   gradient
+178  ER58 1999    307      3.300       NA          NA   bad data
+195  ER59 2000    427      3.276       NA          NA   bad data
+211  ER60 2000    428      3.209       NA          NA   bad data
+226  ER61 1999    310      2.700       NA          NA   bad data
+260  ER73 2001    558     15.000       NA          NA   gradient
+306  ER92 1999    317      3.500       NA          NA   bad data
+309  ER92 2002    662      4.000       NA          NA   bad data
+374  HU09 2003    773      8.000       NA          NA   gradient
+439  HU32 2004    893     13.000       NA          NA   gradient
+470  HU38 2003    779      7.300       NA          NA   gradient
+502  HU48 2003    782      6.000       NA          NA   gradient
+504  HU48 2005   1016      6.500       NA          NA   gradient
+536  HU54 2005   1018      9.200       NA          NA   shape
+678  MI18 2003    795     12.000       NA          NA   gradient
+683  MI18 2008   1370      9.000       NA          NA   gradient
+686  MI18 2011   1715      9.300       NA          NA   gradient
+777  MI32 2006   1149      7.100       NA          NA   gradient
+826  MI41 2007   1268      8.900       NA          NA   gradient
+977  ON12 1998    255     10.000       NA          NA   gradient
+978  ON12 1999    370      6.000       NA          NA   gradient
+993  ON25 1998    256     10.000       NA          NA   mislabeled
+994  ON25 1999    371      4.800       NA          NA   mislabeled
+998  ON25 2003    818      3.000       NA          NA   limitation
+1010 ON33 1999    372     10.200       NA          NA   noise
+1014 ON33 2003    820      4.000       NA          NA   gradient
+1098 ON63 2007   1290     13.900       NA          NA   double
+1198 SU01 2011   1753      9.100       NA          NA   definition
+1223 SU03 2004    958     12.000       NA          NA   mislabeled
+1286 SU07 2003    845      7.000       NA          NA   limitation/gradient
+1287 SU07 2004    963      6.000       NA          NA   definition/gradient
+1346 SU11 1999    402      5.000       NA          NA   small EPI
+1378 SU13 1999    405      8.000       NA          NA   gradient
+1383 SU13 2004    970      5.000       NA          NA   mislabeled
+1394 SU14 1999    406     13.000       NA          NA   first seg large G
+1442 SU17 1999    409     12.000       NA          NA   gradient
+1450 SU17 2007   1315      8.800       NA          NA   gradient
+1458 SU18 1999    410      5.000       NA          NA   gradient
+1479 SU19 2004    977      4.000       NA          NA   range
+1481 SU19 2006   1185      7.000       NA          NA   gradient
+[1] "LEP"
+# A tibble: 5 × 5
+   lake totalN only_pred only_expert allExist
+  <chr>  <int>     <int>       <int>    <int>
+1    ER    352       132          11      140
+2    HU    288       149           6      110
+3    MI    336       210           5       82
+4    ON    208        97           8       58
+5    SU    368       189          13      132
+$stats
+      [,1]    [,2]  [,3]   [,4]  [,5]
+[1,] -2.75 -4.2500 -3.25 -4.350 -3.25
+[2,] -0.75 -0.7500 -0.55 -1.250 -0.45
+[3,]  0.15  0.5065  0.25  0.250  0.65
+[4,]  0.60  1.7330  1.25  1.550  1.55
+[5,]  2.15  3.6500  3.75  3.716  3.75
+
+$n
+[1] 140 110  82  58 132
+
+$conf
+           [,1]      [,2]        [,3]       [,4]      [,5]
+[1,] -0.0302714 0.1324433 -0.06406726 -0.3308997 0.3749573
+[2,]  0.3302714 0.8805567  0.56406726  0.8308997 0.9250427
+
+$out
+ [1]  -4.750  -4.750 -12.250   2.750  -4.250   2.650  -3.250  -7.550  -5.350  -5.750  -3.850  -6.250  -9.050  -4.750
+[15]  -7.050  -7.850  -5.450  -4.750   2.649  -4.250  -4.750  -9.750  -6.250  -8.750  -6.750   5.550  -5.750   5.450
+[29]  -5.750  -4.750  -6.750  -4.650  -4.750  -9.250  -4.250  -3.650  -3.750  -5.750  -6.750   4.750  -4.250  -7.250
+[43]  -4.250  -4.750  -3.750   4.750  -4.250  -4.250  -4.650
+
+$group
+ [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 3 3 3 3 3 3 4 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5
+
+$names
+[1] "ER" "HU" "MI" "ON" "SU"
+
+[1] "****************"
+ TRM_diff_HMM_seg   LEP_diff_HMM_seg  UHY_diff_HMM_seg  
+ Min.   :-28.7500   Min.   :-32.750   Min.   :-98.2500  
+ 1st Qu.: -0.2500   1st Qu.: -4.750   1st Qu.: -4.4375  
+ Median :  0.0000   Median :  0.000   Median :  0.2500  
+ Mean   :  0.1221   Mean   : -3.022   Mean   : -0.3815  
+ 3rd Qu.:  0.2500   3rd Qu.:  0.250   3rd Qu.:  5.2500  
+ Max.   : 39.0000   Max.   : 14.250   Max.   : 42.5000  
+ NA's   :149        NA's   :276       NA's   :246       
+   fileId site year TRM_diff_HMM_seg
+1     519 SU23 2000            39.00
+2     413 SU22 1999            38.00
+3    1544 SU15 2009           -28.75
+4     961 SU05 2004            20.50
+5    1439 SU23 2008           -19.75
+6    1494 MI30 2009           -18.75
+7    2012 SU21 2013           -18.50
+8     778 HU37 2003           -17.75
+9     907 HU96 2004            17.50
+10    807 MI42 2003            17.00
+11    731 SU06 2002            13.25
+12    869 ER31 2004            12.75
+13    614 ON55 2001           -12.75
+14    466 MI30 2000           -12.25
+15   1250 HU95 2007            11.75
+16    569 HU27 2001            10.50
+    fileId site year LEP_diff_HMM_seg
+1      287 SU15 1998           -32.75
+2      363 MI47 1999           -27.75
+3      614 ON55 2001           -27.25
+4      964 SU08 2004           -27.25
+5      692 MI32 2002           -26.75
+6      733 SU08 2002           -26.00
+7     1722 MI32 2011           -24.50
+8      743 SU18 2002           -23.75
+9     1433 SU17 2008           -23.50
+10    1611 MI41 2010           -22.75
+11     633 SU12 2001           -22.75
+12    1141 MI18 2006           -22.50
+13     972 SU15 2004           -22.50
+14    1888 SU15 2012           -22.50
+15     566 HU12 2001           -22.00
+16    1308 SU10 2007           -22.00
+17     404 SU12 1999           -21.50
+18    1507 MI51 2009           -21.25
+19     512 SU15 2000           -20.75
+20     787 HU93 2003           -20.50
+21    1171 SU07 2006           -20.25
+22     611 ON41 2001           -20.00
+23     401 SU10 1999           -20.00
+24    1313 SU15 2007           -20.00
+25     698 MI47 2002           -19.75
+26    1971 ON12 2013           -19.75
+27    1241 HU38 2007           -19.50
+28     895 HU37 2004           -19.25
+29    1990 SU03 2013           -19.25
+30    1650 SU10 2010           -19.25
+31    1655 SU15 2010           -19.25
+32    1175 SU10 2006           -18.75
+33    1266 MI34 2007           -18.50
+34    1935 HU53 2013           -18.25
+35    1380 MI41 2008           -18.25
+36    1167 SU03 2006           -18.25
+37    1654 SU14 2010           -18.25
+38    1180 SU15 2006           -18.25
+39     897 HU45 2004           -18.00
+40    1150 MI34 2006           -18.00
+41    1272 MI47 2007           -18.00
+42    1300 SU03 2007           -18.00
+43     594 MI34 2001           -17.75
+44     806 MI41 2003           -17.75
+45     939 ON25 2004           -17.75
+46     609 ON33 2001           -17.75
+47     393 SU03 1999           -17.75
+48    1302 SU05 2007           -17.75
+49    1133 HU61 2006           -17.50
+50     966 SU09 2004           -17.50
+51     737 SU12 2002           -17.25
+52    2011 SU20 2013           -17.25
+53    1973 ON33 2013           -17.00
+54     942 ON41 2004           -17.00
+55    1632 ON60 2010           -17.00
+56     889 HU12 2004           -16.50
+57    1698 HU38 2011           -16.50
+58     968 SU11 2004           -16.25
+59     776 HU27 2003           -16.00
+60     944 ON55 2004           -16.00
+61    1172 SU08 2006           -16.00
+62    1539 SU10 2009           -16.00
+63     826 ON63 2003           -15.75
+64    1769 SU15 2011           -15.75
+65     638 SU17 2001           -15.75
+66    1967 MI51 2013           -15.50
+67    1304 SU07 2007           -15.50
+68    1356 HU45 2008           -15.25
+69     813 MI51 2003           -15.25
+70    1512 ON25 2009           -15.25
+71     485 ON41 2000           -15.25
+72    1989 SU02 2013           -15.25
+73    1174 SU09 2006           -15.25
+74     572 HU38 2001           -15.00
+75    1267 MI40 2007           -15.00
+76     693 MI34 2002           -14.75
+77     396 SU06 1999           -14.75
+78     407 SU15 1999           -14.75
+79    1186 SU20 2006           -14.75
+80     890 HU15 2004           -14.50
+81    1938 HU61 2013           -14.50
+82    1955 MI32 2013           -14.50
+83    1307 SU09 2007           -14.50
+84     616 ON60 2001           -14.25
+85    1866 ON65 2012            14.25
+86     843 SU05 2003           -14.25
+87    1425 SU10 2008           -14.25
+88    1318 SU19 2007           -14.25
+89    1496 MI32 2009           -14.00
+90    1502 MI46 2009           -14.00
+91    1162 MI53 2006           -14.00
+92     824 ON55 2003           -14.00
+93    1702 HU53 2011           -13.75
+94     624 SU03 2001           -13.75
+95    1644 SU05 2010           -13.75
+96    1760 SU07 2011           -13.75
+97    2009 SU18 2013           -13.75
+98    1457 ER63 2009           -13.50
+99    1755 SU02 2011           -13.50
+100   1874 SU03 2012           -13.50
+    fileId site year UHY_diff_HMM_seg
+1     1655 SU15 2010           -98.25
+2     1380 MI41 2008           -63.75
+3      744 SU19 2002           -62.25
+4     1430 SU15 2008           -53.50
+5     1433 SU17 2008           -53.25
+6      806 MI41 2003           -53.00
+7     1378 MI34 2008           -49.75
+8     1611 MI41 2010           -48.00
+9     1540 SU11 2009           -44.50
+10     363 MI47 1999           -44.25
+11     633 SU12 2001           -43.25
+12    1888 SU15 2012           -43.25
+13     233 HU93 1998            42.50
+14     400 SU09 1999           -42.25
+15    1972 ON25 2013           -41.75
+16     594 MI34 2001           -40.75
+17    1072 SU08 2005           -40.00
+18    1180 SU15 2006           -40.00
+19    1537 SU08 2009           -39.00
+20    1204 ON63 2006            38.50
+21    1549 SU19 2009           -38.00
+22    1078 SU15 2005           -37.00
+23    1958 MI41 2013           -36.50
+24     630 SU09 2001           -36.50
+25     631 SU10 2001           -36.00
+26    1305 SU08 2007           -35.75
+27    2004 SU15 2013           -35.75
+28    1726 MI41 2011           -35.50
+29     259 ON41 1998            35.50
+30    1401 ON63 2008            35.50
+31     692 MI32 2002           -35.25
+32     964 SU08 2004           -34.75
+33     404 SU12 1999           -34.75
+34     223 HU37 1998            34.25
+35    1379 MI40 2008           -34.00
+36    1973 ON33 2013           -34.00
+37    2003 SU14 2013           -33.75
+38    1619 MI51 2010            33.50
+39     257 ON33 1998           -33.50
+40    1512 ON25 2009           -33.25
+41     227 HU48 1998            33.00
+42     241 MI18 1998            33.00
+43    1358 HU53 2008            32.50
+44     372 ON33 1999           -32.50
+45    1297 SU01 2007            32.50
+46    1174 SU09 2006           -32.25
+47     640 SU19 2001           -32.25
+48    1821 HU61 2012            31.50
+49    1528 SU01 2009            31.50
+50     222 HU32 1998            31.25
+51     229 HU53 1998            31.00
+52     623 SU02 2001           -30.75
+53     737 SU12 2002           -30.75
+54    1733 MI51 2011            30.50
+55     743 SU18 2002           -30.00
+56     675 HU53 2002            29.75
+57     622 SU01 2001            29.75
+58    1769 SU15 2011           -29.75
+59     931 MI51 2004            29.50
+60     845 SU07 2003           -29.50
+61     334 HU53 1999            28.75
+62    1283 ON33 2007           -28.75
+63    1400 ON60 2008           -28.75
+64     402 SU11 1999           -28.75
+65     244 MI23 1998            28.50
+66    1392 ON12 2008           -28.50
+67     728 SU03 2002           -28.50
+68    1722 MI32 2011           -28.25
+69    1971 ON12 2013           -28.25
+70    1315 SU17 2007           -28.25
+71    1879 SU08 2012           -28.00
+72     474 MI47 2000           -27.50
+73    1313 SU15 2007           -27.50
+74     971 SU14 2004           -27.25
+75    1717 MI23 2011            27.00
+76    1152 MI41 2006           -27.00
+77     512 SU15 2000           -26.75
+78     632 SU11 2001           -26.25
+79     243 MI19 1998            26.00
+80     796 MI19 2003            26.00
+81     478 MI51 2000            26.00
+82    1734 MI52 2011            26.00
+83     933 MI53 2004            26.00
+84    1290 ON63 2007            26.00
+85    1307 SU09 2007           -26.00
+86    1654 SU14 2010           -26.00
+87     218 HU15 1998            25.75
+88    1393 ON25 2008           -25.75
+89    1308 SU10 2007           -25.75
+90     359 MI41 1999           -25.50
+91     698 MI47 2002           -25.50
+92     932 MI52 2004            25.50
+93    1075 SU12 2005           -25.50
+94    1711 MI11 2011            25.25
+95     589 MI27 2001            25.25
+96    1388 MI51 2008            25.00
+97    1511 ON12 2009           -25.00
+98    1304 SU07 2007           -25.00
+99    1878 SU07 2012           -25.00
+100   2010 SU19 2013           -25.00
+[1] "****************"
+[1] "Doing DCL algorithm"
+[1] "****************"
+[1] "*******"
+[1] "ER"
+[1] "*******"
+[1] "good fit ratio 0.198863636363636"
+ DCL_upperSize    DCL_bottomSize   DCL_sizeRatio         DCL_size    
+ Min.   : 2.250   Min.   : 1.250   Min.   :-0.51429   Min.   :13.25  
+ 1st Qu.: 3.750   1st Qu.: 2.750   1st Qu.:-0.15110   1st Qu.:29.19  
+ Median : 6.625   Median : 4.250   Median : 0.06745   Median :34.12  
+ Mean   : 7.018   Mean   : 6.136   Mean   : 0.09187   Mean   :35.61  
+ 3rd Qu.: 9.938   3rd Qu.: 7.875   3rd Qu.: 0.36112   3rd Qu.:38.75  
+ Max.   :16.000   Max.   :22.250   Max.   : 0.71831   Max.   :60.50  
+[1] "peak size"
+   year site DCL_size DCL_upperSize DCL_bottomSize DCL_depth DCL_upperDepth_fit DCL_bottomDepth_fit fileId
+1  1998 ER09    60.50          3.75           8.50     26.00              22.25               34.50    188
+2  2001 ER63    60.25         16.00          12.25     24.00               8.00               36.25    557
+3  2013 ER63    56.75          5.00           7.25     24.75              19.75               32.00   1915
+4  2001 ER15    55.25          8.25          14.25     20.50              12.25               34.75    544
+5  2005 ER09    55.00         15.50          17.50     18.75               3.25               36.25    982
+6  2001 ER09    53.00         11.50          11.50     20.75               9.25               32.25    542
+7  2002 ER09    50.75          4.25          13.25     18.75              14.50               32.00    643
+8  1999 ER10    50.75          8.25          11.25     19.75              11.50               31.00    296
+9  2001 ER93    49.75          7.25          22.25     13.75               6.50               36.00    562
+10 2005 ER15    46.25          4.00          12.25     17.00              13.00               29.25    984
+[1] "*******"
+[1] "HU"
+[1] "*******"
+[1] "good fit ratio 0.420138888888889"
+ DCL_upperSize   DCL_bottomSize  DCL_sizeRatio        DCL_size     
+ Min.   : 5.25   Min.   : 3.00   Min.   :-0.6777   Min.   : 54.00  
+ 1st Qu.:14.00   1st Qu.:13.00   1st Qu.:-0.1776   1st Qu.: 87.75  
+ Median :18.50   Median :18.75   Median : 0.0000   Median : 98.50  
+ Mean   :20.37   Mean   :21.42   Mean   : 0.0116   Mean   : 98.00  
+ 3rd Qu.:25.75   3rd Qu.:26.75   3rd Qu.: 0.1806   3rd Qu.:110.00  
+ Max.   :44.50   Max.   :95.00   Max.   : 0.8310   Max.   :139.00  
+[1] "peak size"
+   year site DCL_size DCL_upperSize DCL_bottomSize DCL_depth DCL_upperDepth_fit DCL_bottomDepth_fit fileId
+1  2013 HU54   139.00         18.25          95.00     22.00               3.75              117.00   1936
+2  2012 HU45   134.00         28.50          34.00     50.00              21.50               84.00   1815
+3  2009 HU45   132.00         22.00          56.00     38.00              16.00               94.00   1475
+4  2012 HU54   125.25         13.25          15.25     55.00              41.75               70.25   1819
+5  2013 HU38   125.00         24.25          41.00     42.00              17.75               83.00   1931
+6  1999 HU48   125.00         33.00          43.00     41.00               8.00               84.00    333
+7  2012 HU48   122.25          9.50          29.75     46.25              36.75               76.00   1817
+8  2001 HU54   121.50         44.50          26.00     47.75               3.25               73.75    576
+9  2012 HU38   121.25         11.00          14.75     53.25              42.25               68.00   1814
+10 2010 HU38   119.25         30.75          23.75     47.75              17.00               71.50   1587
+[1] "*******"
+[1] "MI"
+[1] "*******"
+[1] "good fit ratio 0.44047619047619"
+ DCL_upperSize   DCL_bottomSize  DCL_sizeRatio         DCL_size     
+ Min.   : 3.00   Min.   : 3.00   Min.   :-0.85542   Min.   : 26.75  
+ 1st Qu.:10.00   1st Qu.:15.50   1st Qu.:-0.42641   1st Qu.: 64.75  
+ Median :15.00   Median :20.88   Median :-0.15908   Median : 79.75  
+ Mean   :16.92   Mean   :24.46   Mean   :-0.16802   Mean   : 79.81  
+ 3rd Qu.:21.50   3rd Qu.:28.94   3rd Qu.: 0.05967   3rd Qu.: 97.31  
+ Max.   :50.25   Max.   :72.00   Max.   : 0.57377   Max.   :151.75  
+[1] "peak size"
+   year site DCL_size DCL_upperSize DCL_bottomSize DCL_depth DCL_upperDepth_fit DCL_bottomDepth_fit fileId
+1  2001 MI40   151.75         47.00          41.75     55.00               8.00               96.75    595
+2  2013 MI34   150.25         45.00          53.75     48.25               3.25              102.00   1956
+3  2013 MI40   131.00         14.25          65.50     32.75              18.50               98.25   1957
+4  2013 MI27   128.75         50.25          21.75     53.50               3.25               75.25   1950
+5  2013 MI18   126.50         43.25          33.50     46.50               3.25               80.00   1946
+6  2013 MI32   126.25         14.50          70.75     27.75              13.25               98.50   1955
+7  2011 MI18   121.25         12.00          61.75     29.75              17.75               91.50   1715
+8  2009 MI11   121.00         24.75          38.50     41.25              16.50               79.75   1486
+9  2011 MI11   117.50         34.25          42.50     37.50               3.25               80.00   1711
+10 2009 MI51   116.25         13.00          26.25     45.00              32.00               71.25   1507
+[1] "*******"
+[1] "ON"
+[1] "*******"
+[1] "good fit ratio 0.461538461538462"
+ DCL_upperSize    DCL_bottomSize  DCL_sizeRatio         DCL_size    
+ Min.   : 2.500   Min.   : 3.25   Min.   :-0.75887   Min.   :19.75  
+ 1st Qu.: 5.500   1st Qu.:10.50   1st Qu.:-0.49076   1st Qu.:44.38  
+ Median : 8.000   Median :16.62   Median :-0.28901   Median :51.62  
+ Mean   : 9.013   Mean   :16.79   Mean   :-0.26843   Mean   :52.04  
+ 3rd Qu.:10.812   3rd Qu.:20.31   3rd Qu.:-0.09487   3rd Qu.:60.00  
+ Max.   :22.500   Max.   :45.00   Max.   : 0.60748   Max.   :99.50  
+[1] "peak size"
+   year site DCL_size DCL_upperSize DCL_bottomSize DCL_depth DCL_upperDepth_fit DCL_bottomDepth_fit fileId
+1  2011 ON60    99.50         16.75          45.00     27.25              10.50               72.25   1745
+2  2001 ON60    87.00         18.00          44.50     21.25               3.25               65.75    616
+3  2011 ON55    74.25          5.00          18.75     27.75              22.75               46.50   1744
+4  2004 ON41    72.00          4.25          31.00     20.50              16.25               51.50    942
+5  2000 ON33    71.50         10.25          32.00     19.75               9.50               51.75    483
+6  2000 ON12    71.25         22.50          19.75     25.75               3.25               45.50    481
+7  1998 ON41    71.25         10.25          38.75     16.25               6.00               55.00    259
+8  2006 ON41    71.25          5.75          29.25     21.00              15.25               50.25   1199
+9  2001 ON12    68.00         10.00          19.50     24.25              14.25               43.75    607
+10 2000 ON25    67.50         17.50          21.50     23.00               5.50               44.50    482
+[1] "*******"
+[1] "SU"
+[1] "*******"
+[1] "good fit ratio 0.769021739130435"
+ DCL_upperSize   DCL_bottomSize  DCL_sizeRatio         DCL_size     
+ Min.   : 2.75   Min.   : 7.50   Min.   :-0.90977   Min.   : 33.00  
+ 1st Qu.:16.25   1st Qu.:23.25   1st Qu.:-0.40372   1st Qu.: 81.00  
+ Median :21.00   Median :31.00   Median :-0.18280   Median : 91.00  
+ Mean   :21.45   Mean   :33.04   Mean   :-0.19657   Mean   : 91.55  
+ 3rd Qu.:27.25   3rd Qu.:39.88   3rd Qu.: 0.01074   3rd Qu.:102.25  
+ Max.   :49.00   Max.   :78.25   Max.   : 0.62195   Max.   :145.25  
+[1] "peak size"
+   year site DCL_size DCL_upperSize DCL_bottomSize DCL_depth DCL_upperDepth_fit DCL_bottomDepth_fit fileId
+1  2008 SU08   145.25         13.00          78.25     33.50              20.50              111.75   1423
+2  2007 SU08   134.75         35.75          56.75     39.00               3.25               95.75   1305
+3  2012 SU05   133.25         49.00          28.75     52.25               3.25               81.00   1876
+4  2008 SU09   130.25         25.25          73.25     28.50               3.25              101.75   1424
+5  1998 SU15   129.75         34.50          54.25     37.75               3.25               92.00    287
+6  1998 SU06   129.25         30.00          46.75     41.25              11.25               88.00    279
+7  1999 SU06   128.00         16.50          60.50     33.75              17.25               94.25    396
+8  2003 SU08   128.00         21.75          53.50     37.25              15.50               90.75    847
+9  2012 SU10   126.75         40.00          40.25     43.25               3.25               83.50   1883
+10 2012 SU08   126.25         29.75          53.75     36.25               6.50               90.00   1879
+[1] "all data"
+ DCL_upperSize   DCL_bottomSize  DCL_sizeRatio        DCL_size     
+ Min.   : 2.25   Min.   : 1.25   Min.   :-0.9098   Min.   : 13.25  
+ 1st Qu.: 9.75   1st Qu.:14.25   1st Qu.:-0.3819   1st Qu.: 59.31  
+ Median :16.25   Median :22.00   Median :-0.1355   Median : 83.25  
+ Mean   :17.27   Mean   :24.52   Mean   :-0.1371   Mean   : 79.48  
+ 3rd Qu.:24.00   3rd Qu.:32.50   3rd Qu.: 0.0610   3rd Qu.: 99.25  
+ Max.   :50.25   Max.   :95.00   Max.   : 0.8310   Max.   :151.75  
+[1] "peak size"
+   year site DCL_size DCL_upperSize DCL_bottomSize DCL_depth DCL_upperDepth_fit DCL_bottomDepth_fit fileId
+1  2001 MI40   151.75         47.00          41.75     55.00               8.00               96.75    595
+2  2013 MI34   150.25         45.00          53.75     48.25               3.25              102.00   1956
+3  2008 SU08   145.25         13.00          78.25     33.50              20.50              111.75   1423
+4  2013 HU54   139.00         18.25          95.00     22.00               3.75              117.00   1936
+5  2007 SU08   134.75         35.75          56.75     39.00               3.25               95.75   1305
+6  2012 HU45   134.00         28.50          34.00     50.00              21.50               84.00   1815
+7  2012 SU05   133.25         49.00          28.75     52.25               3.25               81.00   1876
+8  2009 HU45   132.00         22.00          56.00     38.00              16.00               94.00   1475
+9  2013 MI40   131.00         14.25          65.50     32.75              18.50               98.25   1957
+10 2008 SU09   130.25         25.25          73.25     28.50               3.25              101.75   1424
+[1] "sizeRatio descrease"
+   year site DCL_sizeRatio DCL_upperSize DCL_bottomSize DCL_depth DCL_upperDepth_fit DCL_bottomDepth_fit fileId
+1  2000 HU09     0.8309859         32.50           3.00     43.00              10.50               46.00    437
+2  2003 HU27     0.7373737         21.50           3.25     34.75              13.25               38.00    776
+3  2004 HU27     0.7217391         24.75           4.00     37.75              13.00               41.75    892
+4  2010 ER37     0.7183099         15.25           2.50     18.50               3.25               21.00   1563
+5  2008 ER78     0.7049180         13.00           2.25     16.25               3.25               18.50   1340
+6  2010 HU95     0.6739130         19.25           3.75     44.25              25.00               48.00   1596
+7  2003 ER36     0.6470588         10.50           2.25     18.25               7.75               20.50    755
+8  2010 ER30     0.6326531         10.00           2.25     13.25               3.25               15.50   1559
+9  2001 ER37     0.6231884         14.00           3.25     17.25               3.25               20.50    549
+10 2008 SU17     0.6219512         33.25           7.75     36.50               3.25               44.25   1433
+[1] "sizeRatio increase"
+   year site DCL_sizeRatio DCL_upperSize DCL_bottomSize DCL_depth DCL_upperDepth_fit DCL_bottomDepth_fit fileId
+1  2008 SU11    -0.9097744          3.00          63.50     12.50               9.50               76.00   1426
+2  2004 SU15    -0.8717949          5.00          73.00      9.00               4.00               82.00    972
+3  1999 MI51    -0.8554217          4.50          57.75     11.00               6.50               68.75    367
+4  2001 SU13    -0.8502203          4.25          52.50     13.50               9.25               66.00    634
+5  1999 MI47    -0.7979798          7.50          66.75     16.25               8.75               83.00    363
+6  2008 SU22    -0.7962963          2.75          24.25     15.00              12.25               39.25   1438
+7  2004 ON41    -0.7588652          4.25          31.00     20.50              16.25               51.50    942
+8  2005 SU19    -0.7485714          5.50          38.25      8.75               3.25               47.00   1085
+9  2003 MI42    -0.7431193          3.50          23.75      6.75               3.25               30.50    807
+10 2000 SU13    -0.7426901          5.50          37.25     15.50              10.00               52.75    510
+[1] "sizeRatio middle"
+    year site DCL_sizeRatio DCL_upperSize DCL_bottomSize DCL_depth DCL_upperDepth_fit DCL_bottomDepth_fit fileId
+4   2001 ER09   0.000000000         11.50          11.50     20.75               9.25               32.25    542
+53  2002 ER30   0.018867925          6.75           6.50     10.00               3.25               16.50    646
+57  2006 ER30  -0.015384615          8.00           8.25     11.25               3.25               19.50   1095
+100 2001 ER36   0.041666667          6.25           5.75     13.75               7.50               19.50    548
+106 2007 ER36   0.049180328          8.00           7.25     11.25               3.25               18.50   1216
+139 2008 ER38   0.000000000          2.50           2.50     12.00               9.50               14.50   1331
+168 2005 ER43   0.000000000          2.25           2.25     16.00              13.75               18.25    993
+358 2003 HU06  -0.015873016          7.75           8.00     30.00              22.25               38.00    772
+387 2000 HU12   0.008547009         14.75          14.50     41.00              26.25               55.50    438
+388 2001 HU12  -0.009174312         13.50          13.75     44.50              31.00               58.25    566
+[1] "****************"
+[1] "Doing TRM analysis"
+[1] "*******"
+[1] "ER"
+[1] "*******"
+ TRM_num_segment TRM2UHY_segNum 
+ Min.   : 2.00   Min.   :0.000  
+ 1st Qu.: 3.00   1st Qu.:1.000  
+ Median : 5.00   Median :2.000  
+ Mean   : 5.12   Mean   :1.874  
+ 3rd Qu.: 6.00   3rd Qu.:2.000  
+ Max.   :10.00   Max.   :6.000  
+ NA's   :11      NA's   :11     
+  site year doubleTRM fileId
+1 ER42 2001         1    551
+2 ER43 2004         1    875
+3 ER63 2007         1   1225
+4 ER78 2009         1   1459
+   site year positiveGradient fileId
+1  ER58 2008                2   1334
+2  ER58 2012                2   1792
+3  ER91 2012                2   1800
+4  ER95 2011                2   1688
+5  ER09 2012                1   1780
+6  ER10 2012                1   1781
+7  ER30 2013                1   1903
+8  ER31 2003                1    753
+9  ER32 2006                1   1097
+10 ER37 2003                1    756
+11 ER37 2007                1   1217
+12 ER42 2002                1    652
+13 ER42 2004                1    874
+14 ER43 2004                1    875
+15 ER43 2010                1   1566
+16 ER58 1998                1    200
+17 ER58 2011                1   1678
+18 ER59 2002                1    655
+19 ER59 2006                1   1105
+20 ER59 2013                1   1912
+21 ER60 2002                1    656
+22 ER60 2009                1   1455
+23 ER60 2010                1   1569
+24 ER60 2013                1   1913
+25 ER61 2001                1    556
+26 ER61 2007                1   1224
+27 ER61 2012                1   1795
+28 ER73 2008                1   1339
+29 ER78 2012                1   1799
+30 ER91 2013                1   1918
+31 ER92 2009                1   1461
+32 ER93 1998                1    209
+33 ER93 2009                1   1462
+34 ER93 2012                1   1803
+35 ER95 2008                1   1344
+[1] "*******"
+[1] "HU"
+[1] "*******"
+ TRM_num_segment  TRM2UHY_segNum 
+ Min.   : 3.000   Min.   :0.000  
+ 1st Qu.: 7.000   1st Qu.:3.000  
+ Median : 8.000   Median :4.000  
+ Mean   : 7.583   Mean   :4.156  
+ 3rd Qu.: 8.000   3rd Qu.:5.000  
+ Max.   :35.000   Max.   :8.000  
+ NA's   :12       NA's   :12     
+  site year doubleTRM fileId
+1 HU27 2001         1    569
+2 HU48 2001         1    574
+3 HU53 2011         1   1702
+4 HU54 2005         1   1018
+5 HU96 2004         1    907
+   site year positiveGradient fileId
+1  HU61 2010               15   1594
+2  HU12 2007                1   1235
+3  HU27 2003                1    776
+4  HU32 2004                1    893
+5  HU37 2004                1    895
+6  HU37 2006                1   1125
+7  HU37 2011                1   1697
+8  HU38 2003                1    779
+9  HU38 2006                1   1126
+10 HU38 2009                1   1473
+11 HU48 2010                1   1590
+12 HU48 2012                1   1817
+13 HU53 2009                1   1477
+14 HU54 2000                1    450
+15 HU54 2005                1   1018
+16 HU54 2011                1   1704
+17 HU96 2007                1   1251
+18 HU96 2011                1   1708
+19 HU98 1998                1    214
+[1] "*******"
+[1] "MI"
+[1] "*******"
+ TRM_num_segment  TRM2UHY_segNum 
+ Min.   : 4.000   Min.   :1.000  
+ 1st Qu.: 7.000   1st Qu.:4.000  
+ Median : 8.000   Median :4.000  
+ Mean   : 7.783   Mean   :4.342  
+ 3rd Qu.: 9.000   3rd Qu.:5.000  
+ Max.   :11.000   Max.   :8.000  
+ NA's   :14       NA's   :14     
+   site year doubleTRM fileId
+1  MI30 2000         1    466
+2  MI31 2001         1    592
+3  MI32 2005         1   1035
+4  MI34 2006         1   1150
+5  MI40 1999         1    356
+6  MI42 2004         1    925
+7  MI42 2006         1   1154
+8  MI42 2007         1   1270
+9  MI46 2000         1    473
+10 MI46 2001         1    599
+11 MI48 2003         1    810
+12 MI48 2007         1   1273
+13 MI51 2000         1    478
+14 MI51 2009         1   1507
+15 MI52 1999         1    368
+16 MI53 2009         1   1509
+   site year positiveGradient fileId
+1  MI17 2009                1   1487
+2  MI30 2001                1    591
+3  MI30 2007                1   1263
+4  MI30 2013                1   1952
+5  MI42 2007                1   1270
+6  MI48 2007                1   1273
+7  MI49 2007                1   1274
+8  MI50 2005                1   1045
+9  MI50 2007                1   1275
+10 MI51 2000                1    478
+11 MI52 2005                1   1047
+12 MI52 2009                1   1508
+[1] "*******"
+[1] "ON"
+[1] "*******"
+ TRM_num_segment  TRM2UHY_segNum 
+ Min.   : 2.000   Min.   :0.000  
+ 1st Qu.: 7.000   1st Qu.:4.000  
+ Median : 8.000   Median :5.000  
+ Mean   : 7.631   Mean   :4.328  
+ 3rd Qu.: 9.000   3rd Qu.:5.000  
+ Max.   :13.000   Max.   :8.000  
+ NA's   :13       NA's   :13     
+  site year doubleTRM fileId
+1 ON25 2010         1   1624
+2 ON41 2006         1   1199
+3 ON67 2013         1   1983
+4 ON68 2010         1   1637
+5 ON69 2000         1    496
+   site year positiveGradient fileId
+1  ON33 2012                3   1856
+2  ON12 2007                1   1280
+3  ON33 2005                1   1051
+4  ON41 2001                1    611
+5  ON41 2005                1   1053
+6  ON55 2003                1    824
+7  ON64 2011                1   1747
+8  ON65 2006                1   1206
+9  ON65 2013                1   1982
+10 ON67 2007                1   1293
+11 ON68 2008                1   1404
+12 ON69 2010                1   1638
+13 ON69 2011                1   1751
+[1] "*******"
+[1] "SU"
+[1] "*******"
+ TRM_num_segment  TRM2UHY_segNum 
+ Min.   : 3.000   Min.   :0.000  
+ 1st Qu.: 6.000   1st Qu.:3.000  
+ Median : 7.000   Median :4.000  
+ Mean   : 7.006   Mean   :3.911  
+ 3rd Qu.: 8.000   3rd Qu.:4.000  
+ Max.   :12.000   Max.   :9.000  
+ NA's   :10       NA's   :10     
+   site year doubleTRM fileId
+1  SU01 2001         1    622
+2  SU03 2011         1   1756
+3  SU04 1998         1    277
+4  SU04 2008         1   1418
+5  SU07 2007         1   1304
+6  SU10 2009         1   1539
+7  SU15 2009         1   1544
+8  SU15 2013         1   2004
+9  SU16 2003         1    855
+10 SU17 2003         1    857
+11 SU18 2001         1    639
+12 SU19 2010         1   1660
+13 SU20 2009         1   1550
+14 SU22 2006         1   1188
+15 SU23 2000         1    519
+16 SU23 2004         1    981
+17 SU23 2012         1   1898
+   site year positiveGradient fileId
+1  SU09 1998                3    281
+2  SU19 2013                2   2010
+3  SU04 2006                1   1168
+4  SU05 2001                1    626
+5  SU05 2003                1    843
+6  SU06 2001                1    627
+7  SU06 2012                1   1877
+8  SU10 2007                1   1308
+9  SU11 2002                1    736
+10 SU11 2004                1    968
+11 SU14 2001                1    635
+12 SU14 2010                1   1654
+13 SU16 2008                1   1431
+14 SU18 2003                1    858
+15 SU20 2003                1    860
+16 SU20 2010                1   1661
+17 SU21 2006                1   1187
+18 SU22 2008                1   1438
+[1] "All data"
+ TRM_num_segment  TRM2UHY_segNum 
+ Min.   : 2.000   Min.   :0.000  
+ 1st Qu.: 6.000   1st Qu.:3.000  
+ Median : 7.000   Median :4.000  
+ Mean   : 6.931   Mean   :3.638  
+ 3rd Qu.: 8.000   3rd Qu.:5.000  
+ Max.   :35.000   Max.   :9.000  
+ NA's   :60       NA's   :60     
+   site year doubleTRM fileId
+1  ER42 2001         1    551
+2  ER43 2004         1    875
+3  ER63 2007         1   1225
+4  ER78 2009         1   1459
+5  HU27 2001         1    569
+6  HU48 2001         1    574
+7  HU53 2011         1   1702
+8  HU54 2005         1   1018
+9  HU96 2004         1    907
+10 MI30 2000         1    466
+11 MI31 2001         1    592
+12 MI32 2005         1   1035
+13 MI34 2006         1   1150
+14 MI40 1999         1    356
+15 MI42 2004         1    925
+16 MI42 2006         1   1154
+17 MI42 2007         1   1270
+18 MI46 2000         1    473
+19 MI46 2001         1    599
+20 MI48 2003         1    810
+21 MI48 2007         1   1273
+22 MI51 2000         1    478
+23 MI51 2009         1   1507
+24 MI52 1999         1    368
+25 MI53 2009         1   1509
+26 ON25 2010         1   1624
+27 ON41 2006         1   1199
+28 ON67 2013         1   1983
+29 ON68 2010         1   1637
+30 ON69 2000         1    496
+31 SU01 2001         1    622
+32 SU03 2011         1   1756
+33 SU04 1998         1    277
+34 SU04 2008         1   1418
+35 SU07 2007         1   1304
+36 SU10 2009         1   1539
+37 SU15 2009         1   1544
+38 SU15 2013         1   2004
+39 SU16 2003         1    855
+40 SU17 2003         1    857
+41 SU18 2001         1    639
+42 SU19 2010         1   1660
+43 SU20 2009         1   1550
+44 SU22 2006         1   1188
+45 SU23 2000         1    519
+46 SU23 2004         1    981
+47 SU23 2012         1   1898
+   site year positiveGradient fileId
+1  HU61 2010               15   1594
+2  ON33 2012                3   1856
+3  SU09 1998                3    281
+4  ER58 2008                2   1334
+5  ER58 2012                2   1792
+6  ER91 2012                2   1800
+7  ER95 2011                2   1688
+8  SU19 2013                2   2010
+9  ER09 2012                1   1780
+10 ER10 2012                1   1781
+11 ER30 2013                1   1903
+12 ER31 2003                1    753
+13 ER32 2006                1   1097
+14 ER37 2003                1    756
+15 ER37 2007                1   1217
+16 ER42 2002                1    652
+17 ER42 2004                1    874
+18 ER43 2004                1    875
+19 ER43 2010                1   1566
+20 ER58 1998                1    200
+21 ER58 2011                1   1678
+22 ER59 2002                1    655
+23 ER59 2006                1   1105
+24 ER59 2013                1   1912
+25 ER60 2002                1    656
+26 ER60 2009                1   1455
+27 ER60 2010                1   1569
+28 ER60 2013                1   1913
+29 ER61 2001                1    556
+30 ER61 2007                1   1224
+31 ER61 2012                1   1795
+32 ER73 2008                1   1339
+33 ER78 2012                1   1799
+34 ER91 2013                1   1918
+35 ER92 2009                1   1461
+36 ER93 1998                1    209
+37 ER93 2009                1   1462
+38 ER93 2012                1   1803
+39 ER95 2008                1   1344
+40 HU12 2007                1   1235
+41 HU27 2003                1    776
+42 HU32 2004                1    893
+43 HU37 2004                1    895
+44 HU37 2006                1   1125
+45 HU37 2011                1   1697
+46 HU38 2003                1    779
+47 HU38 2006                1   1126
+48 HU38 2009                1   1473
+49 HU48 2010                1   1590
+50 HU48 2012                1   1817
+51 HU53 2009                1   1477
+52 HU54 2000                1    450
+53 HU54 2005                1   1018
+54 HU54 2011                1   1704
+55 HU96 2007                1   1251
+56 HU96 2011                1   1708
+57 HU98 1998                1    214
+58 MI17 2009                1   1487
+59 MI30 2001                1    591
+60 MI30 2007                1   1263
+61 MI30 2013                1   1952
+62 MI42 2007                1   1270
+63 MI48 2007                1   1273
+64 MI49 2007                1   1274
+65 MI50 2005                1   1045
+66 MI50 2007                1   1275
+67 MI51 2000                1    478
+68 MI52 2005                1   1047
+69 MI52 2009                1   1508
+70 ON12 2007                1   1280
+71 ON33 2005                1   1051
+72 ON41 2001                1    611
+73 ON41 2005                1   1053
+74 ON55 2003                1    824
+75 ON64 2011                1   1747
+76 ON65 2006                1   1206
+77 ON65 2013                1   1982
+78 ON67 2007                1   1293
+79 ON68 2008                1   1404
+80 ON69 2010                1   1638
+81 ON69 2011                1   1751
+82 SU04 2006                1   1168
+83 SU05 2001                1    626
+84 SU05 2003                1    843
+85 SU06 2001                1    627
+86 SU06 2012                1   1877
+87 SU10 2007                1   1308
+88 SU11 2002                1    736
+89 SU11 2004                1    968
+90 SU14 2001                1    635
+91 SU14 2010                1   1654
+92 SU16 2008                1   1431
+93 SU18 2003                1    858
+94 SU20 2003                1    860
+95 SU20 2010                1   1661
+96 SU21 2006                1   1187
+97 SU22 2008                1   1438
+[1] "****************"
+[1] "Analyzing Lake SU"
+    site year  fluoRatio fileId
+1   SU06 2009  0.9869159   1534
+2   SU21 2010  1.0788721   1662
+3   SU23 2009  1.0893751   1553
+4   SU23 2000  1.1233105    519
+5   SU23 2010  1.1243609   1664
+6   SU21 2005  1.1364016   1087
+7   SU11 2009  1.1508836   1540
+8   SU14 2012  1.1597082   1887
+9   SU05 2010  1.1621663   1644
+10  SU16 2009  1.1872819   1545
+11  SU06 2000  1.1914299    502
+12  SU20 2010  1.1974829   1661
+13  SU10 2004  1.1993338    967
+14  SU19 2010  1.2107190   1660
+15  SU23 1999  1.2148443    414
+16  SU09 2009  1.2247523   1538
+17  SU14 2010  1.2706288   1654
+18  SU21 2009  1.2991888   1551
+19  SU07 2009  1.3090110   1535
+20  SU21 2004  1.3093402    979
+21  SU04 2009  1.3101937   1532
+22  SU01 2010  1.3114806   1640
+23  SU10 2010  1.3121530   1650
+24  SU06 2010  1.3157170   1645
+25  SU23 2005  1.3304458   1089
+26  SU08 2009  1.3346299   1537
+27  SU14 2009  1.3424362   1543
+28  SU23 2012  1.3500031   1898
+29  SU01 2009  1.3584098   1528
+30  SU13 2009  1.3588294   1542
+31  SU23 2002  1.3796411    748
+32  SU17 2009  1.4014914   1547
+33  SU18 2001  1.4159206    639
+34  SU05 2009  1.4338777   1533
+35  SU11 2004  1.4381186    968
+36  SU13 2010  1.4547929   1653
+37  SU05 2005  1.4860326   1070
+38  SU14 2004  1.4913583    971
+39  SU12 2013  1.5198180   2001
+40  SU06 2004  1.5205319    962
+41  SU02 2009  1.5226892   1529
+42  SU12 2009  1.5390842   1541
+43  SU23 2007  1.5398974   1322
+44  SU19 2009  1.5445886   1549
+45  SU09 2010  1.5641468   1649
+46  SU07 2001  1.5803920    628
+47  SU11 2000  1.6057858    507
+48  SU19 2001  1.6109875    640
+49  SU15 2010  1.6212170   1655
+50  SU23 2008  1.6290397   1439
+51  SU04 2010  1.6325556   1643
+52  SU10 2009  1.6363709   1539
+53  SU01 2004  1.6482236    955
+54  SU15 2000  1.6635837    512
+55  SU14 2000  1.6648655    511
+56  SU16 2010  1.6709797   1656
+57  SU12 2012  1.6833220   1885
+58  SU09 2004  1.6837072    966
+59  SU13 2012  1.6886550   1886
+60  SU15 2002  1.6984008    740
+61  SU09 2013  1.7087367   1998
+62  SU08 2007  1.7136966   1305
+63  SU11 2010  1.7211813   1651
+64  SU11 2012  1.7230030   1884
+65  SU08 2010  1.7262779   1647
+66  SU02 2010  1.7425172   1641
+67  SU07 2002  1.7471926    732
+68  SU21 1998  1.7600230    269
+69  SU15 1999  1.7692999    407
+70  SU18 2009  1.7969697   1548
+71  SU13 2000  1.7984202    510
+72  SU12 2010  1.7995069   1652
+73  SU19 2005  1.8215862   1085
+74  SU18 2010  1.8231596   1659
+75  SU20 2005  1.8306000   1086
+76  SU20 1999  1.8351103    412
+77  SU09 1998  1.8424246    281
+78  SU09 2008  1.8643556   1424
+79  SU02 2005  1.8722024   1066
+80  SU19 2012  1.8924070   1894
+81  SU03 2010  1.9038582   1642
+82  SU07 2010  1.9123642   1646
+83  SU03 2009  1.9220134   1530
+84  SU21 2001  1.9345538    641
+85  SU12 2002  1.9360636    737
+86  SU23 2006  1.9461506   1189
+87  SU03 2005  1.9551879   1067
+88  SU09 2001  1.9578183    630
+89  SU15 2007  1.9886635   1313
+90  SU06 2001  2.0043360    627
+91  SU15 2004  2.0058290    972
+92  SU23 2003  2.0210550    863
+93  SU15 2006  2.0529920   1180
+94  SU02 2001  2.0851322    623
+95  SU13 2002  2.0992022    738
+96  SU17 2001  2.0996554    638
+97  SU08 2005  2.1008059   1072
+98  SU01 2001  2.1075915    622
+99  SU22 2009  2.1206693   1552
+100 SU22 2004  2.1294088    980
+101 SU13 2006  2.1354504   1178
+102 SU22 2006  2.1385773   1188
+103 SU23 2004  2.1465989    981
+104 SU11 2008  2.1488540   1426
+105 SU22 1998  2.1660534    270
+106 SU09 2000  2.1776082    505
+107 SU23 2013  2.1848945   2014
+108 SU19 1999  2.1893439    411
+109 SU05 1999  2.1946758    395
+110 SU11 2013  2.2147658   2000
+111 SU07 2007  2.2159608   1304
+112 SU20 2000  2.2172830    517
+113 SU03 2012  2.2408022   1874
+114 SU11 2003  2.2418972    850
+115 SU09 2012  2.2584086   1881
+116 SU17 2002  2.2747157    742
+117 SU07 2000  2.2957014    503
+118 SU02 2004  2.2972743    957
+119 SU10 2012  2.2986732   1883
+120 SU05 2000  2.2986923    501
+121 SU06 2003  2.3157954    844
+122 SU16 2004  2.3170287    973
+123 SU16 2005  2.3238348   1079
+124 SU17 2012  2.3289959   1891
+125 SU14 2005  2.3308203   1077
+126 SU07 2006  2.3319789   1171
+127 SU21 2000  2.3378451    518
+128 SU04 2003  2.3396281    842
+129 SU05 1998  2.3745890    278
+130 SU14 2013  2.3749784   2003
+131 SU10 2001  2.3806764    631
+132 SU04 2000  2.3822669    500
+133 SU06 1999  2.3862040    396
+134 SU09 2003  2.4015517    848
+135 SU07 2005  2.4071895   1071
+136 SU05 2004  2.4318036    961
+137 SU11 2001  2.4383346    632
+138 SU06 2006  2.4419631   1170
+139 SU21 2012  2.4431012   1896
+140 SU15 1998  2.4488123    287
+141 SU18 2005  2.4506187   1082
+142 SU02 1998  2.4506765    273
+143 SU01 2005  2.5131549   1064
+144 SU14 2007  2.5385828   1312
+145 SU08 2000  2.5953223    504
+146 SU03 1999  2.6051164    393
+147 SU09 2002  2.6091547    734
+148 SU17 2005  2.6274049   1081
+149 SU06 1998  2.6276600    279
+150 SU12 1999  2.6321619    404
+151 SU08 2011  2.6460428   1762
+152 SU12 2011  2.6583906   1766
+153 SU12 2001  2.6774617    633
+154 SU03 2001  2.6950141    624
+155 SU02 2011  2.7027010   1755
+156 SU13 2011  2.7242417   1767
+157 SU10 2002  2.7253090    735
+158 SU16 2002  2.7323076    741
+159 SU21 2007  2.7366036   1320
+160 SU12 1998  2.7369352    284
+161 SU14 2003  2.7398037    853
+162 SU23 2011  2.7743190   1778
+163 SU02 2006  2.7759624   1166
+164 SU03 2003  2.7970735    841
+165 SU06 2013  2.7981343   1993
+166 SU16 2001  2.8012470    637
+167 SU18 2002  2.8171553    743
+168 SU13 2007  2.8318386   1311
+169 SU16 1999  2.8324244    408
+170 SU02 2000  2.8467979    498
+171 SU08 1999  2.8559708    398
+172 SU17 2000  2.8609482    514
+173 SU12 2000  2.8658552    509
+174 SU08 2003  2.8674666    847
+175 SU08 2001  2.8711434    629
+176 SU04 2012  2.8728813   1875
+177 SU14 1998  2.9922341    286
+178 SU16 2000  2.9976509    513
+179 SU12 2007  3.0159412   1310
+180 SU02 2003  3.0253755    840
+181 SU22 2003  3.0322446    862
+182 SU14 2011  3.0331824   1768
+183 SU01 1999  3.0719220    391
+184 SU20 2008  3.0762398   1436
+185 SU18 1998  3.0815253    290
+186 SU02 1999  3.1002640    392
+187 SU19 2011  3.1153369   1774
+188 SU01 1998  3.1173097    271
+189 SU10 2003  3.1450104    849
+190 SU22 2008  3.1614401   1438
+191 SU07 2013  3.1626599   1994
+192 SU04 2006  3.1711100   1168
+193 SU19 1998  3.1887433    291
+194 SU03 2000  3.2025764    499
+195 SU01 2000  3.2191583    497
+196 SU19 2000  3.2312579    516
+197 SU20 2004  3.2588389    978
+198 SU04 2007  3.2737827   1301
+199 SU05 2006  3.3006150   1169
+200 SU05 2003  3.3029911    843
+201 SU04 1999  3.3060767    394
+202 SU16 1998  3.3735367    288
+203 SU07 1999  3.3953502    397
+204 SU08 1998  3.4229113    293
+205 SU02 2007  3.4313033   1299
+206 SU16 2012  3.4723283   1889
+207 SU01 2013  3.4829745   1987
+208 SU04 2004  3.5062682    959
+209 SU07 1998  3.5174201    280
+210 SU05 2012  3.5234277   1876
+211 SU11 2007  3.5522564   1309
+212 SU12 2008  3.5973464   1427
+213 SU04 2013  3.6093847   1991
+214 SU16 2007  3.6247163   1314
+215 SU21 2003  3.6255207    861
+216 SU02 2008  3.6275136   1416
+217 SU11 1998  3.6636011    283
+218 SU20 2007  3.7016982   1319
+219 SU10 1999  3.7176151    401
+220 SU18 2011  3.7213079   1773
+221 SU16 2008  3.7399095   1431
+222 SU12 2003  3.7570213    851
+223 SU17 2004  3.7609375    974
+224 SU01 2008  3.7627107   1415
+225 SU02 2012  3.7647361   1873
+226 SU03 1998  3.7677913    274
+227 SU08 2013  3.7762463   1995
+228 SU06 2008  3.7857500   1420
+229 SU20 2006  3.8088802   1186
+230 SU04 2005  3.8112012   1068
+231 SU01 2012  3.8228328   1871
+232 SU07 2012  3.8442904   1878
+233 SU11 2006  3.8677816   1176
+234 SU16 2003  3.8909636    855
+235 SU10 1998  3.8933184    282
+236 SU20 2011  3.9700367   1775
+237 SU07 2008  3.9903920   1421
+238 SU03 2013  3.9924789   1990
+239 SU04 2002  4.0017618    729
+240 SU17 2006  4.0067976   1182
+241 SU02 2013  4.0440796   1989
+242 SU18 2000  4.0617776    515
+243 SU01 2003  4.1242899    839
+244 SU09 1999  4.1412144    400
+245 SU04 2011  4.1475652   1757
+246 SU10 2000  4.1483231    506
+247 SU11 2011  4.1494617   1765
+248 SU17 2013  4.1524294   2006
+249 SU19 2003  4.1607415    859
+250 SU17 1998  4.1955123    289
+251 SU08 2012  4.2232646   1879
+252 SU09 2006  4.2235520   1174
+253 SU18 2003  4.3285547    858
+254 SU21 2008  4.3770091   1437
+255 SU05 2007  4.4179987   1302
+256 SU01 2006  4.5044982   1164
+257 SU21 2006  4.5521312   1187
+258 SU09 2011  4.5719529   1763
+259 SU12 2006  4.5862947   1177
+260 SU18 2008  4.5983059   1434
+261 SU13 1998  4.6191392    285
+262 SU16 2013  4.7166068   2005
+263 SU17 2003  4.7434734    857
+264 SU16 2006  4.7554861   1181
+265 SU10 2008  4.8255630   1425
+266 SU07 2011  4.8301165   1760
+267 SU14 2006  4.9387385   1179
+268 SU18 2004  5.0189739    976
+269 SU03 2006  5.1055667   1167
+270 SU06 2012  5.2764998   1877
+271 SU17 2008  5.5260860   1433
+272 SU13 2008  5.5657875   1428
+273 SU10 2011  5.6673848   1764
+274 SU04 1998  5.7091347    277
+275 SU19 2008  5.8021972   1435
+276 SU06 2011  5.8413654   1759
+277 SU05 2011  5.8534686   1758
+278 SU06 2007  5.8689510   1303
+279 SU10 2007  6.0655186   1308
+280 SU05 2013  6.2471425   1992
+281 SU18 2006  6.3207509   1184
+282 SU03 2007  6.3424787   1300
+283 SU14 2008  6.5493833   1429
+284 SU08 2002  6.6850614    733
+285 SU19 2007  7.0301691   1318
+286 SU04 2008  7.0788096   1418
+287 SU21 2011  7.0802706   1776
+288 SU18 2012  7.1416853   1893
+289 SU10 2006  7.3891803   1175
+290 SU10 2013  7.6261437   1999
+291 SU08 2008  7.8541339   1423
+292 SU18 2013  7.9735657   2009
+293 SU22 2007  8.3658167   1321
+294 SU17 2011  8.6189425   1771
+295 SU08 2004  8.9850102    964
+296 SU08 2006  9.1282256   1172
+297 SU09 2007  9.4001055   1307
+298 SU16 2011  9.5361221   1770
+299 SU05 2008  9.5968249   1419
+300 SU20 2013 10.1216619   2011
+301 SU15 2011 11.1577704   1769
+302 SU03 2008 12.7395493   1417
+303 SU01 2007 14.6476886   1297
+304 SU01 2002         NA    725
+305 SU01 2011         NA   1753
+306 SU02 2002         NA    727
+307 SU03 2002         NA    728
+308 SU03 2004         NA    958
+309 SU03 2011         NA   1756
+310 SU04 2001         NA    625
+311 SU05 2001         NA    626
+312 SU05 2002         NA    730
+313 SU06 2002         NA    731
+314 SU06 2005         NA     NA
+315 SU07 2003         NA    845
+316 SU07 2004         NA    963
+317 SU09 2005         NA     NA
+318 SU10 2005         NA   1074
+319 SU11 1999         NA    402
+320 SU11 2002         NA    736
+321 SU11 2005         NA     NA
+322 SU12 2004         NA    969
+323 SU12 2005         NA   1075
+324 SU13 1999         NA    405
+325 SU13 2001         NA    634
+326 SU13 2003         NA    852
+327 SU13 2004         NA    970
+328 SU13 2005         NA   1076
+329 SU13 2013         NA   2002
+330 SU14 1999         NA    406
+331 SU14 2001         NA    635
+332 SU14 2002         NA    739
+333 SU15 2001         NA    636
+334 SU15 2003         NA    854
+335 SU15 2005         NA   1078
+336 SU15 2008         NA   1430
+337 SU15 2009         NA   1544
+338 SU15 2012         NA   1888
+339 SU15 2013         NA   2004
+340 SU17 1999         NA    409
+341 SU17 2007         NA   1315
+342 SU17 2010         NA   1658
+343 SU18 1999         NA    410
+344 SU18 2007         NA   1317
+345 SU19 2002         NA    744
+346 SU19 2004         NA    977
+347 SU19 2006         NA   1185
+348 SU19 2013         NA   2010
+349 SU20 1998         NA     NA
+350 SU20 2001         NA     NA
+351 SU20 2002         NA    745
+352 SU20 2003         NA    860
+353 SU20 2009         NA   1550
+354 SU20 2012         NA   1895
+355 SU21 1999         NA     NA
+356 SU21 2002         NA    746
+357 SU21 2013         NA   2012
+358 SU22 1999         NA    413
+359 SU22 2000         NA     NA
+360 SU22 2001         NA    642
+361 SU22 2002         NA    747
+362 SU22 2005         NA   1088
+363 SU22 2010         NA   1663
+364 SU22 2011         NA   1777
+365 SU22 2012         NA   1897
+366 SU22 2013         NA   2013
+367 SU23 1998         NA     NA
+368 SU23 2001         NA     NA
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+ 0.9869  1.8390  2.6580  3.1780  3.7810 14.6500      65 
+      year        DCL_depth      TRM_segment       DCL_conc      
+ Min.   :1998   Min.   : 7.00   Min.   : 4.00   Min.   :0.07855  
+ 1st Qu.:2002   1st Qu.:24.75   1st Qu.:12.25   1st Qu.:1.11078  
+ Median :2006   Median :29.75   Median :16.25   Median :1.67835  
+ Mean   :2006   Mean   :29.88   Mean   :18.00   Mean   :1.97385  
+ 3rd Qu.:2009   3rd Qu.:35.00   3rd Qu.:21.75   3rd Qu.:2.44568  
+ Max.   :2013   Max.   :55.25   Max.   :60.00   Max.   :8.16850  
+                NA's   :22      NA's   :12      NA's   :28       
+   year   median
+1  1998 3.117310
+2  1999 2.732293
+3  2000 2.360056
+4  2001 2.099655
+5  2002 2.441935
+6  2003 3.032245
+7  2004 2.138004
+8  2005 2.100806
+9  2006 3.937290
+10 2007 3.552256
+11 2008 4.183701
+12 2009 1.358410
+13 2010 1.564147
+14 2011 4.148513
+15 2012 2.386049
+16 2013 3.692815
+   site   median
+1  SU01 3.168234
+2  SU02 2.775962
+3  SU03 2.797074
+4  SU04 3.306077
+5  SU05 2.866209
+6  SU06 2.414084
+7  SU07 2.369584
+8  SU08 2.869305
+9  SU09 2.177608
+10 SU10 3.717615
+11 SU11 2.214766
+12 SU12 2.667926
+13 SU13 2.117326
+14 SU14 2.374978
+15 SU15 1.988664
+16 SU16 3.185594
+17 SU17 3.760937
+18 SU18 3.891543
+19 SU19 2.652340
+20 SU20 3.167539
+21 SU21 2.337845
+22 SU22 2.166053
+23 SU23 1.459769
+[1] "TRM_segment"
+[1] "epi_mean_Specific_Conductivity"
+
+	Pearson's product-moment correlation
+
+data:  cleanData[, surfaceWC] and cleanData[, aa]
+t = -1.6238, df = 317, p-value = 0.1054
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.19865644  0.01917742
+sample estimates:
+        cor 
+-0.09082582 
+
+[1] "DCL_conc"
+[1] "epi_mean_Specific_Conductivity"
+
+	Pearson's product-moment correlation
+
+data:  cleanData[, surfaceWC] and cleanData[, aa]
+t = 1.9995, df = 300, p-value = 0.04645
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.001839466 0.224637506
+sample estimates:
+      cor 
+0.1146804 
+
+[1] "DCL_depth"
+[1] "epi_mean_Specific_Conductivity"
+
+	Pearson's product-moment correlation
+
+data:  cleanData[, surfaceWC] and cleanData[, aa]
+t = -0.91202, df = 306, p-value = 0.3625
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.16287673  0.06004171
+sample estimates:
+        cor 
+-0.05206607 
+
+[1] "TRM_segment"
+[1] "epi_mean_Temperature"
+
+	Pearson's product-moment correlation
+
+data:  cleanData[, surfaceWC] and cleanData[, aa]
+t = 1.5194, df = 319, p-value = 0.1297
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.02493738  0.19244609
+sample estimates:
+       cor 
+0.08476289 
+
+[1] "DCL_conc"
+[1] "epi_mean_Temperature"
+
+	Pearson's product-moment correlation
+
+data:  cleanData[, surfaceWC] and cleanData[, aa]
+t = 0.3881, df = 301, p-value = 0.6982
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.09054199  0.13470281
+sample estimates:
+       cor 
+0.02236422 
+
+[1] "DCL_depth"
+[1] "epi_mean_Temperature"
+
+	Pearson's product-moment correlation
+
+data:  cleanData[, surfaceWC] and cleanData[, aa]
+t = 2.8254, df = 307, p-value = 0.005031
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.04848188 0.26604924
+sample estimates:
+      cor 
+0.1591979 
+
+[1] "TRM_segment"
+[1] "epi_mean_Fluorescence"
+
+	Pearson's product-moment correlation
+
+data:  cleanData[, surfaceWC] and cleanData[, aa]
+t = 0.12696, df = 319, p-value = 0.8991
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.1024405  0.1164863
+sample estimates:
+       cor 
+0.00710807 
+
+[1] "DCL_conc"
+[1] "epi_mean_Fluorescence"
+
+	Pearson's product-moment correlation
+
+data:  cleanData[, surfaceWC] and cleanData[, aa]
+t = 15.884, df = 301, p-value < 2.2e-16
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.6089150 0.7322272
+sample estimates:
+      cor 
+0.6752623 
+
+[1] "DCL_depth"
+[1] "epi_mean_Fluorescence"
+
+	Pearson's product-moment correlation
+
+data:  cleanData[, surfaceWC] and cleanData[, aa]
+t = -1.4827, df = 307, p-value = 0.1392
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.19407389  0.02751336
+sample estimates:
+        cor 
+-0.08432267 
+
+[1] "TRM_segment"
+[1] "epi_mean_Beam_Attenuation"
+
+	Pearson's product-moment correlation
+
+data:  cleanData[, surfaceWC] and cleanData[, aa]
+t = 0.51439, df = 299, p-value = 0.6074
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.08359831  0.14230893
+sample estimates:
+       cor 
+0.02973502 
+
+[1] "DCL_conc"
+[1] "epi_mean_Beam_Attenuation"
+
+	Pearson's product-moment correlation
+
+data:  cleanData[, surfaceWC] and cleanData[, aa]
+t = -0.98789, df = 282, p-value = 0.3241
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.17392927  0.05806224
+sample estimates:
+        cor 
+-0.05872637 
+
+[1] "DCL_depth"
+[1] "epi_mean_Beam_Attenuation"
+
+	Pearson's product-moment correlation
+
+data:  cleanData[, surfaceWC] and cleanData[, aa]
+t = -2.1803, df = 288, p-value = 0.03005
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.23909572 -0.01242811
+sample estimates:
+       cor 
+-0.1274253 
+
+[1] "TRM_segment"
+[1] "epi_mean_DO"
+
+	Pearson's product-moment correlation
+
+data:  cleanData[, surfaceWC] and cleanData[, aa]
+t = -3.0363, df = 296, p-value = 0.002608
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.2818500 -0.0613863
+sample estimates:
+       cor 
+-0.1737949 
+
+[1] "DCL_conc"
+[1] "epi_mean_DO"
+
+	Pearson's product-moment correlation
+
+data:  cleanData[, surfaceWC] and cleanData[, aa]
+t = 0.75713, df = 280, p-value = 0.4496
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.07198331  0.16115467
+sample estimates:
+       cor 
+0.04520113 
+
+[1] "DCL_depth"
+[1] "epi_mean_DO"
+
+	Pearson's product-moment correlation
+
+data:  cleanData[, surfaceWC] and cleanData[, aa]
+t = -2.4861, df = 286, p-value = 0.01349
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.25670851 -0.03037566
+sample estimates:
+       cor 
+-0.1454445 
+

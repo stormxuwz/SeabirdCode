@@ -10,7 +10,7 @@
 	},
 	"Preprocessing":{
 		"Interval":0.25,
-		"badDepthThreshold":3
+		"badDepthThreshold":2
 	},
 	
 	"Algorithm":{
@@ -27,7 +27,11 @@
 			"stableDiff":0.2
 		},
 		"Spectrum":{"windowSize":8,"threshold":null},
-		"segment":{"max_error":0.5,"stable_gradient":0.05,"minTRM_gradient":0.15,"minTRM_gradient_backUP":0.25}
+		"segment":{
+			"max_error":0.3,
+			"stable_gradient2":0.2,
+			"stable_gradient":0.1,
+			"minTRM_gradient":0.15,
+			"minTRM_gradient_backUP":0.25}
 	}
-	
 }

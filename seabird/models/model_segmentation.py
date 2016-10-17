@@ -22,7 +22,9 @@ class timeSeriesSegmentation(object):
 		plt.show()
 
 	def createLine(self,x,method="regression"):
+		x = np.array(x)
 		n=len(x)
+
 		if method=="simple":
 			line = np.linspace(x[0],x[-1],n)
 
@@ -32,7 +34,7 @@ class timeSeriesSegmentation(object):
 		elif method == "poly":
 			line=np.poly1d(np.polyfit(range(n),x,2))(range(n))
 
-		return(line)
+		return line
 
 
 class slidingWindow(timeSeriesSegmentation):
@@ -129,14 +131,14 @@ class bottomUp(timeSeriesSegmentation):
 				break
 
 		self.x=x
-		self.segmentList=[[self.createLine(x[segIndex]),segIndex] for segIndex in segmentIndexList]
-
+		self.segmentList=[[self.createLine(x[segIndex],"regression"),segIndex] for segIndex in segmentIndexList]
+		# print self.segmentList
 	def mergeCost(self, leftSeg,rightSeg):
 		allSeg=np.concatenate((leftSeg,rightSeg))
 		line = self.createLine(allSeg)
 		return self.calculate_error(line, allSeg)
 
 	def mergeRight(self,segList,index):
-		segList[index]=segList[index]+segList[index+1] # merge 
+		segList[index]=(segList[index]+segList[index+1]) # merge 
 		segList.pop(index+1) # pop the right segment
 		return(segList)

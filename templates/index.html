@@ -20,14 +20,18 @@
   <body>
     
     <div class="row">
+    <div class="col-xs-1">
+    </div>
       <div class="col-xs-8">
-        <p>This is a program to automatically detect the depths of thermocline (TRM), lower epilimnion(LEP), upper hypolimnion and deep chlorophyll layers (DCL) and fluorescence concentration at DCL</p>
+        <p>This is a program to automatically detect the depths of thermocline (TRM), lower epilimnion(LEP), upper hypolimnion (UHY) and deep chlorophyll layers (DCL), fluorescence concentration at DCL and DCL concontration ratio (concentration area in shade areas / whole concentration area) </p>
       </div>
     </div>
    
    <br>
     
     <div class="row">
+    <div class="col-xs-1">
+    </div>
       <div class="col-xs-3">
         
         <br>
@@ -42,13 +46,13 @@
         </form>
         <br>
         <br>
-        <p>TRM (<font color="red" font- weight ="bold">---</font>): {{depth_TRM}} m</p>
-        <p>LEP (<font color="blue" font- weight ="bold">---</font>): {{depth_LEP}} m</p>
-        <p>UHY (<font color="black" font- weight ="bold">---</font>):{{depth_UHY}} m</p>
-        <p>DCL (<font color="green" font- weight ="bold">---</font>): {{depth_DCL}} m</p>
-        <p>DCL Conc: {{conc_DCL}} mg/L</p>
-        <p>DCL Propo: {{Prop_DCL}} </p>
-        <p>DCL upper shape fit R^2 {{leftShapeR2}} </p>
+        <p>TRM (<font color="red" font-weight ="bold">---</font>): {{depth_TRM}} m</p>
+        <p>LEP (<font color="blue" font-weight ="bold">---</font>): {{depth_LEP}} m</p>
+        <p>UHY (<font color="black" font-weight ="bold">---</font>):{{depth_UHY}} m</p>
+        <p>DCL (<font color="green" font-weight ="bold">---</font>): {{depth_DCL}} m</p>
+        <p>DCL Conc: {{conc_DCL}} ug/L</p>
+        <p>DCL Conc Ratio (shade area): {{Prop_DCL}} </p>
+        <p>DCL upper shape fit R^2: {{leftShapeR2}} </p>
         <p>DCL bottom shape fit R^2: {{rightShapeR2}} </p>
       </div>
 
