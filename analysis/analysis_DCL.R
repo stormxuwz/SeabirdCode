@@ -68,6 +68,13 @@ main_analysis_DCL <- function(features){
 	
 	
 	allGoodFit <- gaussianFit(features) %>% shapeAnalysis_DCL()
+	
+	
+	# plot the size boxplot
+	pdf("peaksize.pdf",width = 5, height = 4)
+	print(boxplot(DCL_size~lake,data = allGoodFit,ylab ="Peak Size (m)"))
+	dev.off()
+	
 	print("sizeRatio descrease")
 	print(head(arrange(allGoodFit,desc(DCL_sizeRatio))[,c("year","site","DCL_sizeRatio","DCL_upperSize","DCL_bottomSize","DCL_depth","DCL_upperDepth_fit","DCL_bottomDepth_fit","fileId")],10))
 	print("sizeRatio increase")

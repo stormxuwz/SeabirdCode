@@ -2,6 +2,8 @@ source("plot.R")
 
 main_lakeSU <- function(features){
 	
+	locations <- read.csv("../../input/station_loc.csv")
+	
 	SUData <- subset(features,lake == "SU")
 	SUData$fluoRatio <- SUData$DCL_conc/SUData$epi_mean_Fluorescence
 	# tapply(features$TRM_diff,features$lake,summary
@@ -13,11 +15,20 @@ main_lakeSU <- function(features){
 	
 	
 	# analyzed by year
-	statsGroupByYear <- group_by(SUData,year) %>% summarise(median = median(fluoRatio,na.rm=TRUE))
+	statsGroupByYear <- group_by(SUData,year) %>% summarise(median = median(fluoRatio,na.rm=TRUE)) %>% data.frame()
 	print(data.frame(statsGroupByYear))
 	
-	statsGroupBySite <- group_by(SUData,site) %>% summarise(median = median(fluoRatio,na.rm=TRUE))
+	pdf("ratioTempor.pdf",width = 5, height = 5)
+	print(boxplot(fluoRatio~year,data = SUData,ylab = "DCL/Surface Ratio"))
+	dev.off()
+	
+	statsGroupBySite <- group_by(SUData,site) %>% summarise(median = median(fluoRatio,na.rm=TRUE)) %>% data.frame() %>% merge(locations, by.x = "site", by.y = "Station")
 	print(data.frame(statsGroupBySite))
+	statsGroupBySite$Long = -	statsGroupBySite$Long
+	
+	pdf("ratioSpatio.pdf")
+	print(qmplot(Long,Lat,data = statsGroupBySite, color = median,size = I(5))+scale_color_gradientn(colours = terrain.colors(10)))
+	dev.off()
 	
 	plot_gly(SUData,"DCL_conc",reverse = FALSE)
 	plot_gly(SUData,"DCL_depth",reverse = TRUE)

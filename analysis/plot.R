@@ -1,6 +1,7 @@
 library(GGally)
 library(ggplot2)
 library(dplyr)
+library(ggmap)
 
 plot_gly <- function(feature,variable, reverse = TRUE){
 	# plot the gly plots
