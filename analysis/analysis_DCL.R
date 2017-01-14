@@ -2,7 +2,7 @@ require(reshape2)
 
 gaussianFit <- function(features,threshold=0.8){
 	# print the ratio of each lake that the peak is satisfy a Gaussian shape
-	goodFitData <- subset(features, DCL_leftShapeFitErr > threshold & DCL_rightShapeFitErr > threshold & peakNums ==1)
+	goodFitData <- subset(features, DCL_leftShapeFitErr < threshold & DCL_rightShapeFitErr < threshold & peakNums ==1)
 	return(goodFitData)
 }
 
@@ -28,7 +28,7 @@ shapeAnalysis_DCL <- function(features){
 	return(features)
 }
 
-getGoodFitRatio <- function(features,lake,threshold = seq(-0.5,1,0.1)){
+getGoodFitRatio <- function(features,threshold = seq(-0.5,1,0.1)){
 	ratio <- data.frame(thres = threshold)
 	for(lake_ in allLakes){
 		subData <- subset(features,lake == lake_)

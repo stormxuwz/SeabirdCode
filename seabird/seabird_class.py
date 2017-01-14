@@ -85,28 +85,13 @@ class seabird:
 		                                       saveModel = saveModel)
 		DCL_features = self.DCL.detect(data = self.cleanData[["Depth","Fluorescence"]],\
 									   rawData = self.downCastRawData[["Depth","Fluorescence"]],\
-		                               depthThreshold = TRM_features["LEP_segment"],\
+		                               peakMinDepth = TRM_features["LEP_segment"],\
+		                               peakUpperDepthBoundary = TRM_features["LEP_segment"],\
 		                               saveModel = saveModel)
 
 		# print self.thermocline.models["segmentation"].segmentList
 		self.features = TRM_features.copy()
 		self.features.update(DCL_features)  # add DCL features
-
-	# def extractWaterChemistry(self):
-	# 	if self.features is None:
-	# 		raise ValueError("Please detect features first")
-
-	# 	if self.features["LEP_segment"] is not None:
-	# 		self.waterChemistry["LEP_Temperature"] = 
-	# 		self.waterChemistry["LEP_Fluorescence"] = 
-	# 		self.waterChemistry["LEP_temperature"] = 
-
-	# 	if self.features["TRM_segment"] is not None:
-	# 		self.waterChemistry["LEP_temperature"] = 
-
-	# 	if self.features["UHY_segment"] is not None:
-	# 		self.waterChemistry["LEP_temperature"] = 
-
 
 	def plot(self, legend=True, pt=None, OtherFeatures=None, bottle=None, filename=None,meta=True):
 		# plot the TRM and DCL

@@ -1,7 +1,6 @@
 from seabird.seabird_class import seabird
 from seabird.models.stratificationIndex import *
-# from seabird.futureFeature.peakDetection3 import peak
-from seabird.models.model_peak2 import peak
+from seabird.models.model_peak import peak
 from scipy import signal
 import cPickle as pickle
 
@@ -10,13 +9,26 @@ if __name__ == '__main__':
 	import json
 	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/config.json'))
 	mySeabird = seabird(config = config)
-	mySeabird.loadData(fileId = 229)
-	# 1544, 904, 1741,222, 1682, 652, 1000, 546
+	mySeabird.loadData(fileId = 1549)
+	
+	# 904: Two peaks
+	# 1000: a narrow peak
+	# 546: continously increasing conc
+	# 652: continously decreasing conc
+	# 222: large variance peaks
+	# 1544: small noise peaks
+	# 1741: long tail
+	# 1682: platform at the begining
+	# 1526,1532,69,1533: common peak
+	# 1876: fitting may be a problem
+	# 
+
 	print mySeabird.site
 	mySeabird.preprocessing()
 	
 	mySeabird.identify()
 	print mySeabird.features
+	print mySeabird.features["DCL_leftShapeFitErr"], mySeabird.features["DCL_rightShapeFitErr"]
 	depth = mySeabird.cleanData.Depth
 	Fluorescence = mySeabird.cleanData.Fluorescence
 

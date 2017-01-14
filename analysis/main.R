@@ -45,7 +45,7 @@ main<- function(){
 
 
 
-sink("./results.txt")
+sink(sprintf("./%s_results.txt",Sys.Date()))
 main()
 sink()
 sink()
