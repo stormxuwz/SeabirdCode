@@ -23,8 +23,11 @@ def gauss_function(x, a, x0, sigma2,y0,k):
 def fitGaussian(x,y,x_mean,weight= None):
 	# parameter a,sigma,k
 
-	maxK = abs(0.5*(y[0]-y[-1])/(x[0]-x[-1]))
-	bounds=([0,0,-0.5*maxK], [np.inf,np.inf,0.5*maxK])
+	maxK = abs((y[0]-y[-1])/(x[0]-x[-1]))
+	# adding the boundary for the lienar trend, otherwise, 
+	# the ascending or descending trend may only be captured by the linear trend
+	
+	bounds=([0,0,-0.15*maxK], [np.inf,np.inf,0.15*maxK])  
 	# bounds = (-np.inf,np.inf)
 	if weight is None:
 		popt, pcov = curve_fit(f=lambda x,a,sigma,k: gauss_function(x,a,x_mean,sigma,max(y)-a,k), xdata=x, ydata=y,bounds = bounds)
@@ -300,7 +303,7 @@ class peak(object):
 				leftBoundary_gradient = middleNode - getStableGradientPoints(leftData, self.config["slope"], self.config["SNR"], self.config["stableDiff"])
 				
 				# the boundary of left shape by fitting half Gaussian
-				leftBoundary_fit = max(1,middleNode - int(np.ceil(2.5*np.sqrt(leftShape[3][1]))))  # use two and half sigma as the peak half width
+				leftBoundary_fit = max(1,middleNode - int(np.ceil(self.config["peakSize"]*np.sqrt(leftShape[3][1]))))  # use two and half sigma as the peak half width
 
 			if i == len(peaks) -2: # get the right boundary of the last peak
 				
@@ -308,7 +311,7 @@ class peak(object):
 				rightBoundary_gradient = middleNode + getStableGradientPoints(rightData, self.config["slope"], self.config["SNR"], self.config["stableDiff"],"down")
 				
 				# the boundary of right shape by fitting half Gaussian
-				rightBoundary_fit = min(len(x)-2, middleNode + int(np.ceil(2.5*np.sqrt(rightShape[3][1]))))  #  use two and half sigma as the peak half width
+				rightBoundary_fit = min(len(x)-2, middleNode + int(np.ceil(self.config["peakSize"]*np.sqrt(rightShape[3][1]))))  #  use two and half sigma as the peak half width
 
 			boundaries.append({
 				"middleNode":middleNode,

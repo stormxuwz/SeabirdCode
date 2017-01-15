@@ -9,7 +9,7 @@ if __name__ == '__main__':
 	import json
 	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/config.json'))
 	mySeabird = seabird(config = config)
-	mySeabird.loadData(fileId = 1549)
+	mySeabird.loadData(fileId = 645)
 	
 	# 904: Two peaks
 	# 1000: a narrow peak

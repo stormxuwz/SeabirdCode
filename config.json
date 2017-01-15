@@ -24,7 +24,8 @@
 			"peakFitTol":0.05,
 			"SNR":10,
 			"slope":0.1,
-			"stableDiff":0.2
+			"stableDiff":0.2,
+			"peakSize":2.5
 		},
 		"Spectrum":{"windowSize":8,"threshold":null},
 		"segment":{
