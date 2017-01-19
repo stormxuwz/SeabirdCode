@@ -208,6 +208,18 @@ class peak(object):
 		x_gradient = np.diff(x) # find the gradient of x, len(x_gradient) = len(x)-1, x_gradient[0] = x[1]-x[0]
 		rawPeak = zeroCrossing(x_gradient, mode=1) 
 		
+
+		if True:
+			n = len(x)
+			plt.figure(figsize= (4.5,6))
+			plt.plot(x,-1*np.arange(n))
+			plt.plot(x[rawPeak],[-1*r for r in rawPeak],"ro")
+			plt.xlabel("Fluorescence")
+			plt.ylabel("Depth")
+			plt.xticks([], [])
+			plt.yticks([], [])
+			plt.show()
+
 		threshold = (max(x)-min(x))*self.config["minPeakMagnitude"]+min(x) # the minimum maginitude that a peak should reach
 
 		rawPeak = self.initialFilter(rawPeak, x, threshold)
@@ -218,6 +230,18 @@ class peak(object):
 		peakHeightThreshold = (max(x)-min(x))*self.config["peakHeight"]  # a tuning parameter
 		
 		while True:
+			if True:
+				n = len(x)
+				plt.figure(figsize= (4.5,6))
+				plt.plot(x,-1*np.arange(n))
+				plt.plot(x[rawPeak[1:-1]],[-1*r for r in rawPeak[1:-1]],"ro")
+				plt.xlabel("Fluorescence")
+				plt.ylabel("Depth")
+				plt.xticks([], [])
+				plt.yticks([], [])
+				plt.show()
+
+
 			shape_height = self.findPeakHeight(x,rawPeak) # the heights of all possible peaks in rawPeak
 			
 			if len(shape_height) ==0:
@@ -249,7 +273,9 @@ class peak(object):
 		"leftErr":"leftShape_err",
 		"rightErr":"rightShape_err",
 		"leftShapeFit":"leftShape",
-		"rightShapeFit":"rightShape"}
+		"rightShapeFit":"rightShape",
+		"leftSigma":"leftSigma",
+		"rightSigma":"rightSigma"}
 
 		for k,v in featureMapDic.iteritems():
 			allPeaks[k] = [boundary[v] for boundary in self.boundaries]		
@@ -311,6 +337,7 @@ class peak(object):
 				rightBoundary_gradient = middleNode + getStableGradientPoints(rightData, self.config["slope"], self.config["SNR"], self.config["stableDiff"],"down")
 				
 				# the boundary of right shape by fitting half Gaussian
+				print self.config["peakSize"]
 				rightBoundary_fit = min(len(x)-2, middleNode + int(np.ceil(self.config["peakSize"]*np.sqrt(rightShape[3][1]))))  #  use two and half sigma as the peak half width
 
 			boundaries.append({
@@ -322,7 +349,9 @@ class peak(object):
 				"leftShape":leftShape[0],
 				"rightShape":rightShape[0],
 				"leftBoundary_fit":leftBoundary_fit,
-				"rightBoundary_fit":rightBoundary_fit
+				"rightBoundary_fit":rightBoundary_fit,
+				"leftSigma": np.sqrt(leftShape[3][1]),
+				"rightSigma": np.sqrt(rightShape[3][1])
 				})
 
 		return boundaries

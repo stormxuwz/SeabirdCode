@@ -8,7 +8,7 @@ class timeSeriesSegmentation(object):
 		self.max_error=max_error
 
 	def fit_predict(self,x):
-		pass
+		raise ValueError("not implementated")
 
 	def calculate_error(self,x,y):
 		return np.max(np.abs(x-y))

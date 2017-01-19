@@ -46,7 +46,9 @@ class DCL(object):
 		"DCL_bottomDepth_gradient":None,
 		"DCL_concProp_fit":None,
 		"DCL_concProp_gradient":None,
-		"allConc":None}
+		"allConc":None,
+		"DCL_leftSigma":None,
+		"DCL_rightSigma":None}
 
 		features["allConc"] = np.sum((data.Fluorescence))
 
@@ -74,11 +76,15 @@ class DCL(object):
 
 			features["DCL_exists"] = 1
 			features["DCL_depth"] = peakDepths[DCL_idx]
+			
 			# features["DCL_conc"] = data.Fluorescence[self.allPeaks.peakIndex[DCL_idx]]
 			features["DCL_conc"] = self.correctConc(peakDepths[DCL_idx], rawData) # correct the peak concentration
 
 			features["DCL_leftShapeFitErr"] = self.allPeaks.leftErr[DCL_idx]
 			features["DCL_rightShapeFitErr"] = self.allPeaks.rightErr[DCL_idx]
+
+			features["DCL_leftSigma"] = self.allPeaks.leftSigma[DCL_idx]
+			features["DCL_rightSigma"] = self.allPeaks.rightSigma[DCL_idx]
 
 			# apply the DCL upper boundary for gradient boundary
 			sizeUpperDepth_gradient = data.Depth[self.allPeaks.leftIndex_gradient[DCL_idx]]

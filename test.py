@@ -3,13 +3,48 @@ from seabird.models.stratificationIndex import *
 from seabird.models.model_peak import peak
 from scipy import signal
 import cPickle as pickle
+import os
+
+def plotSegment(mySeabird, site = None, year = None, folder = '/Users/wenzhaoxu/Developer/Seabird/output/meta/',legendLoc = 4):
+	from seabird.seabird_class import seabird
+
+	# if site is None or year is None:
+	# 	for file in os.listdir(folder):
+	# 		if fnmatch.fnmatch(file, '*_%d.p' %(fid,)):
+	# 			fname = "%s/%s" %(folder,file)
+	# 			break
+	# else:
+	fname = "%s/%s_%d_%d.p" %(folder,mySeabird.site,int(mySeabird.time.year),int(mySeabird.fileId))
+	print fname
+
+	# mySeabird = pickle.load(open(fname,"rb"))
+	mySeabird
+	pt = plt.figure(figsize=(4.5,8))
+	ax1 = pt.add_subplot(111)
+	
+	ax1.plot(mySeabird.cleanData.Temperature, -mySeabird.cleanData.Depth, "r",linewidth=1)
+	ax1.plot(mySeabird.downCastRawData.Temperature, -mySeabird.downCastRawData.Depth, "r--", alpha=0.5,linewidth=1)
+	ax1.set_xlabel("Temperature (C)")
+	ax1.set_ylabel("Depth (m)")
+	for seg in mySeabird.thermocline.models["segmentation"].segmentList:
+		ax1.plot(seg[0],-np.array(mySeabird.cleanData.Depth[seg[1]]),linewidth=5)
+	
+	plt.savefig("/Users/wenzhaoxu/Developer/Seabird/output/focus/segment_%s_%s.pdf" %(os.path.splitext(os.path.basename(fname))[0],config["Algorithm"]["segment"]["max_error"]),
+		bbox_inches='tight')
+	plt.close()
 
 
 if __name__ == '__main__':
 	import json
 	config=json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/config.json'))
+	
+	# config["Algorithm"]["Peak"]["peakSize"] = 2.0
+	# config["Algorithm"]["segment"]["max_error"] = 0.3
+	
+
+
 	mySeabird = seabird(config = config)
-	mySeabird.loadData(fileId = 645)
+	mySeabird.loadData(fileId = 904)
 	
 	# 904: Two peaks
 	# 1000: a narrow peak
@@ -25,10 +60,13 @@ if __name__ == '__main__':
 
 	print mySeabird.site
 	mySeabird.preprocessing()
-	
 	mySeabird.identify()
+
+	# plotSegment(mySeabird)
+
 	print mySeabird.features
 	print mySeabird.features["DCL_leftShapeFitErr"], mySeabird.features["DCL_rightShapeFitErr"]
+	print mySeabird.features["DCL_leftSigma"], mySeabird.features["DCL_rightSigma"]
 	depth = mySeabird.cleanData.Depth
 	Fluorescence = mySeabird.cleanData.Fluorescence
 

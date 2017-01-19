@@ -37,13 +37,6 @@ class thermocline_segmentation(thermocline_base):
 
 	def detectDoubleTRM(self,segmentList):
 		# detect double thermocline from the segmentList
-		
-		# if len(segmentList)>2:
-		# 	middleGradient = [self.getGradientFromSegment(seg) for seg in segmentList[1:-1]]
-		# 	for i,g in enumerate(middleGradient):
-		# 		if g < self.config["Algorithm"]["segment"]["stable_gradient"]:
-		# 			self.doubleTRM.append(i+1)
-
 		for i in range(1,len(segmentList)-1):
 			segGradient = self.getGradientFromSegment(segmentList[i])
 			previousSegGradient = self.getGradientFromSegment(segmentList[i-1])
@@ -52,10 +45,6 @@ class thermocline_segmentation(thermocline_base):
 			if abs(segGradient) < self.config["Algorithm"]["segment"]["stable_gradient"] and \
 				previousSegGradient > self.config["Algorithm"]["segment"]["minTRM_gradient"] and \
 				nextSegGradient > self.config["Algorithm"]["segment"]["stable_gradient"]:
-
-			# if abs(segGradient) < self.config["Algorithm"]["segment"]["stable_gradient"] and \
-			# 	previousSegGradient > abs(segGradient)*2 and \
-			# 	nextSegGradient > abs(segGradient)*2:
 
 				self.doubleTRM.append(i)
 
@@ -71,6 +60,9 @@ class thermocline_segmentation(thermocline_base):
 				self.positiveSeg.append(i)
 
 	def detect(self,data,saveModel = False):
+		"""
+		Function to detect the thermocline
+		"""
 		model = bottomUp(max_error = self.config["Algorithm"]["segment"]["max_error"])
 		model.fit_predict(data.Temperature)
 		segmentList = model.segmentList
@@ -80,14 +72,8 @@ class thermocline_segmentation(thermocline_base):
 		# segmentList is a list of [fitted line,point index]
 		gradient = [self.getGradientFromSegment(seg) for seg in model.segmentList]
 		
-		# if gradient[0] < -1*self.config["Algorithm"]["segment"]["stable_gradient"]: # large positive gradient, which is due to noise
-			# model.segmentList.pop(0)
-			# gradient = [self.getGradientFromSegment(seg) for seg in model.segmentList]
-		
 		stableGradient = self.config["Algorithm"]["segment"]["stable_gradient"]
 		stableGradient2 = self.config["Algorithm"]["segment"]["stable_gradient2"]
-		# stableGradient = max(gradient)/10
-		# stableGradient_LEP = max(gradient)/10
 
 		maxGradient_index = np.argmax(gradient)
 		
@@ -111,13 +97,14 @@ class thermocline_segmentation(thermocline_base):
 
 			# Detect LEP
 			epilimnion_seg = model.segmentList[0]
-			LEP_index = epilimnion_seg[1][-1]
+			LEP_index = epilimnion_seg[1][-1] # the end point of the segment.
 			
-			if maxGradient_index == 0: # if maximum gradient is the first segment, change to no thermocline is detected
-				# LEP_index = epilimnion_seg[1][0]
+			if maxGradient_index == 0: 
+				# if maximum gradient is the first segment, no LEP is detected
 				LEP_index = None
 
-			elif abs(gradient[1]) < stableGradient: # if the first seg is anomaly and second seg is stable
+			elif abs(gradient[1]) < stableGradient: 
+			# if the first seg is anomaly and second seg is stable
 					LEP_index = model.segmentList[1][1][-1]
 			elif abs(gradient[0]) > stableGradient2:
 					LEP_index = None
@@ -127,13 +114,14 @@ class thermocline_segmentation(thermocline_base):
 			UHY_index = hypolimnion_seg[1][0]
 
 			if maxGradient_index == len(gradient)-1: # if the TRM is the last segment
-				# UHY_index = hypolimnion_seg[1][-1]
 				UHY_index = None # No UHY in this profile
 
-			elif abs(gradient[-2])< stableGradient: # if the last second one is stable
+			elif abs(gradient[-2])< stableGradient: 
+				# if the last second one is stable
 				UHY_index = model.segmentList[-2][1][0] # pick the second to the last as the HYP
 			
-			elif abs(gradient[-1]) > stableGradient2: # if last one still has large gradient
+			elif abs(gradient[-1]) > stableGradient2: 
+				# if last one still has large gradient
 				print "NO UHY",abs(gradient[-1])
 				UHY_index=None # No UHY in this profile
 

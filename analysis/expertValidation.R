@@ -59,7 +59,6 @@ feature_stat <- function(df,varName = "TRM"){
 		boxplot(as.formula(paste(diffVar,"lake",sep="~")),data = df,outline = FALSE,xlab = "Lake",ylab = "Depth Differences")
 	)
 	dev.off()
-
 }
 
 main_expertValidation <- function(features){
