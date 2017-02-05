@@ -17,13 +17,13 @@ class seabird_file_parser():
 		self.dataColumn = []
 		self.sensordata = None
 
-	def readFile(self,filename,fileId = None):
+	def readFile(self,filename,fileId = None,columns = None):
 		self.meta["fileId"] = fileId
 
 		if filename.lower().endswith(".cnv"):
 			sensordata = self.readCnvFile(filename)
 		elif filename.lower().endswith(".csv"):
-			sensordata = self.readCSVFile(filename)
+			sensordata = self.readCSVFile(filename,columns=columns)
 		
 		if self.badFile:
 			return None
@@ -40,8 +40,11 @@ class seabird_file_parser():
 		self.meta["lake"] = os.path.basename(self.meta["fileName"])[:2].upper()
 		self.meta["stationInfered"] = os.path.basename(self.meta["fileName"])[:4].upper()
 			
-	def readCSVFile(self,filename):
-		return pd.read_csv(filename).rename(columns = self.variable_name_dictionary)
+	def readCSVFile(self,filename,columns = None):
+		if columns is None:
+			return pd.read_csv(filename).rename(columns = self.variable_name_dictionary)
+		else:
+			return pd.read_csv(filename).rename(columns = columns)
 
 	def readCnvFile(self,filename):
 		sensordata = []
