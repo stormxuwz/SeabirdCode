@@ -12,16 +12,31 @@ import pandas as pd
 # Fit a gaussian functions
 def gauss_function(x, a, x0, sigma2,y0,k):
 	'''
-	x: x
-	a: magnitude
-	x0: center
-	sigma: normalize factor/standard deviation
-	y0: background level
+	Define a Gaussian function with background trend
+	Args:
+		x: x
+		a: magnitude
+		x0: center
+		sigma: normalize factor/standard deviation
+		y0: background level
+		k: the background concentration trend
+	Returns:
+		the gaussian Y values
 	'''
 	return a*np.exp(-(x-x0)**2/(2*sigma2))+y0+k*(x-x0)
 
 def fitGaussian(x,y,x_mean,weight= None):
-	# parameter a,sigma,k
+	"""
+	Function to fit the Gaussian
+	Args:
+		x: x
+		y: target y
+		x_mean: the center of x
+		weight: abandoned, not implemented
+	Returens:
+		fit_y: the fitted values
+		popt: the estimated parameters
+	"""
 
 	maxK = abs((y[0]-y[-1])/(x[0]-x[-1]))
 	# adding the boundary for the lienar trend, otherwise, 
@@ -59,14 +74,20 @@ def fit_laplace(x,y,x_mean,weight=None):
 
 
 
-# fit the data with the predefined shape
 def fitShape(y,direction,method="gaussian"): 
 	"""
-	return:
+	Functions to fit the data with the predefined shape
+	Args:
+		y: target values
+		direction: "left" = fit the left (upper) part of Gaussian
+			"right": fit the right (lower) part of the Gaussian
+		method: shape to use
+
+	Returns:
 		fit_y: fitted values of y
-		x_for_fit: x for fit
-		y_for_fit: y labels
-		popt: coefficients of the model
+		x_for_fit: x used in the fit
+		y_for_fit: target values
+		popt: estimated parameters
 	"""
 	if method == "gaussian":
 		fit_func=fitGaussian
@@ -94,14 +115,17 @@ def fitShape(y,direction,method="gaussian"):
 
 
 def getStableGradientPoints(curve,slopeThres,SNRThres,diffThres, dirc = "up"):
-	# function to get boundary points based on slope and Signal noise ratio, 
-	# could be used to detect peaks that can't fit by a Gaussian shape
 	"""
+	Function to get boundary point based on slope and Signal noise ratio, 
+		could be used to detect peaks that can't fit by a Gaussian shape
+	Args:
 		Input: curve: 
 		slopeThres: the maximum gradient available
 		SNRThres: the minimum SNR
 		diffThres: 
 		dirc: "up" means the shape, i.e. the half peak is going up; "down" means the shape is going down
+	Returns:
+		finalJ: the index of the boundary
 	"""
 	
 	maxSlope = 0
@@ -146,10 +170,13 @@ def getStableGradientPoints(curve,slopeThres,SNRThres,diffThres, dirc = "up"):
 def zeroCrossing(signal, mode):
 	'''
 	find the index of points that intercept with x axis
-	mode:
-		0: return all indexes
-		1: return only from positive to negative
-		2: return only from negative to positive
+	Args:
+		mode:
+			0: return all indexes
+			1: return only from positive to negative
+			2: return only from negative to positive
+	Returns:
+		a list of all crossing points
 	'''
 	allIndex = np.where((signal[1:] * signal[:-1] < 0) == True)[0]
 	if mode == 0:
@@ -163,7 +190,16 @@ def zeroCrossing(signal, mode):
 
 
 def slope_SNR(x):
-	# get the slope and SNR of the signal x
+	"""
+	get the slope and SNR of the signal x
+	Args:
+		x. input signal
+	Returns:
+		slope, the gradient of a fitted linear line
+		SNR: SNR
+		dataDiff: the change from the first point to the last point
+	"""
+
 	n = len(x)
 	l = np.poly1d(np.polyfit(range(n),x,1))(range(n))
 	slope = l[1]-l[0]
@@ -178,6 +214,9 @@ def slope_SNR(x):
 
 
 def fit_error(x,xhat):
+	"""
+	return the error of x and fitted x (xhat)
+	"""
 	# # # using R^2, Coefficient of determination
 	# x_mean = np.mean(x)
 	# SStot = sum((x - x_mean)**2)
@@ -204,12 +243,18 @@ class peak(object):
 		self.boundaries = None
 
 	def fit_predict(self,x):
+		"""
+		Function to detect peak in signal x
+		Args:
+			x: input signal
+		Returns:
+			None
+		"""
 		x = np.array(x)
 		x_gradient = np.diff(x) # find the gradient of x, len(x_gradient) = len(x)-1, x_gradient[0] = x[1]-x[0]
 		rawPeak = zeroCrossing(x_gradient, mode=1) 
 		
-
-		if True:
+		if False:
 			n = len(x)
 			plt.figure(figsize= (4.5,6))
 			plt.plot(x,-1*np.arange(n))
@@ -222,15 +267,16 @@ class peak(object):
 
 		threshold = (max(x)-min(x))*self.config["minPeakMagnitude"]+min(x) # the minimum maginitude that a peak should reach
 
-		rawPeak = self.initialFilter(rawPeak, x, threshold)
+		rawPeak = self.initialFilter(rawPeak, x, threshold) # remove peaks by threshold
 
+		# add the first and last points as the boundary
 		rawPeak.append(len(x)-1)
 		rawPeak = [0]+rawPeak
 
 		peakHeightThreshold = (max(x)-min(x))*self.config["peakHeight"]  # a tuning parameter
 		
 		while True:
-			if True:
+			if False: # plot the meta, for checking use
 				n = len(x)
 				plt.figure(figsize= (4.5,6))
 				plt.plot(x,-1*np.arange(n))
@@ -241,8 +287,8 @@ class peak(object):
 				plt.yticks([], [])
 				plt.show()
 
-
-			shape_height = self.findPeakHeight(x,rawPeak) # the heights of all possible peaks in rawPeak
+			# find the heights of all possible peaks in rawPeak
+			shape_height = self.findPeakHeight(x,rawPeak)
 			
 			if len(shape_height) ==0:
 				break
@@ -259,6 +305,24 @@ class peak(object):
 		self.allPeaks = self.featureExtraction() # extract the features of the peak
 		
 	def featureExtraction(self):
+		"""
+		Extract features from the fitted peaks
+		Returns:
+			a dataframe, with columns of 
+			"peakIndex": the index of the peak point
+			"leftIndex_gradient": the left (upper) boundary detected by the gradient methods
+			"rightIndex_gradient": the right (lower) boundary detected by the gradient methods
+			"leftIndex_fit": the left (upper) boundary detected by the Gaussian fitting methods
+			"rightIndex_fit": the right (lower) boundary detected by the Gaussian fitting methods
+			"leftErr":	the fitted error for left (upper) shape
+			"rightErr":	 the fitted error for right (lower) shape
+			
+			"leftShapeFit":"leftShape",
+			"rightShapeFit":"rightShape",
+			
+			"leftSigma": the std of the left Gaussian shape
+			"rightSigma": the std of the right Gaussian shape
+		"""
 
 		if len(self.boundaries)==0:
 			return None
@@ -285,8 +349,12 @@ class peak(object):
 	def findBoundaries(self,x,peaks):
 		"""
 		Function to find the boundaries of each peak
-		x: curve magnitude
-		peaks: the index of peaks
+		Args:
+			x: signal
+			peaks: the index of peaks
+		Returns:
+			boundaries: a list of dictionaries. 
+			each dictionary contains information of a single peak
 		"""
 		boundaries = []
 
@@ -360,15 +428,18 @@ class peak(object):
 	def findPeakHeight(self,x,rawPeak):
 		"""
 		Calcualte the peak heights of all peaks in the rawPeak
-		x: curve magnitude
-		rawPeak: the index of peaks, the first and last element is the index of first and last point of x
+		Args:
+			x: signal
+			rawPeak: the index of peaks, the first and last element is the index of first and last point of x
+		Returns:
+			shape_height: the height of each peaks 
 		"""
 
 		shape_height = []
 		shape_fit = []
 		boundaries = []
 
-		for i in range(1,len(rawPeak)-1):
+		for i in range(1,len(rawPeak)-1): # start from 1 to the second to the last
 			
 			leftNode = rawPeak[i-1]
 			middleNode = rawPeak[i]
@@ -395,6 +466,17 @@ class peak(object):
 
 	
 	def initialFilter(self,rawPeakIndex,x,threshold, minDistance=10):
+		"""
+		function to remove peaks based on minimum magnitude and merge close peaks
+		Args:
+			rawPeakIndex: the list stored all the index of peaks
+			x: signal
+			threshold: minimum magnitude threshold
+			minDistance: the minimum distance two peaks should separate
+		Returns:
+			rawPeakIndex_new: a list containing peaks
+		"""
+
 		n = len(x)
 
 		rawPeakIndex = rawPeakIndex[x[rawPeakIndex]>threshold] # keep the index that have significant magnitude
@@ -403,9 +485,6 @@ class peak(object):
 
 		if len(rawPeakIndex)==0:
 			return rawPeakIndex_new
-
-		# if rawPeakIndex[0] > 10:
-			# rawPeakIndex_new.append(rawPeakIndex[0])
 
 		# Combine two peaks if they are too close, choose the larger one
 		rawPeakIndex_new = [rawPeakIndex[0]]
@@ -416,27 +495,8 @@ class peak(object):
 			else:
 				if x[peak_ind]>x[rawPeakIndex_new[-1]]: # if the next peak is larger than previous peak
 					rawPeakIndex_new[-1] = peak_ind
-
-		# for i in range(1,len(rawPeakIndex)):
-
-		# 	if len(rawPeakIndex_new)==0:
-		# 		rawPeakIndex_new.append(rawPeakIndex[i])
-		# 		continue
-
-		# 	# if n-rawPeakIndex[i]<10:
-		# 		# continue
-
-		# 	if rawPeakIndex[i]-rawPeakIndex_new[-1]>10:
-		# 		rawPeakIndex_new.append(rawPeakIndex[i])
-		# 	else:
-		# 		if x[rawPeakIndex[i]]>x[rawPeakIndex_new[-1]]:
-		# 			rawPeakIndex_new.pop()
-		# 			rawPeakIndex_new.append(rawPeakIndex[i])
 			
 		return rawPeakIndex_new
-
-
-
 
 
 

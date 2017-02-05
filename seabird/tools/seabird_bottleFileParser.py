@@ -1,3 +1,6 @@
+"""
+function to read bottle files
+"""
 import numpy as np
 
 def read_bottle_file(filename):

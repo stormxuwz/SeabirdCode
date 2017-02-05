@@ -41,8 +41,6 @@ if __name__ == '__main__':
 	# config["Algorithm"]["Peak"]["peakSize"] = 2.0
 	# config["Algorithm"]["segment"]["max_error"] = 0.3
 	
-
-
 	mySeabird = seabird(config = config)
 	mySeabird.loadData(fileId = 904)
 	
