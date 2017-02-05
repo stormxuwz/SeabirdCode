@@ -1,17 +1,14 @@
 """
 Seabird Class
 """
-from tools.seabird_cnvFileParser import read_seabird_file
-from tools.seabird_bottleFileParser import read_bottle_file
-from tools.seabird_preprocessing import preprocessing as seabird_pp
-from thermocline import thermocline
-from deepChlLayers import DCL
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from tools.seabird_parser import seabird_file_parser
-from sqlalchemy import create_engine
 
+from tools.seabird_preprocessing import preprocessing as seabird_pp
+from tools.seabird_parser import seabird_file_parser
+from thermocline import thermocline
+from deepChlLayers import DCL
 
 class seabird:
 	def __init__(self, config):
@@ -64,6 +61,7 @@ class seabird:
 			self.site = parser.meta["stationInfered"]
 
 		else:
+			from sqlalchemy import create_engine
 			if dbEngine is None:
 				dbEngine = create_engine('mysql+mysqldb://root:XuWenzhaO@localhost/Seabird')
 			

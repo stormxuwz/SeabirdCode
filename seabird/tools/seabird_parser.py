@@ -5,42 +5,6 @@ from datetime import datetime
 from pytz import timezone
 import os
 
-class expert_file_parser():
-	def __init__(self):
-		self.data = None
-
-	def readFile(self,filename):
-		def timeConverter(timeString_):
-			print timeString_
-			timeString =timeString_.split()
-			t = datetime.strptime(timeString[0]+" "+timeString[1],"%Y/%m/%d %H:%M")
-			if timeString[2] in ["EDT","EST"]:
-				t = timezone("US/Eastern").localize(t)
-			elif timeString[2] in ["CDT","CST"]:
-				t = timezone("US/Central").localize(t)
-			elif timeString[2] == "GMT":
-				t = timezone('GMT').localize(t)
-			else:
-				raise NameError('unknown tz')
-			# print t
-			t = t.astimezone(timezone("UTC"))
-			return t.strftime ("%Y-%m-%d %H:%M:%S")
-
-		self.data = pd.read_csv(filename)
-		for i in range(11,69):
-			colname = self.data.columns.values[i]
-			self.data[colname]= pd.to_numeric(self.data[colname],errors = "coerce")
-
-		self.data["SAMPLING_DATE"] = [timeConverter(t) for t in self.data["SAMPLING_DATE"]]
-
-
-	def saveToCSV(self,filename):
-		self.data.to_csv(filename,index=False)
-
-	def sendtoDatabase(self,dbEngine,tableName):
-		self.data.to_sql(tableName,dbEngine,flavor="mysql",if_exists="replace",index = True,chunksize=2000)
-
-
 class seabird_file_parser():
 	def __init__(self):
 		self.meta = {"longitude":None,"latitude":None,"UTC":None,"station":None,"cruise":None,"fileOriginName":None,"systemUpLoadTime":None,"fileName":None,"datcnv_date":None,"fileId":None,"lake":None,"stationInfered":None}
@@ -200,49 +164,6 @@ class seabird_file_parser():
 	def saveToCSV(self,fileToSave):
 		pass
 
-
-def createDataBase(rootDir,dbEngine,tableName):
-	fileId = 0
-	for dirName, subdirList, fileList in os.walk(rootDir):
-		for fname in fileList:
-			if fname.lower().endswith(".cnv") and "bin" not in fname.lower():
-				filepath = os.path.join(dirName,fname)
-				fileId +=1
-				print(filepath)
-				parser = seabird_file_parser()
-				parser.readFile(filepath,fileId)
-				
-				if parser.badFile is False:
-					parser.sendtoDatabase(dbEngine,tableName)
-
-
-def createDataBase_main():
-	SQLEngine=create_engine('mysql+mysqldb://root:XuWenzhaO@localhost/Seabird')
-
-	# Create database for DO in Lake Erie
-	# createDataBase(rootDir = , dbEngine = SQLEngine, tableName = {"meta":"ERDO_meta","data":"ERDO_data"})
-
-	# Create database for summer Seabird Data
-	createDataBase(rootDir ="/Users/WenzhaoXu/Developer/Seabird/input/history_data/", dbEngine = SQLEngine, tableName = {"meta":"summer_meta","data":"summer_data"})
-
-
-	# expertFile = expert_file_parser()
-	# expertFile.readFile("/Users/WenzhaoXu/Developer/Seabird/input/All_Lakes_through2012.csv")
-	# expertFile.sendtoDatabase(SQLEngine, "expertNotes")
-	# expertFile.saveToCSV("/Users/WenzhaoXu/Desktop/expert.csv")
-
-# def test(filename):
-# 	SQLEngine=create_engine('mysql+mysqldb://root:XuWenzhaO@localhost/Seabird')
-# 	parser = seabird_file_parser()
-# 	parser.readFile(filename)
-	# print parser.meta
-	# print parser.sensordata
-	# parser.sendtoDatabase(SQLEngine,tableName = {"meta":"summer_meta","data":"summer_data"})
-
-if __name__ == '__main__':
-	createDataBase_main()
-	# testFilename = "/Users/WenzhaoXu/Developer/Seabird/input/history_data/2005/summer05/Mich052/MI41cnv.cnv"
-	# test(testFilename)
 
 
 
