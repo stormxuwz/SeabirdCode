@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-from sqlalchemy import create_engine
 from datetime import datetime
 from pytz import timezone
 import os
@@ -29,7 +28,7 @@ class seabird_file_parser():
 			return None
 
 		self.sensordata = sensordata.rename(columns = self.variable_name_dictionary)
-
+		
 		for var in self.variableFinal:
 			if var not in self.sensordata.columns.values:
 				self.sensordata[var] = np.nan

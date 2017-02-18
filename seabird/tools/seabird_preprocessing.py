@@ -121,7 +121,7 @@ def init_filter(data, depth_threshold=1):
 		data: cleaned pandas dataframe
 	"""
 	data = data.copy()
-	data = data[data.Depth > depth_threshold]
+	data = data[data.Depth > depth_threshold-0.5]
 	data = data[data.Temperature>0]
 	data = data[data.Depth<1000]
 	logging.debug("finished init_filter")
@@ -210,6 +210,7 @@ def filter(data,config):
 			smoothCfg = config["SmoothingMethod"]["Other"]
 
 		method=smoothCfg[0]
+		# print var, method
 		if method == "spline":
 			data[var] = spline_smooth(data[var],smoothCfg[1])
 		
