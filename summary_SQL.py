@@ -12,7 +12,7 @@ class summary(object):
 		self.engine = engine
 		self.allYears = range(1996,2014)  # [1996, 2013]
 		self.allStations = self.getAllStations()
-		print self.allStations
+		# print self.allStations
 		self.config = config
 
 	def sqlQuery(self,sql):
@@ -23,9 +23,9 @@ class summary(object):
 		sql = '''Select DISTINCT(stationInfered) as STATION from summer_meta where year(systemUpLoadTime) >= 1996 ORDER BY STATION;'''
 		return self.sqlQuery(sql)
 
-	def findEntry(self,station,year):
+	def findEntry(self,station,year, season = "summer"):
 		subStation = station[:4]
-		sql_meta = '''select systemUploadTime,datcnv_date,fileId,stationInfered, year(systemUpLoadTime) as Year from summer_meta where stationInfered = '%s' And year(systemUpLoadTime) = %d And badProfile = 0''' %(subStation,year)
+		sql_meta = '''select systemUploadTime,datcnv_date,fileId,stationInfered, year(systemUpLoadTime) as Year from %s_meta where stationInfered = '%s' And year(systemUpLoadTime) = %d And badProfile = 0''' %(season,subStation,year)
 		sql_expertnotes = '''select `index`,SAMPLING_DATE,STATION,YEAR,DepthCode,SMPL_DEPTH as Depth from expertNotes where STATION = '%s' And YEAR = %d AND DepthCode in ('LEP','TRM','UHY','DCL'); ''' %(station,year) #  AND MONTH(SAMPLING_DATE) IN (6,7,8,9,10)
 		meta_res = self.sqlQuery(sql_meta)
 		expertnotes_res = self.sqlQuery(sql_expertnotes)
@@ -43,16 +43,132 @@ class summary(object):
 		allTables = pd.concat(tables)
 		return allTables
 
-	def filterDup(self,meta_res):
+	def filterDup(self,meta_res, season = "summer"):
 		# Find the duplicate profiles
 		maxDepth = []
 		for fileId_ in meta_res.fileId:
-			sql_data = "Select * from summer_data where fileId = %d Order By 'index' ASC" %(fileId_)
+			sql_data = "Select * from %s_data where fileId = %d Order By 'index' ASC" %(season,fileId_)
 			sensorData = pd.read_sql_query(sql_data,self.engine).drop('index',axis = 1)
 			maxDepth.append(max(sensorData.Depth))
 
 		whichMax = np.argmax(maxDepth)
 		return meta_res.fileId[whichMax]
+
+
+	def calculateThermoFlux(self):
+		allResults = []
+		maxDepthDict = pickle.load(open("/Users/wenzhaoxu/Developer/Seabird/SeabirdCode/thermoFlux_maxDepth_SU.p","rb"))
+		maxDepthDict["SU17"] = 182.75
+		
+		for station in self.allStations.STATION:
+		# for station in ["SU17"]:
+			if station.startswith("SU"):
+				for year in self.allYears:
+				# for year in [2011]:
+					springRes,_ = self.findEntry(station, year,"spring")
+					summerRes,_ = self.findEntry(station, year,"summer")
+
+					res = {"year":year,"station":station,"maxDepth":None,"minDepth":None}
+					
+					minDepth = 3.0
+					maxDepth = maxDepthDict[station]
+
+					res["maxDepth"] = maxDepth
+					res["minDepth"] = minDepth
+					
+					if summerRes.shape[0]>0 and springRes.shape[0]>0:
+						fileId_summer = self.filterDup(summerRes,"summer")
+						fileId_spring = self.filterDup(springRes,"spring")
+
+						# print fileId_summer, fileId_spring
+						summerSeabird = seabird(self.config)
+						summerSeabird.rawData = pd.read_sql_query("Select * from %s_data where fileId = %d Order By 'index' ASC" %("summer",fileId_summer)
+							,self.engine).drop('index',axis = 1)
+
+						springSeabird = seabird(self.config)
+						springSeabird.rawData = pd.read_sql_query("Select * from %s_data where fileId = %d Order By 'index' ASC" %("spring",fileId_spring)
+							,self.engine).drop('index',axis = 1)
+
+						if station == "SU12" and year == 2008: # manually filtered the outlier
+							springSeabird.rawData = springSeabird.rawData[(springSeabird.rawData.Temperature>0) & (springSeabird.rawData.Temperature<7)]
+
+						summerSeabird.preprocessing()
+						springSeabird.preprocessing()
+
+						# print min(max(summerSeabird.cleanData.Depth),max(springSeabird.cleanData.Depth))
+
+						summerSeabird.identify()
+						LEP = summerSeabird.features["LEP_segment"]
+						UHY = summerSeabird.features["UHY_segment"]
+						# print springSeabird.cleanData
+
+						# minDepth = max(min(summerSeabird.cleanData.Depth),min(springSeabird.cleanData.Depth))
+						minDepth = 3.0
+						# maxDepth = 
+						
+						# maxDepth = LEP
+						# print maxDepth
+
+						# print summerSeabird.cleanData.Depth
+						# print springSeabird.cleanData.Depth
+
+						summerTemperature_LEP = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=LEP) & (summerSeabird.cleanData.Depth>=minDepth)]
+						springTemperature_LEP = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=LEP) & (springSeabird.cleanData.Depth>=minDepth)]
+
+						summerTemperature_UHY = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=UHY) & (summerSeabird.cleanData.Depth>=minDepth)]
+						springTemperature_UHY = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=UHY) & (springSeabird.cleanData.Depth>=minDepth)]
+
+						summerTemperature_bottom = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=maxDepth) & (summerSeabird.cleanData.Depth>=minDepth)]
+						springTemperature_bottom = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=maxDepth) & (springSeabird.cleanData.Depth>=minDepth)]
+
+						assert summerTemperature_LEP.shape[0] == springTemperature_LEP.shape[0]
+						assert summerTemperature_UHY.shape[0] == springTemperature_UHY.shape[0]
+						assert summerTemperature_bottom.shape[0] == springTemperature_bottom.shape[0]
+						# print summerTemperature.shape
+						# print springTemperature.shape
+
+						# res["temperatureDifference"] = sum(summerTemperature-springTemperature)
+
+						res["LEP"] = LEP
+						res["UHY"] = UHY
+
+						res["springSurfaceTemp"] = np.mean(springTemperature_LEP) if LEP else springSeabird.cleanData.Temperature[springSeabird.cleanData.Depth>=minDepth].iloc[0]
+						res["summerSurfaceTemp"] = np.mean(summerTemperature_LEP) if LEP else summerSeabird.cleanData.Temperature[summerSeabird.cleanData.Depth>=minDepth].iloc[0]
+
+						res["springBottomTemp"] = springTemperature_UHY.iloc[-1] if UHY else springSeabird.cleanData.Temperature[springSeabird.cleanData.Depth<=maxDepth].iloc[-1]
+						res["summerBottomTemp"] = summerTemperature_UHY.iloc[-1] if UHY else summerSeabird.cleanData.Temperature[summerSeabird.cleanData.Depth<=maxDepth].iloc[-1]
+						
+						res["summerSum_LEP"] = sum(summerTemperature_LEP) if LEP else None
+						res["springSum_LEP"] = sum(springTemperature_LEP) if LEP else None
+
+						res["summerSum_UHY"] = sum(summerTemperature_UHY) if UHY else None
+						res["springSum_UHY"] = sum(springTemperature_UHY) if UHY else None
+
+						res["summerSum_bottom"] = sum(summerTemperature_bottom)
+						res["springSum_bottom"] = sum(springTemperature_bottom)
+
+
+						# plot the data
+						import matplotlib.pyplot as plt
+						plt.figure(figsize=(6, 7), dpi=80)
+						plt.plot(summerSeabird.cleanData.Temperature,-summerSeabird.cleanData.Depth,"r")
+						plt.plot(springSeabird.cleanData.Temperature,-springSeabird.cleanData.Depth,"g")
+
+						if UHY:
+							plt.axhline(-UHY)
+						if LEP:
+							plt.axhline(-LEP)
+
+						plt.axhline(-maxDepth)
+
+						plt.xlabel("Temperature")
+						plt.ylabel("Depth")
+						plt.savefig("./analysis/flux/%s_%d_TP.png" %(station,year))
+						plt.close()
+
+					allResults.append(res)
+
+		return pd.DataFrame(allResults)
 
 	def detect(self):
 		# Detect the features
@@ -176,11 +292,16 @@ def extractWaterChemistryData(featureFile):
 
 if __name__ == '__main__':
 	import json
+
 	engine = create_engine('mysql+mysqldb://root:XuWenzhaO@localhost/Seabird')
 	config = json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/config.json'))
 	GLSummary = summary(engine,config)
-	GLSummary.detect()
-	extractWaterChemistryData("/Users/WenzhaoXu/Developer/Seabird/output/detectedFeatures.csv")
+
+	res = GLSummary.calculateThermoFlux()
+	res.to_csv("thermoFlux_SU_new.csv")
+	pickle.dump(res, open("thermoFlux_SU_new.p","wb"))
+	# GLSummary.detect()
+	# extractWaterChemistryData("/Users/WenzhaoXu/Developer/Seabird/output/detectedFeatures.csv")
 	
 	# print GLSummary.allStations.STATION
 	# allTables = GLSummary.writeAllAlignments()

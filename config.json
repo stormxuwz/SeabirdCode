@@ -10,7 +10,7 @@
 	},
 	"Preprocessing":{
 		"Interval":0.25,
-		"badDepthThreshold":2
+		"badDepthThreshold":3
 	},
 	
 	"Algorithm":{

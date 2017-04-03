@@ -41,10 +41,8 @@ if __name__ == '__main__':
 	# config["Algorithm"]["Peak"]["peakSize"] = 2.0
 	# config["Algorithm"]["segment"]["max_error"] = 0.3
 	
-
-
 	mySeabird = seabird(config = config)
-	mySeabird.loadData(fileId = 904)
+	mySeabird.loadData(fileId = 966)
 	
 	# 904: Two peaks
 	# 1000: a narrow peak

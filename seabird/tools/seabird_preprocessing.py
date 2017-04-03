@@ -8,6 +8,15 @@ import pywt
 import logging
 
 def window_smooth(x, window_len=11, window='hanning'):
+	"""
+	Function to smooth signal based moving window
+	Args:
+		x: signal
+		window_len: window size
+		window: window shape
+	Returns
+		y: smoothed data
+	"""
 	window_len = min(int(len(x)/5),window_len)
 	if window_len % 2 ==0:
 		window_len+=1
@@ -34,6 +43,13 @@ def window_smooth(x, window_len=11, window='hanning'):
 
 
 def spline_smooth(x, smoothing_para=1):
+	"""
+	Function to smooth data by spline smooth
+	Args:
+		x: signal
+	Returns
+		y: smoothed data
+	"""
 	ind=range(1,len(x)+1)
 	y = UnivariateSpline(ind, x, k=3, s=smoothing_para)
 	return y(ind)
@@ -48,21 +64,29 @@ def testFilter(x, smoothing_para=1):
 
 
 def dwt_smooth(x, smoothing_para={'wavelet':'bior3.1','level':0}):
-
+	"""
+	Function to smooth data by spline smooth
+	Args:
+		x: signal
+		smoothing_para: dictionary with key of "wavelet" and "level"
+	Returns:
+		y: smoothed data
+	"""
 	wavelet=smoothing_para["wavelet"]
 	level = smoothing_para["level"]
 	num = len(x)
 	
 	maxlevel = pywt.dwt_max_level(data_len=num, filter_len=pywt.Wavelet(wavelet).dec_len)
-	print maxlevel
+
 	if level > 0:
 		level = int(level)
 	elif level < 0:
 		level=maxlevel;
-	else:  # level==0
+	else:  # level==0, choose the max level-4
 		level = max(1, maxlevel - 4)
 
-	coeffs = pywt.wavedec(x, wavelet, 'cpd', level=level) # multilevel decomposition, return CA_n, CD_n, CD_n-1
+	# multilevel decomposition, return CA_n, CD_n, CD_n-1
+	coeffs = pywt.wavedec(x, wavelet, 'cpd', level=level) 
 
 	coeffs_size = []
 	coeff_conj = []
@@ -87,9 +111,17 @@ def dwt_smooth(x, smoothing_para={'wavelet':'bior3.1','level':0}):
 	return y
 
 
-def init_filter(data, depth_threshold=1):  # Remove the data on the surface
-	data = data[data.Depth > depth_threshold]
-	# data = data[data.Depth < 1000]
+def init_filter(data, depth_threshold=1):
+	"""
+	function to remove the surface data (depth < threshold)
+	Args:
+		data: a pandas dataframe storing the sensor data
+		depth_threshold: the depth threshold
+	Returns:
+		data: cleaned pandas dataframe
+	"""
+	data = data.copy()
+	data = data[data.Depth > depth_threshold-0.5]
 	data = data[data.Temperature>0]
 	data = data[data.Depth<1000]
 	logging.debug("finished init_filter")
@@ -97,6 +129,14 @@ def init_filter(data, depth_threshold=1):  # Remove the data on the surface
 
 
 def separate(sensordata):
+	"""
+	function to separate upcast and downcast
+	Args:
+		data: a pandas dataframe storing the sensor data
+	Returns:
+		downcast: downcast data
+		upcast: upcast data
+	"""
 	maxDepth_ind = np.argmax(sensordata.Depth)
 	downcast = sensordata.iloc[:maxDepth_ind, :]
 	upcast = sensordata.iloc[maxDepth_ind:, :]
@@ -104,6 +144,14 @@ def separate(sensordata):
 
 
 def resample(sensordata, interval=0.25):
+	"""
+	Function to resample data based on averaging or linear interpolation
+	Args:
+		data: a pandas dataframe storing the sensor data
+		interval: averaging interval
+	Returns:
+		downcast: downcast data
+	"""
 	depth = np.array(sensordata.Depth)
 
 	featureNum = sensordata.shape[1] - 1
@@ -111,7 +159,6 @@ def resample(sensordata, interval=0.25):
 	new_sensordata = np.zeros((len(new_depth), sensordata.shape[1]-1))
 	new_sensordata[:, 0] = new_depth
 
-	
 	dataAgged = True
 	meanRange = []
 
@@ -123,7 +170,6 @@ def resample(sensordata, interval=0.25):
 		if sum(~sensordata.iloc[:,i].isnull())<1: # no data 
 			new_sensordata[:, i] = np.nan
 		else:
-			# new_sensordata[:, i] = np.interp(new_depth, depth, sensordata.iloc[:, i])
 			if dataAgged:
 				new_sensordata[:, i] = np.interp(new_depth, depth, sensordata.iloc[:, i])
 			else:
@@ -134,13 +180,28 @@ def resample(sensordata, interval=0.25):
 
 
 def transTransimissionToBAT(transmission):
+	"""
+	function to change transsmission to BAT
+	"""
 	return -np.log(transmission/100)*4
 	
 def transCondToSpecCond(conductitivty,temperature):
+	"""
+	function to conductivity to specific conductivity
+	"""
 	return conductitivty/(1+0.02*(self.temperature-25))
 
 
 def filter(data,config):
+	"""
+	function to smooth each column of data
+	Args:
+		data: input data
+		config: configuration dictionary
+	Returns:
+		data, the smoothed data
+	"""
+
 	for var in data.columns.values[1:]:
 
 		if var in config["SmoothingMethod"]:
@@ -149,6 +210,7 @@ def filter(data,config):
 			smoothCfg = config["SmoothingMethod"]["Other"]
 
 		method=smoothCfg[0]
+		# print var, method
 		if method == "spline":
 			data[var] = spline_smooth(data[var],smoothCfg[1])
 		
@@ -164,6 +226,15 @@ def filter(data,config):
 
 
 def preprocessing(data,config):
+	"""
+	function to preprocess the raw input data by separating, resampling and smoothing
+	Args:
+		data: input data
+		config: configuration dictionary
+	Returns:
+		downcast: the raw downcast
+		filtered_data: the cleaned downcast
+	"""
 	downcast, upcast = separate(data)
 	pre_data = init_filter(downcast,config["Preprocessing"]["badDepthThreshold"])
 	if pre_data.shape[0]<1:
