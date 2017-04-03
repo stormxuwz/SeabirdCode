@@ -143,7 +143,7 @@ def getStableGradientPoints(curve,slopeThres,SNRThres,diffThres, dirc = "up"):
 			maxSlope = max(maxSlope,slope_tmp)
 			if slope < slopeThres*maxSlope and SNR > SNRThres and dataDiff < dataRange *diffThres:
 				# leftBoundary = middleNode - j
-				print "left",slope,SNR
+				# print "left",slope,SNR
 				finalJ = j
 				break
 	else:
@@ -162,7 +162,7 @@ def getStableGradientPoints(curve,slopeThres,SNRThres,diffThres, dirc = "up"):
 			if slope < slopeThres*maxSlope and SNR > SNRThres and dataDiff < dataRange *diffThres:
 				# rightBoundary = middleNode+j
 				finalJ = j
-				print "right",slope,maxSlope,SNR
+				# print "right",slope,maxSlope,SNR
 				break
 	
 	return finalJ
@@ -405,7 +405,7 @@ class peak(object):
 				rightBoundary_gradient = middleNode + getStableGradientPoints(rightData, self.config["slope"], self.config["SNR"], self.config["stableDiff"],"down")
 				
 				# the boundary of right shape by fitting half Gaussian
-				print self.config["peakSize"]
+				# print self.config["peakSize"]
 				rightBoundary_fit = min(len(x)-2, middleNode + int(np.ceil(self.config["peakSize"]*np.sqrt(rightShape[3][1]))))  #  use two and half sigma as the peak half width
 
 			boundaries.append({

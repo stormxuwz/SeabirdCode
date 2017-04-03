@@ -139,7 +139,7 @@ class thermocline_segmentation(thermocline_base):
 				maxGradient_index = np.argmax(gradient)
 
 		self.gradient = gradient
-		print "Gradient",gradient
+		# print "Gradient",gradient
 
 		if gradient[maxGradient_index] >self.config["Algorithm"]["segment"]["minTRM_gradient"]: 
 			# TRM gradient is above the maximum gradient

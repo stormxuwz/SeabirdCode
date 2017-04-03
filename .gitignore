@@ -20,3 +20,19 @@
 *.pyc
 
 seabird/tools/seabird_preprocessing.pyc
+
+*.csv
+
+*.p
+
+*.pyc
+
+*.png
+
+analysis/.Rhistory
+
+*.zip
+
+*.pdf
+
+*.pyc
