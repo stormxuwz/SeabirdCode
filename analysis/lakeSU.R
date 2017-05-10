@@ -1,5 +1,20 @@
 source("plot.R")
 
+
+
+gly_LakeSU <- function(SUData, lakeLegend){
+	print(lakeLegend)
+	SUData$value <- SUData[,lakeLegend]
+	SUData$site <- SUData$site
+	plot_gly_on_map(SUData, global=TRUE, trend = TRUE, sprintf("SU_%s.png", lakeLegend))	
+}
+
+for(lakeLegend in c("TRM_segment","DCL_depth","DCL_conc","LEP_segment","UHY_segment")){
+	gly_LakeSU(SUData, lakeLegend)
+}
+
+
+
 main_lakeSU <- function(features){
 	
 	locations <- read.csv("../../input/station_loc.csv")

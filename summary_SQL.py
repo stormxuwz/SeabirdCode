@@ -297,11 +297,13 @@ if __name__ == '__main__':
 	config = json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/config.json'))
 	GLSummary = summary(engine,config)
 
+	
+	GLSummary.detect()
+	extractWaterChemistryData("/Users/WenzhaoXu/Developer/Seabird/output/detectedFeatures.csv")
+
 	res = GLSummary.calculateThermoFlux()
 	res.to_csv("thermoFlux_SU_new.csv")
 	pickle.dump(res, open("thermoFlux_SU_new.p","wb"))
-	# GLSummary.detect()
-	# extractWaterChemistryData("/Users/WenzhaoXu/Developer/Seabird/output/detectedFeatures.csv")
 	
 	# print GLSummary.allStations.STATION
 	# allTables = GLSummary.writeAllAlignments()
