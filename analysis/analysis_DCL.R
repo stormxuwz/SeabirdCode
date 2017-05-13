@@ -72,7 +72,7 @@ main_analysis_DCL <- function(features){
 	
 	
 	# plot the size boxplot
-	pdf("peaksize.pdf",width = 5, height = 4)
+	pdf("./results/peaksize.pdf",width = 5, height = 4)
 	print(boxplot(DCL_size~lake,data = allGoodFit,ylab ="Peak Size (m)"))
 	dev.off()
 	

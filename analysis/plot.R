@@ -2,25 +2,29 @@ library(GGally)
 library(ggplot2)
 library(dplyr)
 library(ggmap)
+library(png)
+library(grid)
+
+getSUmap <- function(df){
+	longRange <- range(df$Long)
+	latRange <- range(df$Lat)
+	bbox <- make_bbox(longRange,latRange,f = 0.3)
+	myMap <- get_map(location=bbox, source="stamn",crop=TRUE,color="bw",maptype="terrain")
+	myMap <- get_map(location = bbox, maptype="toner-lite", source="stamen",zoom=7,color = "bw",crop=TRUE)
+	saveRDS(myMap, "SUMap.rds")
+}
+
 
 plot_gly_on_map <- function(newDF, global = FALSE, trend = FALSE, outputFile = "test.png", reverse = TRUE){
-	# newDF$value <- newDF$summerSum_UHY - newDF$springSum_UHY
-	# longRange <- range(newDF$Long)
-	# latRange <- range(newDF$Lat)
-	# bbox <- make_bbox(longRange,latRange,f = 0.3)
-	# myMap <- get_map(location=bbox, source="stamn",crop=TRUE,color="bw",maptype="terrain")
-	# myMap <- get_map(location = bbox, maptype="toner-lite", source="stamen",zoom=7,color = "bw",crop=TRUE)
-	# saveRDS(myMap, "SUMap.rds")
+	# function to plot glygraph
+
 	myMap <- readRDS("SU_map.rds")
-	# ggmap(myMap)
 	SU_locations <- unique(newDF[,c("Station","Lat","Long")])
 	
-	library(png)
-	library(grid)
-
 	if(reverse){
 		newDF$value <- -1*newDF$value
 	}
+
 	globalYRange <- range(newDF$value, na.rm = TRUE)
 	globalYMiddle <- mean(globalYRange, na.rm = TRUE)
 	globalXRange <- range(newDF$year, na.rm = TRUE)
@@ -28,25 +32,32 @@ plot_gly_on_map <- function(newDF, global = FALSE, trend = FALSE, outputFile = "
 	height = 0.2
 	width = 0.3
 	p <- ggmap(myMap) + coord_cartesian() + coord_fixed(ratio = 1.5) + theme(axis.text = element_text(size=12))
+	pValueList <- list()
 
 	for(i in 1:nrow(SU_locations)){
-		station_ <- SU_locations[i,"Station"]
-		subdf <- subset(newDF, Station == station_)
+		station_ <- SU_locations[i,"Station"] %>% as.character()
+		print(station_)
+		subdf <- subset(newDF, Station == station_) %>% na.omit()
+
+		if(nrow(subdf) == 0){
+			next
+		}
+
 		mid <- SU_locations[i,c("Long","Lat")] %>% as.numeric()
 
-		model2 <- lm(value~year,data = subdf[,c("year","value")] %>% na.omit())
-		pValue2 <- summary(model2)$coefficients[2,4]
-		
-		p2 <- ggplot(subdf[,c("year","value")] %>% na.omit())
-		# p2 <- p2 + geom_bar(aes(x = year,y = summerSum_UHY),fill = "red",stat="identity")
-		# p2 <- p2 + geom_bar(aes(x = year,y = springSum_UHY),fill = "blue4",stat="identity")
+		model <- lm(value~year,data = na.omit(subdf[,c("year","value")]))
+		pValue <- summary(model)$coefficients[2,4]
+
+		pValueList[[station_]] <- c(p=pValue,alpha = model$coefficients["year"])
+
+		p2 <- ggplot(subdf[,c("year","value")])
 		p2 <- p2 + geom_line(aes(x = year,y = value),size=0.8) + 
 				 geom_point(aes(x = year,y = value),size=2)
 		
 		localYRange <- range(subdf$value)
 
 		if(trend){
-			p2 <- p2 + stat_smooth(aes(x = year, y = value),method = "lm",color = "red")
+			p2 <- p2 + stat_smooth(aes(x = year, y = value),method = "lm",color = "red", size = 1)
 		}
 
 		if(global){
@@ -82,7 +93,9 @@ plot_gly_on_map <- function(newDF, global = FALSE, trend = FALSE, outputFile = "
 		
 		p <- p + annotation_custom(g, xmin=mid[1]-width, xmax=mid[1]+width, ymin=mid[2]-height, ymax=mid[2]+height)
 	}
-	png(outputFile, width = 3000, height = 1500)
+
+	saveRDS(pValueList,paste0(outputFile,"_pvalue.rds"))
+	png(paste0(outputFile, ".png"), width = 3000, height = 1500)
 	print(p)
 	dev.off()
 }

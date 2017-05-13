@@ -48,6 +48,68 @@ def outputData(fid,csvFolder = "/Users/wenzhaoxu/Desktop/"):
 
 
 
+def plotHistoryProfile(site, years = range(1998,2012), var = "TRM", targetYear = 2000):
+	# site is site
+	# year is a list
+	folder = '/Users/wenzhaoxu/Developer/Seabird/output/meta/'
+
+	depths = []
+	values = []
+	pt = plt.figure(figsize = (6.5, 7.5))
+
+	for year in years:
+		# if year == targetYear:
+			# continue
+		for file in os.listdir(folder):
+			if fnmatch.fnmatch(file, '%s_%d_*.p' %(site,year)):
+				fname = "%s/%s" %(folder,file)
+				print fname
+				break
+
+		mySeabird = pickle.load(open(fname,"rb"))
+		features = mySeabird.features
+		depths.append(max(mySeabird.cleanData.Depth))
+
+		if var in ["TRM","UHY","LEP"]:
+			plt.plot(mySeabird.downCastRawData.Temperature, -mySeabird.downCastRawData.Depth, ls = "--", alpha=1, color = '0.75', label='_nolegend_')
+			values.append(max(mySeabird.downCastRawData.Temperature))
+		elif var == "DCL":
+			plt.plot(mySeabird.downCastRawData.Fluorescence, -mySeabird.downCastRawData.Depth, ls = "--", alpha=1, color = '0.75',  label='_nolegend_')
+			values.append(max(mySeabird.downCastRawData.Fluorescence))
+
+	if targetYear:
+		for file in os.listdir(folder):
+			if fnmatch.fnmatch(file, '%s_%d_*.p' %(site,targetYear)):
+				fname = "%s/%s" %(folder,file)
+				break
+		mySeabird = pickle.load(open(fname,"rb"))
+		features = mySeabird.features
+
+
+		if var in ["TRM","UHY","LEP"]:
+			depth_algorithm = mySeabird.features[var+"_segment"]
+			plt.plot(mySeabird.downCastRawData.Temperature, -mySeabird.downCastRawData.Depth, ls = "--", alpha=1, color = '0.75', label = "Historical Profile")
+			plt.plot(mySeabird.downCastRawData.Temperature, -mySeabird.downCastRawData.Depth, "r", alpha=1, label = "%d Profile" % targetYear)
+			plt.axhline(y = -1*depth_algorithm if depth_algorithm is not None else -999,color = 'b',label = "%d %s" %(targetYear, var))
+		elif var == "DCL":
+			depth_algorithm = mySeabird.features["DCL_depth"]
+			plt.plot(mySeabird.downCastRawData.Fluorescence, -mySeabird.downCastRawData.Depth, ls = "--", alpha=1, color = '0.75', label = "Historical Profile")
+			plt.plot(mySeabird.downCastRawData.Fluorescence, -mySeabird.downCastRawData.Depth, "r", alpha=1, label = "%d Profile" % targetYear)
+			plt.axhline(y = -1*depth_algorithm if depth_algorithm is not None else -999,color = 'b',label = "%d %s" %(targetYear, var))
+
+	plt.ylim((-max(depths) - 5, 0))
+	plt.xlim((0, max(values)*1.1))
+	plt.ylabel("Depth (m)")
+
+	if var in ["TRM", "UHY", "LEP"]:
+		plt.xlabel("Temperature (C)")
+	elif var == "DCL":
+		plt.xlabel("Fluorescence (ug/L)")
+
+	# plt.show()
+	plt.legend(loc = 4)
+	plt.savefig("%s_%d_%s.png" %(site, targetYear, var))
+	plt.close()
 
 
 
@@ -183,8 +245,13 @@ if __name__ == '__main__':
 	# # plotProfile(1637,var = "None",legendLoc = 4) # HU37 2006 for double thermocline	
 	# plotProfile(1154,var = "None",legendLoc = 4) # MI42_2006_1154 for double thermocline
 	
-	plotProfile(1433,var = "None",legendLoc = 4)# 2008 SU17 for DCL asymesstry shape 1.459844
-	plotProfile(438,var = "None",legendLoc = 4)# HU12 2000 for DCL symmetric shape b, 0.003450122
-	plotProfile(1426,var = "None",legendLoc = 4)# SU11 2008 for DCL asymmetric shape c, -1.835088
+	# plotProfile(1433,var = "None",legendLoc = 4)# 2008 SU17 for DCL asymesstry shape 1.459844
+	# plotProfile(438,var = "None",legendLoc = 4)# HU12 2000 for DCL symmetric shape b, 0.003450122
+	# plotProfile(1426,var = "None",legendLoc = 4)# SU11 2008 for DCL asymmetric shape c, -1.835088
 	# # outputData(1767)
-	
+
+	plotHistoryProfile("SU12",var = "TRM", targetYear=2004)
+	plotHistoryProfile("SU05",var = "TRM", targetYear=2004)
+
+	plotHistoryProfile("SU07",var = "DCL", targetYear=2001)
+	plotHistoryProfile("SU06",var = "DCL", targetYear=2009)
