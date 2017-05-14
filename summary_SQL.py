@@ -64,23 +64,22 @@ class summary(object):
 		# for station in ["SU17"]:
 			if station.startswith("SU"):
 				for year in self.allYears:
-				# for year in [2011]:
+
 					springRes,_ = self.findEntry(station, year,"spring")
 					summerRes,_ = self.findEntry(station, year,"summer")
 
 					res = {"year":year,"station":station,"maxDepth":None,"minDepth":None}
 					
-					minDepth = 3.0
-					maxDepth = maxDepthDict[station]
+					if summerRes.shape[0]>0 and springRes.shape[0]>0:	
+						minDepth = 3.0
+						maxDepth = maxDepthDict[station]
+						res["maxDepth"] = maxDepth
+						res["minDepth"] = minDepth
 
-					res["maxDepth"] = maxDepth
-					res["minDepth"] = minDepth
-					
-					if summerRes.shape[0]>0 and springRes.shape[0]>0:
 						fileId_summer = self.filterDup(summerRes,"summer")
 						fileId_spring = self.filterDup(springRes,"spring")
 
-						# print fileId_summer, fileId_spring
+						print station, year, fileId_summer, fileId_spring
 						summerSeabird = seabird(self.config)
 						summerSeabird.rawData = pd.read_sql_query("Select * from %s_data where fileId = %d Order By 'index' ASC" %("summer",fileId_summer)
 							,self.engine).drop('index',axis = 1)
@@ -147,7 +146,6 @@ class summary(object):
 						res["summerSum_bottom"] = sum(summerTemperature_bottom)
 						res["springSum_bottom"] = sum(springTemperature_bottom)
 
-
 						# plot the data
 						import matplotlib.pyplot as plt
 						plt.figure(figsize=(6, 7), dpi=80)
@@ -163,7 +161,7 @@ class summary(object):
 
 						plt.xlabel("Temperature")
 						plt.ylabel("Depth")
-						plt.savefig("./analysis/flux/%s_%d_TP.png" %(station,year))
+						plt.savefig("./analysis/results/flux/%s_%d_TP.png" %(station,year))
 						plt.close()
 
 					allResults.append(res)
