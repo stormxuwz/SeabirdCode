@@ -129,7 +129,7 @@ class thermocline_segmentation(thermocline_base):
 		
 		# get the gradient of all segments
 		gradient = [self.getGradientFromSegment(seg) for seg in model.segmentList]
-		# print gradient
+		print gradient
 		maxGradient_index = np.argmax(gradient)
 		
 		# remove the segment caused by the noise
@@ -167,6 +167,9 @@ class thermocline_segmentation(thermocline_base):
 						LEP_index = model.segmentList[i - 1][1][-1]
 					break
 
+				if i == maxGradient_index - 1:
+					LEP_index = model.segmentList[i][1][-1]
+
 			# detect the UHY
 			for i in range(len(model.segmentList) - 1, maxGradient_index, -1):
 				if not (gradientIsStable[i] and model.segmentList[i][0][0] - bottomTemperature < self.maxTempertureChange):
@@ -174,10 +177,12 @@ class thermocline_segmentation(thermocline_base):
 						UHY_index = model.segmentList[i + 1][1][0]
 					break
 
+				if i == maxGradient_index + 1:
+					UHY_index = model.segmentList[i][1][0]
+
 			if LEP_index:
 				self.LEP = data.Depth[LEP_index]
 
-			# print "UHY index", UHY_index
 			if UHY_index:
 				self.UHY = data.Depth[UHY_index]
 		else:
