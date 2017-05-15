@@ -48,7 +48,7 @@ class thermocline_segmentation(thermocline_base):
 		self.doubleTRM = []
 		self.gradient = []
 
-		self.maxTempertureChange = 2
+		self.maxTempertureChange = 2.5
 		
 		self.stableGradient = config["Algorithm"]["segment"]["stable_gradient"]
 		self.stableGradient_relaxed = config["Algorithm"]["segment"]["stable_gradient2"]
@@ -162,8 +162,10 @@ class thermocline_segmentation(thermocline_base):
 
 			# detect the LEP
 			for i in range(maxGradient_index):
-				if not (gradientIsStable[i] and model.segmentList[i][0][-1] - surfaceTemperature < self.maxTempertureChange):
+				if not (gradientIsStable[i] and  surfaceTemperature - model.segmentList[i][0][-1] < self.maxTempertureChange):
 					if i > 0:
+						print gradientIsStable[i], surfaceTemperature - model.segmentList[i-1][0][-1], \
+						(surfaceTemperature - model.segmentList[i-1][0][-1])/(max(data.Temperature)-min(data.Temperature))
 						LEP_index = model.segmentList[i - 1][1][-1]
 					break
 
@@ -174,6 +176,8 @@ class thermocline_segmentation(thermocline_base):
 			for i in range(len(model.segmentList) - 1, maxGradient_index, -1):
 				if not (gradientIsStable[i] and model.segmentList[i][0][0] - bottomTemperature < self.maxTempertureChange):
 					if i < len(model.segmentList) - 1:
+						print gradientIsStable[i], model.segmentList[i+1][0][0] - bottomTemperature,\
+						 (model.segmentList[i+1][0][0] - bottomTemperature)/(max(data.Temperature)-min(data.Temperature))
 						UHY_index = model.segmentList[i + 1][1][0]
 					break
 

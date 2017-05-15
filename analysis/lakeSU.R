@@ -43,9 +43,9 @@ main_lakeSU <- function(features){
 	dev.off()
 	
 
-	# for(lakeLegend in c("TRM_segment","DCL_depth","DCL_conc","LEP_segment","UHY_segment")){
-	# 	gly_LakeSU(SUData, lakeLegend)
-	# }
+	for(lakeLegend in c("TRM_segment","DCL_depth","DCL_conc","LEP_segment","UHY_segment")){
+	 	gly_LakeSU(SUData, lakeLegend)
+	}
 
 	# plot_gly(SUData,"DCL_conc",reverse = FALSE)
 	# plot_gly(SUData,"DCL_depth",reverse = TRUE)

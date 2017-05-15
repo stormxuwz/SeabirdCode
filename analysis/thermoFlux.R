@@ -5,6 +5,7 @@ library(dplyr)
 library(gridExtra)
 
 plotTherFluxBySite <- function(df){	
+	stations <- unique(df$station)
 	for(station_ in stations){
 		print(station_)
 		subdf <- subset(df, Station == station_)
