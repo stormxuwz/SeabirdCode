@@ -33,6 +33,8 @@
 			"stable_gradient2":0.25,
 			"stable_gradient":0.1,
 			"minTRM_gradient":0.15,
-			"minTRM_gradient_backUP":0.25}
+			"minTRM_gradient_backUP":0.25,
+			"maxTemperatureChange":20
+		}
 	}
 }

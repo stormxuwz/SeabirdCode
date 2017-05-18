@@ -21,9 +21,9 @@ otherData <- function(){
 main<- function(){
 	# read the data and combine data
 	locations <- read.csv("../../input/station_loc.csv")
-	waterChemistry <- read.csv("../../output/waterFeature.csv")
+	waterChemistry <- read.csv("../../output_0515/waterFeature.csv")
 	
-	features <- read.csv("../../output/detectedFeatures.csv") %>%
+	features <- read.csv("../../output_0515/detectedFeatures.csv") %>%
 		preprocessing(locations = locations, waterChemistry = waterChemistry)
 	
 	print("Doing algorithm validation")

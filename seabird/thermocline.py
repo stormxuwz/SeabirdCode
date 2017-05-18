@@ -48,11 +48,13 @@ class thermocline_segmentation(thermocline_base):
 		self.doubleTRM = []
 		self.gradient = []
 
-		self.maxTempertureChange = 2.5
+		self.maxTempertureChange = config["Algorithm"]["segment"]["maxTemperatureChange"]
 		
 		self.stableGradient = config["Algorithm"]["segment"]["stable_gradient"]
 		self.stableGradient_relaxed = config["Algorithm"]["segment"]["stable_gradient2"]
 		self.minimumGradient_TRM = self.config["Algorithm"]["segment"]["minTRM_gradient"]
+
+		self.dynamicGradient = False
 
 	def getGradientFromSegment(self,seg):
 		"""
@@ -138,12 +140,18 @@ class thermocline_segmentation(thermocline_base):
 			if tmpDepth[-1] - tmpDepth[0] < 2:
 				# if the first segment is less than 2 meters and has the maximum gradient
 				# then the first segment would be a noise or peak, need to remove
-				print "**** first segment is affected by noise",tmpDepth
+				print "**** first segment is affected by noise, remove the first segment ****",tmpDepth
 				model.segmentList.pop(0)
 				gradient = [self.getGradientFromSegment(seg) for seg in model.segmentList]
 				maxGradient_index = np.argmax(gradient)
 
 		self.gradient = gradient
+
+		if self.dynamicGradient:
+			self.stableGradient_relaxed = max(self.gradient) * self.stableGradient_relaxed
+			self.stableGradient = max(self.gradient) * self.stableGradient
+			print "stable gradient", self.stableGradient
+			print "stable gradient relax", self.stableGradient_relaxed
 
 		if gradient[maxGradient_index] > self.minimumGradient_TRM: 
 			# TRM gradient is above the maximum gradient
@@ -164,7 +172,7 @@ class thermocline_segmentation(thermocline_base):
 			for i in range(maxGradient_index):
 				if not (gradientIsStable[i] and  surfaceTemperature - model.segmentList[i][0][-1] < self.maxTempertureChange):
 					if i > 0:
-						print gradientIsStable[i], surfaceTemperature - model.segmentList[i-1][0][-1], \
+						print gradientIsStable[i], surfaceTemperature - model.segmentList[i-1][0][-1], self.maxTempertureChange,\
 						(surfaceTemperature - model.segmentList[i-1][0][-1])/(max(data.Temperature)-min(data.Temperature))
 						LEP_index = model.segmentList[i - 1][1][-1]
 					break
@@ -175,8 +183,9 @@ class thermocline_segmentation(thermocline_base):
 			# detect the UHY
 			for i in range(len(model.segmentList) - 1, maxGradient_index, -1):
 				if not (gradientIsStable[i] and model.segmentList[i][0][0] - bottomTemperature < self.maxTempertureChange):
+					print gradientIsStable[i] and model.segmentList[i][0][0] - bottomTemperature < self.maxTempertureChange
 					if i < len(model.segmentList) - 1:
-						print gradientIsStable[i], model.segmentList[i+1][0][0] - bottomTemperature,\
+						print gradientIsStable[i], model.segmentList[i][0][0] - bottomTemperature,self.maxTempertureChange, \
 						 (model.segmentList[i+1][0][0] - bottomTemperature)/(max(data.Temperature)-min(data.Temperature))
 						UHY_index = model.segmentList[i + 1][1][0]
 					break

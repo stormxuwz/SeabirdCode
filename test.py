@@ -42,7 +42,7 @@ if __name__ == '__main__':
 	# config["Algorithm"]["segment"]["max_error"] = 0.3
 	
 	mySeabird = seabird(config = config)
-	mySeabird.loadData(fileId = 229)
+	mySeabird.loadData(fileId = 559) # 195 will justify why the last/first segment needs larger gradient
 	
 	# 904: Two peaks
 	# 1000: a narrow peak
@@ -58,7 +58,8 @@ if __name__ == '__main__':
 
 	print mySeabird.site
 	mySeabird.preprocessing()
-	mySeabird.identify()
+	mySeabird.identify()	
+
 
 	# plotSegment(mySeabird)
 

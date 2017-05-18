@@ -250,8 +250,8 @@ if __name__ == '__main__':
 	# plotProfile(1426,var = "None",legendLoc = 4)# SU11 2008 for DCL asymmetric shape c, -1.835088
 	# # outputData(1767)
 
-	plotHistoryProfile("SU12",var = "TRM", targetYear=2004)
-	plotHistoryProfile("SU05",var = "TRM", targetYear=2004)
+	# plotHistoryProfile("SU15",var = "TRM", targetYear=2009)
+	# plotHistoryProfile("SU21",var = "TRM", targetYear=2013)
 
-	plotHistoryProfile("SU07",var = "DCL", targetYear=2001)
-	plotHistoryProfile("SU06",var = "DCL", targetYear=2009)
+	#plotHistoryProfile("SU07",var = "DCL", targetYear=2001)
+	plotHistoryProfile("SU21",var = "DCL", targetYear=2009)

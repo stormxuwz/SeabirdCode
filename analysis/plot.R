@@ -37,12 +37,9 @@ plot_gly_on_map <- function(newDF, global = FALSE, trend = FALSE, outputFile = "
 	for(i in 1:nrow(SU_locations)){
 		station_ <- SU_locations[i,"Station"] %>% as.character()
 		print(station_)
-		subdf <- subset(newDF, Station == station_) %>% na.omit()
-
-		if(nrow(subdf) == 0){
-			next
-		}
-
+		
+		subdf <- subset(newDF, Station == station_)
+		
 		mid <- SU_locations[i,c("Long","Lat")] %>% as.numeric()
 
 		model <- lm(value~year,data = na.omit(subdf[,c("year","value")]))
@@ -54,7 +51,7 @@ plot_gly_on_map <- function(newDF, global = FALSE, trend = FALSE, outputFile = "
 		p2 <- p2 + geom_line(aes(x = year,y = value),size=0.8) + 
 				 geom_point(aes(x = year,y = value),size=2)
 		
-		localYRange <- range(subdf$value)
+		localYRange <- range(subdf$value, na.rm = TRUE)
 
 		if(trend){
 			p2 <- p2 + stat_smooth(aes(x = year, y = value),method = "lm",color = "red", size = 1)

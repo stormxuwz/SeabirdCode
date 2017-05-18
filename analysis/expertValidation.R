@@ -44,17 +44,17 @@ feature_stat <- function(df,varName = "TRM"){
 	res <- group_by(df,lake) %>% summarise(totalN = n(),only_pred = sum(only_pred),only_expert = sum(only_expert),allExist = sum(pred_expert))
 	print(res)
 	
-	pdf(sprintf("../../output/%s_diff_meta.pdf",varName),height = 50, width = 30)
+	pdf(sprintf("./results/%s_diff_meta.pdf",varName),height = 50, width = 30)
 	print(qplot(lake,df[,diffVar],data = df)+geom_boxplot()+geom_text(aes(lake,df[,diffVar],label = paste(site,year)),data =df))
 	dev.off()
 	
-	pdf(sprintf("../../output/%s_diff.pdf",varName),height = 4, width = 7)
+	pdf(sprintf("./results/%s_diff.pdf",varName),height = 4, width = 7)
 	print(
 		qplot(lake,df[,diffVar],data = df)+geom_boxplot(size = 1)+theme_bw()+xlab("Lake")+ylab("Absolute Depth Differences (m)")
 	)
 	dev.off()
 
-	pdf(sprintf("../../output/%s_diff_NoOutlier.pdf",varName),height = 4, width = 7)
+	pdf(sprintf("./results/%s_diff_NoOutlier.pdf",varName),height = 4, width = 7)
 	print(
 		boxplot(as.formula(paste(diffVar,"lake",sep="~")),data = df,outline = FALSE,xlab = "Lake",ylab = "Depth Differences")
 	)

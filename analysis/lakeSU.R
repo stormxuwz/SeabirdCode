@@ -9,14 +9,12 @@ gly_LakeSU <- function(SUData, lakeLegend){
 	if(lakeLegend == "DCL_conc"){
 		reverse <- FALSE
 	}
-	plot_gly_on_map(SUData, global=TRUE, trend = TRUE, sprintf("SU_%s", lakeLegend), reverse = reverse)	
+	plot_gly_on_map(SUData, global=TRUE, trend = TRUE, sprintf("./results/SU_%s", lakeLegend), reverse = reverse)	
 }
 
 
 main_lakeSU <- function(features){
-	
-	locations <- read.csv("../../input/station_loc.csv")
-	
+		
 	SUData <- subset(features,lake == "SU")
 	SUData$fluoRatio <- SUData$DCL_conc/SUData$epi_mean_Fluorescence
 	# tapply(features$TRM_diff,features$lake,summary
@@ -42,7 +40,7 @@ main_lakeSU <- function(features){
 	print(qmplot(Long,Lat,data = statsGroupBySite, color = median,size = I(5))+scale_color_gradientn(colours = terrain.colors(10)))
 	dev.off()
 	
-
+	# plot glyph-maps
 	for(lakeLegend in c("TRM_segment","DCL_depth","DCL_conc","LEP_segment","UHY_segment")){
 	 	gly_LakeSU(SUData, lakeLegend)
 	}
