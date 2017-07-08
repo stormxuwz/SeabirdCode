@@ -106,8 +106,66 @@ class bottomUp(timeSeriesSegmentation):
 			if min(errorList)>self.max_error:
 				break
 
-		self.x=x
+		self.x = x
 		self.segmentList=[[self.createLine(x[segIndex],"regression"),segIndex] for segIndex in segmentIndexList]
+		
+		# self.finalAdjust()
+		
+
+	def finalAdjust(self):
+		nSeg = len(self.segmentList)
+		
+		newSegment = []
+		i = 0
+		
+		while i < nSeg - 1:
+			newSeg1, newSeg2 = self.splitAdjust(self.segmentList[i],self.segmentList[i+1])
+			# print seg1, seg2
+			self.segmentList[i] = newSeg1
+			self.segmentList[i+1] = newSeg2
+			i += 1
+			# print newSeg1, newSeg2
+
+
+	def splitAdjust(self, seg1, seg2):
+		# function to find the best split point given seg1 and seg2
+		# Args:
+		#	seg1: [fitted value, idx]
+		# 	seg2: [fitted value, idx]
+		# print seg1[1], seg2[1]
+
+		segIdx = seg1[1] + seg2[1]
+		segX = self.x[segIdx]
+		
+		n = len(segIdx)
+
+
+		minErr = self.max_error*100
+		minErrIdx = 1
+
+		for i in range(1, n - 2):
+			s1 = segX[:i]
+			s2 = segX[i:]
+			# print s1, s2
+			if len(s1) > 2:
+				e1 = self.calculate_error(self.createLine(s1), s1)
+			else:
+				e1 = 0
+
+			if len(s2) > 2:
+				e2 = self.calculate_error(self.createLine(s2), s2)
+			else:
+				e2 = 0
+
+			if e1 + e2 < minErr:
+				minErr = e1 + e2
+				minErrIdx = i
+	
+		# print "***", minErrIdx, s1, s2
+
+		return [self.createLine(segX[:minErrIdx]), segIdx[:minErrIdx] ], [self.createLine(segX[minErrIdx:]), segIdx[minErrIdx:] ]
+
+		
 
 
 	def mergeCost(self, leftSeg,rightSeg):

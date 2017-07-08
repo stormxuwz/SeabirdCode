@@ -59,8 +59,11 @@ thermoFlux <- function(){
 
 	locations <- read.csv("~/Developer/Seabird//input/station_loc.csv")
 	newDF <- merge(locations,df,by.x = "Station",by.y = "station")
+	newDF <- subset(newDF, !Station %in% c("SU20","SU21","SU22","SU23"))
 	newDF$Long <- -newDF$Long
-	newDF$value <- newDF$summerSum_UHY-newDF$springSum_UHY
-	plot_gly_on_map(newDF, global = FALSE, trend = TRUE, outputFile = "./results/SU_thermoFlux", reverse = FALSE)
-	plotTherFluxBySite(newDF)
+
+	newDF$value <- (newDF$summerTemperature_meanUHY-newDF$springTemperature_meanUHY)
+	
+	plot_gly_on_map(newDF, global = FALSE, trend = TRUE, outputFile = "../../output/SU_thermoFlux_meanUHY", reverse = FALSE)
+	# plotTherFluxBySite(newDF)
 }

@@ -24,22 +24,22 @@ main<- function(){
 	waterChemistry <- read.csv("../../output/waterFeature.csv")
 	
 	features <- read.csv("../../output/detectedFeatures.csv") %>%
-		preprocessing(locations = locations, waterChemistry = waterChemistry)
+		preprocessing(locations = locations, waterChemistry = waterChemistry, startYear = 1996)
 	
 	print("Doing algorithm validation")
-	main_expertValidation(features)
+	main_expertValidation(features)  # expert comparision
 	print("****************")
-	main_seg_comparison(features)
+	main_seg_comparison(features)	# HMM comparison
 	print("****************")
 	print("Doing DCL algorithm")
 	print("****************")
-	main_analysis_DCL(features)
+	main_analysis_DCL(features)		# DCL shape 
 	print("****************")
 	print("Doing TRM analysis")
-	main_analysis_TRM(features)
+	main_analysis_TRM(features)		# TRM shape
 	print("****************")
 	print("Analyzing Lake SU")
-	main_lakeSU(features)
+	main_lakeSU(features)			# lake SU case
 }
 
 

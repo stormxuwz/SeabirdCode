@@ -9,23 +9,17 @@ gly_LakeSU <- function(SUData, lakeLegend){
 	if(lakeLegend == "DCL_conc"){
 		reverse <- FALSE
 	}
-	plot_gly_on_map(SUData, global=TRUE, trend = TRUE, sprintf("SU_%s", lakeLegend), reverse = reverse)	
+	plot_gly_on_map(SUData, global=TRUE, trend = TRUE, outputFile = sprintf("../../output/SU_%s", lakeLegend), reverse = reverse)
+	plot_gly_on_map(SUData, global=FALSE, trend = TRUE, outputFile = sprintf("../../output/SU_Local_%s", lakeLegend), reverse = reverse)	
 }
 
 
-main_lakeSU <- function(features){
-	
-	locations <- read.csv("../../input/station_loc.csv")
-	
-	SUData <- subset(features,lake == "SU")
+fluoRatio <- function(SUData){
 	SUData$fluoRatio <- SUData$DCL_conc/SUData$epi_mean_Fluorescence
-	# tapply(features$TRM_diff,features$lake,summary
-	
+	# tapply(features$TRM_diff,features$lake,summary	
 	print(arrange(SUData,fluoRatio)[,c("site","year","fluoRatio","fileId")])
 	print(summary(SUData$fluoRatio))
-	print(summary(SUData[,c("year","DCL_depth","TRM_segment","DCL_conc")]))
-	
-	
+
 	# analyzed by year
 	statsGroupByYear <- group_by(SUData,year) %>% summarise(median = median(fluoRatio,na.rm=TRUE)) %>% data.frame()
 	print(data.frame(statsGroupByYear))
@@ -36,27 +30,29 @@ main_lakeSU <- function(features){
 	
 	statsGroupBySite <- group_by(SUData,site) %>% summarise(median = median(fluoRatio,na.rm=TRUE)) %>% data.frame() %>% merge(locations, by.x = "site", by.y = "Station")
 	print(data.frame(statsGroupBySite))
-	statsGroupBySite$Long = -	statsGroupBySite$Long
+	statsGroupBySite$Long = -statsGroupBySite$Long
 	
 	pdf("./results/ratioSpatio.pdf")
 	print(qmplot(Long,Lat,data = statsGroupBySite, color = median,size = I(5))+scale_color_gradientn(colours = terrain.colors(10)))
 	dev.off()
+}
+
+
+main_lakeSU <- function(features){
 	
+	locations <- read.csv("../../input/station_loc.csv")
+	SUData <- subset(features,lake == "SU")
+	# SUData <- subset(SUData, fileId!=1544)
+	SUData$metalimnion <- (SUData$UHY_segment +  SUData$LEP_segment)/2
+	print(summary(SUData[,c("year","DCL_depth","TRM_segment","DCL_conc")]))
 
-	# for(lakeLegend in c("TRM_segment","DCL_depth","DCL_conc","LEP_segment","UHY_segment")){
-	# 	gly_LakeSU(SUData, lakeLegend)
-	# }
+	# fluoRatio(SUData) # plot fluorescence ratio
+	thermoFlux() # plot thermoflux
 
-	# plot_gly(SUData,"DCL_conc",reverse = FALSE)
-	# plot_gly(SUData,"DCL_depth",reverse = TRUE)
-	# plot_gly(SUData,"TRM_segment",reverse = TRUE)
-	# plot_gly(SUData,"LEP_segment",reverse = TRUE)
-	# plot_gly(SUData,"UHY_segment",reverse = TRUE)
+	for(lakeLegend in c("TRM_segment","DCL_depth","DCL_conc","LEP_segment","UHY_segment","metalimnion")){
+		gly_LakeSU(SUData, lakeLegend)
+	}
 	
-	# plot thermoflux
-	thermoFlux()
-
-
 	print(arrange(SUData,DCL_depth)[,c("site","year","DCL_depth","fileId")])
 	
 	# analyze the correlationship between surface water chemistry and DCL

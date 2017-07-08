@@ -42,7 +42,7 @@ if __name__ == '__main__':
 	# config["Algorithm"]["segment"]["max_error"] = 0.3
 	
 	mySeabird = seabird(config = config)
-	mySeabird.loadData(fileId = 971)
+	mySeabird.loadData(fileId = 187)
 	
 	# 904: Two peaks
 	# 1000: a narrow peak
@@ -66,6 +66,7 @@ if __name__ == '__main__':
 	print mySeabird.features["DCL_leftShapeFitErr"], mySeabird.features["DCL_rightShapeFitErr"]
 	print mySeabird.features["DCL_leftSigma"], mySeabird.features["DCL_rightSigma"]
 	depth = mySeabird.cleanData.Depth
+	print depth 
 	Fluorescence = mySeabird.cleanData.Fluorescence
 
 

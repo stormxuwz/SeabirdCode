@@ -48,24 +48,26 @@ def outputData(fid,csvFolder = "/Users/wenzhaoxu/Desktop/"):
 
 
 
-def plotHistoryProfile(site, years = range(1998,2012), var = "TRM", targetYear = 2000):
+def plotHistoryProfile(site, years = range(1996,2014), var = "TRM", targetYear = 2000):
 	# site is site
 	# year is a list
 	folder = '/Users/wenzhaoxu/Developer/Seabird/output/meta/'
 
 	depths = []
 	values = []
-	pt = plt.figure(figsize = (6.5, 7.5))
+	pt = plt.figure(figsize = (6, 6))
 
 	for year in years:
 		# if year == targetYear:
 			# continue
+		fname = None
 		for file in os.listdir(folder):
 			if fnmatch.fnmatch(file, '%s_%d_*.p' %(site,year)):
 				fname = "%s/%s" %(folder,file)
 				print fname
 				break
-
+		if fname is None:
+			continue
 		mySeabird = pickle.load(open(fname,"rb"))
 		features = mySeabird.features
 		depths.append(max(mySeabird.cleanData.Depth))
@@ -108,7 +110,7 @@ def plotHistoryProfile(site, years = range(1998,2012), var = "TRM", targetYear =
 
 	# plt.show()
 	plt.legend(loc = 4)
-	plt.savefig("%s_%d_%s.png" %(site, targetYear, var))
+	plt.savefig("/Users/wenzhaoxu/Developer/Seabird/output/focus/History_%s_%d_%s.png" %(site, targetYear, var))
 	plt.close()
 
 
@@ -127,7 +129,7 @@ def plotProfile(fid,var="DCL",site = None,year = None,folder = '/Users/wenzhaoxu
 	mySeabird = pickle.load(open(fname,"rb"))
 	features = mySeabird.features
 
-	pt = plt.figure(figsize=(4.5,8))
+	pt = plt.figure(figsize=(4,6))
 	ax1 = pt.add_subplot(111)
 	ax2 = ax1.twiny()
 
@@ -190,8 +192,8 @@ def plotProfile(fid,var="DCL",site = None,year = None,folder = '/Users/wenzhaoxu
 		pass
 	lines, labels = ax1.get_legend_handles_labels()
 	lines2, labels2 = ax2.get_legend_handles_labels()
-	ax1.legend(lines + lines2, labels + labels2, loc=legendLoc,prop={'size':11})
-	plt.savefig("/Users/wenzhaoxu/Developer/Seabird/output/focus/%s_%s.pdf" %(os.path.splitext(os.path.basename(fname))[0],var),
+	ax1.legend(lines + lines2, labels + labels2, loc=legendLoc, prop={'size':10})
+	plt.savefig("/Users/wenzhaoxu/Developer/Seabird/output/focus/%s_%s.png" %(os.path.splitext(os.path.basename(fname))[0],var),
 		bbox_inches='tight')
 	plt.close()
 
@@ -210,39 +212,31 @@ def runApp():
 
 if __name__ == '__main__':
 	# test()
-
-	# plotProfile(1544,var = "TRM_compare",legendLoc = 4) # SU15 2009 for TRM difference
-	# # plotProfile(1655,var = "Stratification_compare",legendLoc = 4) # for not good stratification
-
-	# plotProfile(363,var = "Stratification_compare",legendLoc = 4) # MI47 1999 for not good stratification 363
-
-	# # plotProfile(1380,var = "Stratification_compare",legendLoc = 4) # for not good stratification 1380
-	# plotProfile(675,var = "Stratification_compare",legendLoc = 4) # 675 HU53 2002 for UHY difference
-
-
-
-	# plotProfile(1763,var = "DCL",legendLoc = 4) # SU09 2011 for DCL mislabled
-	# plotProfile(1444,var = "LEP",legendLoc = 4) # ER15_2009_1444 for LEP algorithm limitations
 	# plotProfile(1000,var = "DCL", legendLoc=4) # ER78 2005, smoothing so that not able to detect DCL
 	# plotProfile(989,var = "DCL",legendLoc = 4) # ER36 2005 for DCL peak missing
-
-
-	# plotProfile(734,var = "TRM",legendLoc = 4) # SU09 2002 for TRM definition
-	# plotProfile(1696,var = "DCL",legendLoc = 4) # HU32 2011 for DCL definition
-	
-	# plotProfile(1037,var = "DCL",legendLoc = 4) # # MI40_2005_1037 for lage DCL peak
-	# plotProfile(485,var = "UHY",legendLoc = 4) # ON41_2000 for large transition zone
-
-	# plotProfile(261,var = "UHY",legendLoc = 4) # ON55 1998 for large transition zone
-
-	# plotProfile(1856,var = "None",legendLoc = 4) # ON33 2012 for positive temperature gradient
-	# plotProfile(1125,var = "None",legendLoc = 4) # HU37 2006 for double thermocline
-
+		# # plotProfile(1655,var = "Stratification_compare",legendLoc = 4) # for not good stratification
+	# # plotProfile(1380,var = "Stratification_compare",legendLoc = 4) # for not good stratification 1380
 	# plotProfile(466,var = "None",legendLoc = 4) # MI30 2000 for double thermocline
 
 	# # plotProfile(776,var = "None",legendLoc = 4) # HU37 2006 for double thermocline
 	# # plotProfile(1426,var = "None",legendLoc = 4) # HU37 2006 for double thermocline
 	# # plotProfile(1637,var = "None",legendLoc = 4) # HU37 2006 for double thermocline	
+
+
+
+
+	# plotProfile(1544,var = "TRM_compare",legendLoc = 4) # SU15 2009 for TRM difference
+	# plotProfile(363,var = "Stratification_compare",legendLoc = 4) # MI47 1999 for not good stratification 363
+	# plotProfile(675,var = "Stratification_compare",legendLoc = 4) # 675 HU53 2002 for UHY difference
+
+	# plotProfile(1763,var = "DCL",legendLoc = 4) # SU09 2011 for DCL mislabled
+	# plotProfile(1444,var = "LEP",legendLoc = 4) # ER15_2009_1444 for LEP algorithm limitations
+	# plotProfile(734,var = "TRM",legendLoc = 4) # SU09 2002 for TRM definition
+	# plotProfile(1696,var = "DCL",legendLoc = 4) # HU32 2011 for DCL definition
+	# plotProfile(1037,var = "DCL",legendLoc = 4) # # MI40_2005_1037 for lage DCL peak
+	# plotProfile(383,var = "UHY",legendLoc = 4) # ON55_1999 for large transition zone
+
+	# plotProfile(1856,var = "None",legendLoc = 4) # ON33 2012 for positive temperature gradient
 	# plotProfile(1154,var = "None",legendLoc = 4) # MI42_2006_1154 for double thermocline
 	
 	# plotProfile(1433,var = "None",legendLoc = 4)# 2008 SU17 for DCL asymesstry shape 1.459844
@@ -250,8 +244,10 @@ if __name__ == '__main__':
 	# plotProfile(1426,var = "None",legendLoc = 4)# SU11 2008 for DCL asymmetric shape c, -1.835088
 	# # outputData(1767)
 
-	plotHistoryProfile("SU12",var = "TRM", targetYear=2004)
-	plotHistoryProfile("SU05",var = "TRM", targetYear=2004)
+	# plotHistoryProfile("SU15",var = "TRM", targetYear=2009)
+	# plotHistoryProfile("SU05",var = "TRM", targetYear=2005)
+	# plotHistoryProfile("SU21",var = "TRM", targetYear=2002)
+	# plotHistoryProfile("SU21",var = "TRM", targetYear=2010)
 
-	plotHistoryProfile("SU07",var = "DCL", targetYear=2001)
-	plotHistoryProfile("SU06",var = "DCL", targetYear=2009)
+	plotHistoryProfile("SU07",var = "DCL", targetYear=2011)
+	plotHistoryProfile("SU05",var = "DCL", targetYear=2004)

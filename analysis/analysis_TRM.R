@@ -9,8 +9,6 @@ shapeAnalysis_TRM <- function(features){
 
 main_analysis_TRM <- function(features){
 	# features
-	
-	
 	for(lake_ in allLakes){
 		print("*******")
 		print(lake_)
@@ -21,7 +19,7 @@ main_analysis_TRM <- function(features){
 	
 	print("All data")
 	shapeAnalysis_TRM(features)
-	labeledBoxplot_ggplot(features, "TRM_num_segment", label = FALSE, outlier = TRUE)
-	labeledBoxplot_ggplot(features, "TRM2UHY_segNum", outlier = TRUE)
+	# labeledBoxplot_ggplot(features, "TRM_num_segment", label = FALSE, outlier = TRUE)
+	# labeledBoxplot_ggplot(features, "TRM2UHY_segNum", outlier = TRUE)
 	
 }

@@ -126,7 +126,8 @@ class DCL(object):
 
 			# apply the DCL upper boundary for Gaussian fitting method boundary
 			sizeUpperDepth_fit = data.Depth[self.allPeaks.leftIndex_fit[DCL_idx]]
-			
+			features["DCL_Org_UpperDepth_fit"] = sizeUpperDepth_fit
+
 			if sizeUpperDepth_fit > peakUpperDepthBoundary:
 				# if the peak upper boundary in below threshold
 				features["DCL_upperDepth_fit"] = sizeUpperDepth_fit

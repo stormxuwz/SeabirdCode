@@ -36,3 +36,5 @@ analysis/.Rhistory
 *.pdf
 
 *.pyc
+*.pyc
+*.txt
