@@ -58,10 +58,16 @@ class summary(object):
 	def calculateThermoFlux(self):
 		allResults = []
 		maxDepthDict = pickle.load(open("/Users/wenzhaoxu/Developer/Seabird/input/thermoFlux_maxDepth_SU.p","rb"))
+
 		maxDepthDict["SU17"] = 182.75
+
+		all_mean_UHY_LEP = pd.read_csv("/Users/wenzhaoxu/Developer/Seabird/SeabirdCode/analysis/SU_mean_UHY_LEP.csv")
 		
 		for station in self.allStations.STATION:
 		# for station in ["SU17"]:
+			if station in ["SU20","SU21","SU22","SU23","SUFE","SUFO"]:
+				continue
+				
 			if station.startswith("SU"):
 				for year in self.allYears:
 
@@ -73,6 +79,7 @@ class summary(object):
 					if summerRes.shape[0]>0 and springRes.shape[0]>0:	
 						minDepth = 3.0
 						maxDepth = maxDepthDict[station]
+						
 						res["maxDepth"] = maxDepth
 						res["minDepth"] = minDepth
 
@@ -80,36 +87,64 @@ class summary(object):
 						fileId_spring = self.filterDup(springRes,"spring")
 
 						print station, year, fileId_summer, fileId_spring
-						summerSeabird = seabird(self.config)
-						summerSeabird.rawData = pd.read_sql_query("Select * from %s_data where fileId = %d Order By 'index' ASC" %("summer",fileId_summer)
-							,self.engine).drop('index',axis = 1)
-
+						
 						springSeabird = seabird(self.config)
 						springSeabird.rawData = pd.read_sql_query("Select * from %s_data where fileId = %d Order By 'index' ASC" %("spring",fileId_spring)
 							,self.engine).drop('index',axis = 1)
 
-						if station == "SU12" and year == 2008: # manually filtered the outlier
+						if station == "SU12" and year == 2008: # manually clean the outlier
 							springSeabird.rawData = springSeabird.rawData[(springSeabird.rawData.Temperature>0) & (springSeabird.rawData.Temperature<7)]
 
-						summerSeabird.preprocessing()
+						# summerSeabird.preprocessing()
 						springSeabird.preprocessing()
+						summerSeabird = pickle.load(open("/Users/wenzhaoxu/Developer/Seabird/output/meta/%s_%d_%d.p" %(station, year, fileId_summer),"rb"))
+
+						# summerSeabird = seabird(self.config)
+						
+						# summerSeabird.rawData = pd.read_sql_query("Select * from %s_data where fileId = %d Order By 'index' ASC" %("summer",fileId_summer)
+							# ,self.engine).drop('index',axis = 1)
+
+						
 
 						# print min(max(summerSeabird.cleanData.Depth),max(springSeabird.cleanData.Depth))
 
-						summerSeabird.identify()
+						# summerSeabird.identify()
+
 						LEP = summerSeabird.features["LEP_segment"]
 						UHY = summerSeabird.features["UHY_segment"]
+
+						mean_LEP = all_mean_UHY_LEP.mean_LEP[all_mean_UHY_LEP.site == station].iloc[0]
+						mean_UHY = all_mean_UHY_LEP.mean_UHY[all_mean_UHY_LEP.site == station].iloc[0]
+
 						# print springSeabird.cleanData
 
 						# minDepth = max(min(summerSeabird.cleanData.Depth),min(springSeabird.cleanData.Depth))
 						minDepth = 3.0
-						# maxDepth = 
 						
 						# maxDepth = LEP
 						# print maxDepth
 
 						# print summerSeabird.cleanData.Depth
 						# print springSeabird.cleanData.Depth
+
+
+						summerTemperature_meanUHY = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=mean_UHY) & (summerSeabird.cleanData.Depth>=minDepth)]
+						springTemperature_meanUHY = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=mean_UHY) & (springSeabird.cleanData.Depth>=minDepth)]
+
+						summerTemperature_meanLEP = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=mean_LEP) & (summerSeabird.cleanData.Depth>=minDepth)]
+						springTemperature_meanLEP = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=mean_LEP) & (springSeabird.cleanData.Depth>=minDepth)]
+
+						summerTemperature_5 = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=5) & (summerSeabird.cleanData.Depth>=minDepth)]
+						springTemperature_5 = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=5) & (springSeabird.cleanData.Depth>=minDepth)]
+
+						summerTemperature_10 = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=10) & (summerSeabird.cleanData.Depth>=minDepth)]
+						springTemperature_10 = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=10) & (springSeabird.cleanData.Depth>=minDepth)]
+
+						summerTemperature_15 = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=15) & (summerSeabird.cleanData.Depth>=minDepth)]
+						springTemperature_15 = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=15) & (springSeabird.cleanData.Depth>=minDepth)]
+
+						summerTemperature_20 = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=20) & (summerSeabird.cleanData.Depth>=minDepth)]
+						springTemperature_20 = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=20) & (springSeabird.cleanData.Depth>=minDepth)]
 
 						summerTemperature_LEP = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=LEP) & (summerSeabird.cleanData.Depth>=minDepth)]
 						springTemperature_LEP = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=LEP) & (springSeabird.cleanData.Depth>=minDepth)]
@@ -133,10 +168,35 @@ class summary(object):
 
 						res["springSurfaceTemp"] = np.mean(springTemperature_LEP) if LEP else springSeabird.cleanData.Temperature[springSeabird.cleanData.Depth>=minDepth].iloc[0]
 						res["summerSurfaceTemp"] = np.mean(summerTemperature_LEP) if LEP else summerSeabird.cleanData.Temperature[summerSeabird.cleanData.Depth>=minDepth].iloc[0]
+						
+						res["springMaxSurfaceTemp"] = np.percentile(springTemperature_LEP,95) if LEP else springSeabird.cleanData.Temperature[springSeabird.cleanData.Depth>=minDepth].iloc[0]
+						res["summerMaxSurfaceTemp"] = np.percentile(summerTemperature_LEP,95) if LEP else summerSeabird.cleanData.Temperature[summerSeabird.cleanData.Depth>=minDepth].iloc[0]
+
+
+						res["springUHYTemp"] = springSeabird.cleanData.Temperature[springSeabird.cleanData.Depth == UHY].iloc[0] if UHY else springSeabird.cleanData.Temperature[springSeabird.cleanData.Depth<=maxDepth].iloc[-1]
+						res["summerUHYTemp"] = summerSeabird.cleanData.Temperature[summerSeabird.cleanData.Depth == UHY].iloc[0] if UHY else summerSeabird.cleanData.Temperature[summerSeabird.cleanData.Depth<=maxDepth].iloc[-1]
 
 						res["springBottomTemp"] = springTemperature_UHY.iloc[-1] if UHY else springSeabird.cleanData.Temperature[springSeabird.cleanData.Depth<=maxDepth].iloc[-1]
 						res["summerBottomTemp"] = summerTemperature_UHY.iloc[-1] if UHY else summerSeabird.cleanData.Temperature[summerSeabird.cleanData.Depth<=maxDepth].iloc[-1]
+
+						res["summerTemperature_meanLEP"] = sum(summerTemperature_meanLEP)
+						res["springTemperature_meanLEP"] = sum(springTemperature_meanLEP)
+
+						res["summerTemperature_meanUHY"] = sum(summerTemperature_meanUHY)
+						res["springTemperature_meanUHY"] = sum(springTemperature_meanUHY)
+
+						res["springSum_5"] = sum(springTemperature_5)
+						res["summerSum_5"] = sum(summerTemperature_5)
 						
+						res["springSum_10"] = sum(springTemperature_10) 
+						res["summerSum_10"] = sum(summerTemperature_10)
+
+						res["springSum_15"] = sum(springTemperature_15) 
+						res["summerSum_15"] = sum(summerTemperature_15)
+
+						res["springSum_20"] = sum(springTemperature_20) 
+						res["summerSum_20"] = sum(summerTemperature_20)
+
 						res["summerSum_LEP"] = sum(summerTemperature_LEP) if LEP else None
 						res["springSum_LEP"] = sum(springTemperature_LEP) if LEP else None
 
@@ -151,6 +211,11 @@ class summary(object):
 						plt.figure(figsize=(6, 7), dpi=80)
 						plt.plot(summerSeabird.cleanData.Temperature,-summerSeabird.cleanData.Depth,"r")
 						plt.plot(springSeabird.cleanData.Temperature,-springSeabird.cleanData.Depth,"g")
+
+
+						plt.axhline(-mean_LEP,color = "r",ls = "--")
+						plt.axhline(-mean_UHY,color = "r",ls = "--")
+
 
 						if UHY:
 							plt.axhline(-UHY)
@@ -296,11 +361,11 @@ if __name__ == '__main__':
 	GLSummary = summary(engine,config)
 
 	
-	# GLSummary.detect()
-	# extractWaterChemistryData("/Users/WenzhaoXu/Developer/Seabird/output/detectedFeatures.csv")
+	#GLSummary.detect()
+	#extractWaterChemistryData("/Users/WenzhaoXu/Developer/Seabird/output/detectedFeatures.csv")
 
 	res = GLSummary.calculateThermoFlux()
-	res.to_csv("thermoFlux_SU_new.csv")
+	res.to_csv("../output/thermoFlux_SU_new.csv")
 	pickle.dump(res, open("thermoFlux_SU_new.p","wb"))
 	
 	# print GLSummary.allStations.STATION
