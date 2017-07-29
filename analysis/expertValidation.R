@@ -63,15 +63,21 @@ feature_stat <- function(df,varName = "TRM"){
 
 
 scatterPlot2 <- function(features, lake_, note = FALSE){
-	subFeatures <- subset(features, lake == lake_)
+	# functions to compare HMM and PLR
+
+	if(lake_ != "all"){
+		subFeatures <- subset(features, lake == lake_)
+	}else{
+		subFeatures <- features
+	}
 
 	TRMSub <- subFeatures[,c("year","site","expert_TRM","TRM_HMM")] %>% rename(Algorithm = TRM_HMM, Human = expert_TRM) %>% na.omit()
 	LEPSub <- subFeatures[,c("year","site","expert_LEP","LEP_HMM")] %>% rename(Algorithm = LEP_HMM, Human = expert_LEP) %>% na.omit()
 	UHYSub <- subFeatures[,c("year","site","expert_UHY","UHY_HMM")] %>% rename(Algorithm = UHY_HMM, Human = expert_UHY) %>% na.omit()
 
-	if(lake_ == "SU"){
-		UHYSub <- subset(UHYSub, year!= 2002)
-	}
+	# if(lake_ == "SU"){
+		# UHYSub <- subset(UHYSub, year!= 2002)
+	# }
 
 	p_TRM <- ggplot(TRMSub) + 
 		geom_point(aes(Human, Algorithm)) + 
@@ -122,16 +128,23 @@ scatterPlot2 <- function(features, lake_, note = FALSE){
 
 
 scatterPlot <- function(features, lake_, note = FALSE){
-	subFeatures <- subset(features, lake == lake_)
+	# functions to compare human and PLR
+
+	if(lake_ != "all"){
+		subFeatures <- subset(features, lake == lake_)
+	}else{
+		subFeatures <- features
+	}
+	
 
 	TRMSub <- subFeatures[,c("year","site","expert_TRM","TRM_segment")] %>% rename(Algorithm = TRM_segment, Human = expert_TRM) %>% na.omit()
 	LEPSub <- subFeatures[,c("year","site","expert_LEP","LEP_segment")] %>% rename(Algorithm = LEP_segment, Human = expert_LEP) %>% na.omit()
 	UHYSub <- subFeatures[,c("year","site","expert_UHY","UHY_segment")] %>% rename(Algorithm = UHY_segment, Human = expert_UHY) %>% na.omit()
 	DCLSub <- subFeatures[,c("year","site","expert_DCL","DCL_depth")] %>% rename(Algorithm = DCL_depth, Human = expert_DCL) %>% na.omit()
 
-	if(lake_ == "SU"){
-		UHYSub <- subset(UHYSub, year!= 2002)
-	}
+	# if(lake_ == "SU"){
+		# UHYSub <- subset(UHYSub, year!= 2002)
+	# }
 
 	p_TRM <- ggplot(TRMSub) + 
 		geom_point(aes(Human, Algorithm)) + 
@@ -228,9 +241,11 @@ main_expertValidation <- function(features){
 		scatterPlot(features, lake, note = TRUE)
 	}
 
-	for(lake in allLakes){
+	for(lake in c("all")){
+		scatterPlot(features, lake)
+		# scatterPlot(features, lake, note = TRUE)
 		scatterPlot2(features, lake)
-		scatterPlot2(features, lake, note = TRUE)
+		# scatterPlot2(features, lake, note = TRUE)
 	}
 
 
