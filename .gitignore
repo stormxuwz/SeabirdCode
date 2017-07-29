@@ -38,3 +38,9 @@ analysis/.Rhistory
 *.pyc
 *.pyc
 *.txt
+
+*.pyc
+
+*.pyc
+analysis/.DS_Store
+.DS_Store

@@ -1,253 +1,350 @@
-import seabird
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import json,sys
-import logging
 from sqlalchemy import create_engine
+import pandas as pd
+import numpy as np
+from seabird.seabird_class import seabird
+import traceback
 import cPickle as pickle
-import fnmatch
-import os
-
-def test():
-	from seabird.seabird_class import seabird
-	config=json.load(open('/Users/wenzhaoxu/Developer/Seabird/SeabirdCode/config.json'))
-	mySeabird = seabird(config = config)
-
-	# mySeabird.loadData(dataFile = "/Users/WenzhaoXu/Developer/Seabird/input/history_data/1996/SUMMER96/SU04SU96.CNV")
-	# mySeabird.loadData(dataFile="sample.cnv")
-	mySeabird.loadData(fileId=961)
-	print mySeabird.site, mySeabird.time
-	# mySeabird.loadData(dataFile= "./sample.cnv")
-	# mySeabird.loadData("")
-	mySeabird.preprocessing()
-	# print mySeabird.cleanData
-	mySeabird.identify()
-	# mySeabird.plot_all()
-	# fname = "/Users/WenzhaoXu/Developer/Seabird/output/plot/"+mySeabird.site+"_"+str(mySeabird.time)+".png"
-	fname=None
-	print mySeabird.features
-	mySeabird.plot(filename = fname,meta = True)
-	
-	print mySeabird.cleanData.Depth[39]
-	plt.show()
-
-
-def outputData(fid,csvFolder = "/Users/wenzhaoxu/Desktop/"):
-	from seabird.seabird_class import seabird
-	config=json.load(open('/Users/wenzhaoxu/Developer/Seabird/SeabirdCode/config.json'))
-	mySeabird = seabird(config = config)
-	mySeabird.loadData(fileId=1268)
-	mySeabird.preprocessing()
-
-	cleanData = np.array(mySeabird.cleanData[["Fluorescence","Temperature"]])
-	rawData = np.array(mySeabird.downCastRawData[["Fluorescence","Temperature"]])
-
-	np.savetxt("%s/%d_raw.csv" %(csvFolder,fid),rawData)
-	np.savetxt("%s/%d_clean.csv" %(csvFolder,fid),cleanData)
+import sys
 
 
 
-def plotHistoryProfile(site, years = range(1996,2014), var = "TRM", targetYear = 2000):
-	# site is site
-	# year is a list
-	folder = '/Users/wenzhaoxu/Developer/Seabird/output/meta/'
 
-	depths = []
-	values = []
-	pt = plt.figure(figsize = (6, 6))
+class summary(object):
+	def __init__(self,engine,config): 
+		self.engine = engine
+		self.allYears = range(1996,2014)  # [1996, 2013]
+		self.allStations = self.getAllStations()
+		# print self.allStations
+		self.config = config
 
-	for year in years:
-		# if year == targetYear:
-			# continue
-		fname = None
-		for file in os.listdir(folder):
-			if fnmatch.fnmatch(file, '%s_%d_*.p' %(site,year)):
-				fname = "%s/%s" %(folder,file)
-				print fname
-				break
-		if fname is None:
-			continue
-		mySeabird = pickle.load(open(fname,"rb"))
-		features = mySeabird.features
-		depths.append(max(mySeabird.cleanData.Depth))
+	def sqlQuery(self,sql):
+		return pd.read_sql_query(sql,self.engine)
 
-		if var in ["TRM","UHY","LEP"]:
-			plt.plot(mySeabird.downCastRawData.Temperature, -mySeabird.downCastRawData.Depth, ls = "--", alpha=1, color = '0.75', label='_nolegend_')
-			values.append(max(mySeabird.downCastRawData.Temperature))
-		elif var == "DCL":
-			plt.plot(mySeabird.downCastRawData.Fluorescence, -mySeabird.downCastRawData.Depth, ls = "--", alpha=1, color = '0.75',  label='_nolegend_')
-			values.append(max(mySeabird.downCastRawData.Fluorescence))
+	def getAllStations(self,depthCode = ['LEP','TRM','UHY','DCL']):
+		depthCode = "','".join(depthCode)
+		sql = '''Select DISTINCT(stationInfered) as STATION from summer_meta where year(systemUpLoadTime) >= 1996 ORDER BY STATION;'''
+		return self.sqlQuery(sql)
 
-	if targetYear:
-		for file in os.listdir(folder):
-			if fnmatch.fnmatch(file, '%s_%d_*.p' %(site,targetYear)):
-				fname = "%s/%s" %(folder,file)
-				break
-		mySeabird = pickle.load(open(fname,"rb"))
-		features = mySeabird.features
+	def findEntry(self,station,year, season = "summer"):
+		subStation = station[:4]
+		sql_meta = '''select systemUploadTime,datcnv_date,fileId,stationInfered, year(systemUpLoadTime) as Year from %s_meta where stationInfered = '%s' And year(systemUpLoadTime) = %d And badProfile = 0''' %(season,subStation,year)
+		sql_expertnotes = '''select `index`,SAMPLING_DATE,STATION,YEAR,DepthCode,SMPL_DEPTH as Depth from expertNotes where STATION = '%s' And YEAR = %d AND DepthCode in ('LEP','TRM','UHY','DCL'); ''' %(station,year) #  AND MONTH(SAMPLING_DATE) IN (6,7,8,9,10)
+		meta_res = self.sqlQuery(sql_meta)
+		expertnotes_res = self.sqlQuery(sql_expertnotes)
+		return meta_res,expertnotes_res
+
+	def filterDup(self,meta_res, season = "summer"):
+		# Find the duplicate profiles
+		maxDepth = []
+		for fileId_ in meta_res.fileId:
+			sql_data = "Select * from %s_data where fileId = %d Order By 'index' ASC" %(season,fileId_)
+			sensorData = pd.read_sql_query(sql_data,self.engine).drop('index',axis = 1)
+			maxDepth.append(max(sensorData.Depth))
+
+		whichMax = np.argmax(maxDepth)
+		return meta_res.fileId[whichMax]
 
 
-		if var in ["TRM","UHY","LEP"]:
-			depth_algorithm = mySeabird.features[var+"_segment"]
-			plt.plot(mySeabird.downCastRawData.Temperature, -mySeabird.downCastRawData.Depth, ls = "--", alpha=1, color = '0.75', label = "Historical Profile")
-			plt.plot(mySeabird.downCastRawData.Temperature, -mySeabird.downCastRawData.Depth, "r", alpha=1, label = "%d Profile" % targetYear)
-			plt.axhline(y = -1*depth_algorithm if depth_algorithm is not None else -999,color = 'b',label = "%d %s" %(targetYear, var))
-		elif var == "DCL":
-			depth_algorithm = mySeabird.features["DCL_depth"]
-			plt.plot(mySeabird.downCastRawData.Fluorescence, -mySeabird.downCastRawData.Depth, ls = "--", alpha=1, color = '0.75', label = "Historical Profile")
-			plt.plot(mySeabird.downCastRawData.Fluorescence, -mySeabird.downCastRawData.Depth, "r", alpha=1, label = "%d Profile" % targetYear)
-			plt.axhline(y = -1*depth_algorithm if depth_algorithm is not None else -999,color = 'b',label = "%d %s" %(targetYear, var))
+	def calculateThermoFlux(self):
+		allResults = []
+		maxDepthDict = pickle.load(open("/Users/wenzhaoxu/Developer/Seabird/input/thermoFlux_maxDepth_SU.p","rb"))
 
-	plt.ylim((-max(depths) - 5, 0))
-	plt.xlim((0, max(values)*1.1))
-	plt.ylabel("Depth (m)")
+		maxDepthDict["SU17"] = 182.75
 
-	if var in ["TRM", "UHY", "LEP"]:
-		plt.xlabel("Temperature (C)")
-	elif var == "DCL":
-		plt.xlabel("Fluorescence (ug/L)")
-
-	# plt.show()
-	plt.legend(loc = 4)
-	plt.savefig("/Users/wenzhaoxu/Developer/Seabird/output/focus/History_%s_%d_%s.png" %(site, targetYear, var))
-	plt.close()
-
-
-
-def plotProfile(fid,var="DCL",site = None,year = None,folder = '/Users/wenzhaoxu/Developer/Seabird/output/meta/',legendLoc = 4):
-	from seabird.seabird_class import seabird
-
-	if site is None or year is None:
-		for file in os.listdir(folder):
-			if fnmatch.fnmatch(file, '*_%d.p' %(fid,)):
-				fname = "%s/%s" %(folder,file)
-				break
-	else:
-		fname = "%s/%s_%d_%d.p" %(folder,site,int(year),int(fid))
-	print fname
-	mySeabird = pickle.load(open(fname,"rb"))
-	features = mySeabird.features
-
-	pt = plt.figure(figsize=(4,6))
-	ax1 = pt.add_subplot(111)
-	ax2 = ax1.twiny()
-
-	# ax1.plot(mySeabird.cleanData.Temperature, -mySeabird.cleanData.Depth, "r",label = "Preprocessed Temperature")
-	ax1.plot(mySeabird.downCastRawData.Temperature, -mySeabird.downCastRawData.Depth, "r--", alpha=0.5,label = "Raw Temperature")
-	# ax1.set_xlim(max(0,min(mySeabird.downCastRawData.Temperature)),max(mySeabird.downCastRawData.Temperature))
-
-	xlimRange = (0,np.percentile(mySeabird.downCastRawData["Fluorescence"][mySeabird.downCastRawData.Depth > 2],99) * 1.3)
-
-	ax2.set_xlim(xlimRange)
-	ax2.set_xlabel("Fluorescence (ug/L)")
-	# ax2.plot(mySeabird.cleanData.Fluorescence, -mySeabird.cleanData.Depth, "g",label = "Preprocessed Fluorescence")
-	ax2.plot(mySeabird.downCastRawData.Fluorescence, -mySeabird.downCastRawData.Depth, "g--", alpha=0.5,label = "Raw Fluorescence")
-	
-	ax1.set_xlabel("Temperature (C)")
-	ax1.set_ylabel("Depth (m)")
-	
-	ax1.set_ylim((-max(mySeabird.cleanData.Depth) - 5, 0))
-
-	if var == "DCL":
-		depth_algorithm = mySeabird.features["DCL_depth"]
-		ax2.axhline(y = -1*depth_algorithm if depth_algorithm is not None else -999,color = 'b',label = "Algorithm")
-
-		depth_expert = mySeabird.expert["DCL"]
-		ax2.axhline(y = -1*depth_expert if depth_expert is not None else -999,color = 'b',ls="--",label = "Operator")
-
-	elif var in ["TRM","LEP","UHY"]:
-		depth_algorithm = mySeabird.features[var+"_segment"]
-		ax2.axhline(y = -1*depth_algorithm if depth_algorithm is not None else -999,color = 'b',label = "Algorithm")
-
-		depth_expert = mySeabird.expert[var]
-		ax2.axhline(y = -1*depth_expert if depth_expert is not None else -999,color = 'b',ls="--", label = "Operator")
-	
-
-	elif var in ["TRM_compare","LEP_compare","UHY_compare"]:
-		# plot the comparision between PLR and HMM models
-		depth_algorithm = mySeabird.features[var.split("_")[0]+"_segment"]
-		ax2.axhline(y = -1*depth_algorithm if depth_algorithm is not None else -999,color = 'b',label = "PLR")
-
+		all_mean_UHY_LEP = pd.read_csv("/Users/wenzhaoxu/Developer/Seabird/SeabirdCode/analysis/SU_mean_UHY_LEP.csv")
 		
-		depth_expert = mySeabird.features[var.split("_")[0]+"_HMM"]
-		ax2.axhline(y = -1*depth_expert if depth_expert is not None else -999,color = 'b',ls="--", label = "MG-HMM")
+		for station in self.allStations.STATION:
+		# for station in ["SU17"]:
+			if station in ["SU20","SU21","SU22","SU23","SUFE","SUFO"]: # these stations don't have spring data
+				continue
+				
+			if station.startswith("SU"):
+				for year in self.allYears:
 
-	elif var in ["Stratification_compare"]:
-		# compare the stratification
-		depth = mySeabird.features["LEP"+"_segment"]
-		ax2.axhline(y = -1*depth if depth is not None else -999,color = 'b',label = "PLR_LEP")
+					springRes,_ = self.findEntry(station, year,"spring")
+					summerRes,_ = self.findEntry(station, year,"summer")
 
-		depth = mySeabird.features["UHY"+"_segment"]
-		ax2.axhline(y = -1*depth if depth is not None else -999,color = 'm',label = "PLR_UHY")
+					res = {"year":year,"station":station,"maxDepth":None,"minDepth":None}
+					
+					if summerRes.shape[0]>0 and springRes.shape[0]>0:	
+						minDepth = 3.0
+						maxDepth = maxDepthDict[station]
+						
+						res["maxDepth"] = maxDepth
+						res["minDepth"] = minDepth
 
-		depth = mySeabird.features["LEP"+"_HMM"]
-		ax2.axhline(y = -1*depth if depth is not None else -999,color = 'b',ls="--",label = "HMM_LEP")
+						fileId_summer = self.filterDup(summerRes,"summer")
+						fileId_spring = self.filterDup(springRes,"spring")
 
-		depth = mySeabird.features["UHY"+"_HMM"]
-		ax2.axhline(y = -1*depth if depth is not None else -999,color = 'm',ls="--",label = "HMM_LEP")
+						print station, year, fileId_summer, fileId_spring
+						
+						springSeabird = seabird(self.config)
+						springSeabird.rawData = pd.read_sql_query("Select * from %s_data where fileId = %d Order By 'index' ASC" %("spring",fileId_spring)
+							,self.engine).drop('index',axis = 1)
+
+						if station == "SU12" and year == 2008: # manually clean the outlier
+							springSeabird.rawData = springSeabird.rawData[(springSeabird.rawData.Temperature>0) & (springSeabird.rawData.Temperature<7)]
+
+						
+						springSeabird.preprocessing()
+
+						# load previous results:
+						summerSeabird = pickle.load(open("/Users/wenzhaoxu/Developer/Seabird/output/meta/%s_%d_%d.p" %(station, year, fileId_summer),"rb"))
+
+						# summerSeabird = seabird(self.config)
+						# summerSeabird.rawData = pd.read_sql_query("Select * from %s_data where fileId = %d Order By 'index' ASC" %("summer",fileId_summer)
+							# ,self.engine).drop('index',axis = 1)
+						# print min(max(summerSeabird.cleanData.Depth),max(springSeabird.cleanData.Depth))
+						# summerSeabird.preprocessing()
+						# summerSeabird.identify()
+
+						LEP = summerSeabird.features["LEP_segment"]
+						UHY = summerSeabird.features["UHY_segment"]
+
+						mean_LEP = all_mean_UHY_LEP.mean_LEP[all_mean_UHY_LEP.site == station].iloc[0]
+						mean_UHY = all_mean_UHY_LEP.mean_UHY[all_mean_UHY_LEP.site == station].iloc[0]
+
+						minDepth = 3.0
+
+						summerTemperature_meanUHY = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=mean_UHY) & (summerSeabird.cleanData.Depth>=minDepth)]
+						springTemperature_meanUHY = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=mean_UHY) & (springSeabird.cleanData.Depth>=minDepth)]
+
+						summerTemperature_meanLEP = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=mean_LEP) & (summerSeabird.cleanData.Depth>=minDepth)]
+						springTemperature_meanLEP = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=mean_LEP) & (springSeabird.cleanData.Depth>=minDepth)]
+
+						summerTemperature_5 = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=5) & (summerSeabird.cleanData.Depth>=minDepth)]
+						springTemperature_5 = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=5) & (springSeabird.cleanData.Depth>=minDepth)]
+
+						summerTemperature_10 = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=10) & (summerSeabird.cleanData.Depth>=minDepth)]
+						springTemperature_10 = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=10) & (springSeabird.cleanData.Depth>=minDepth)]
+
+						summerTemperature_15 = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=15) & (summerSeabird.cleanData.Depth>=minDepth)]
+						springTemperature_15 = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=15) & (springSeabird.cleanData.Depth>=minDepth)]
+
+						summerTemperature_20 = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=20) & (summerSeabird.cleanData.Depth>=minDepth)]
+						springTemperature_20 = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=20) & (springSeabird.cleanData.Depth>=minDepth)]
+
+						summerTemperature_LEP = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=LEP) & (summerSeabird.cleanData.Depth>=minDepth)]
+						springTemperature_LEP = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=LEP) & (springSeabird.cleanData.Depth>=minDepth)]
+
+						summerTemperature_UHY = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=UHY) & (summerSeabird.cleanData.Depth>=minDepth)]
+						springTemperature_UHY = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=UHY) & (springSeabird.cleanData.Depth>=minDepth)]
+
+						summerTemperature_bottom = summerSeabird.cleanData.Temperature[(summerSeabird.cleanData.Depth<=maxDepth) & (summerSeabird.cleanData.Depth>=minDepth)]
+						springTemperature_bottom = springSeabird.cleanData.Temperature[(springSeabird.cleanData.Depth<=maxDepth) & (springSeabird.cleanData.Depth>=minDepth)]
+
+						assert summerTemperature_LEP.shape[0] == springTemperature_LEP.shape[0]
+						assert summerTemperature_UHY.shape[0] == springTemperature_UHY.shape[0]
+						assert summerTemperature_bottom.shape[0] == springTemperature_bottom.shape[0]
+						# print summerTemperature.shape
+						# print springTemperature.shape
+
+						# res["temperatureDifference"] = sum(summerTemperature-springTemperature)
+
+						res["LEP"] = LEP
+						res["UHY"] = UHY
+
+						res["springSurfaceTemp"] = np.mean(springTemperature_LEP) if LEP else springSeabird.cleanData.Temperature[springSeabird.cleanData.Depth>=minDepth].iloc[0]
+						res["summerSurfaceTemp"] = np.mean(summerTemperature_LEP) if LEP else summerSeabird.cleanData.Temperature[summerSeabird.cleanData.Depth>=minDepth].iloc[0]
+						
+						res["springMaxSurfaceTemp"] = np.percentile(springTemperature_LEP,95) if LEP else springSeabird.cleanData.Temperature[springSeabird.cleanData.Depth>=minDepth].iloc[0]
+						res["summerMaxSurfaceTemp"] = np.percentile(summerTemperature_LEP,95) if LEP else summerSeabird.cleanData.Temperature[summerSeabird.cleanData.Depth>=minDepth].iloc[0]
 
 
-	else:
-		pass
-	lines, labels = ax1.get_legend_handles_labels()
-	lines2, labels2 = ax2.get_legend_handles_labels()
-	ax1.legend(lines + lines2, labels + labels2, loc=legendLoc, prop={'size':10})
-	plt.savefig("/Users/wenzhaoxu/Developer/Seabird/output/focus/%s_%s.png" %(os.path.splitext(os.path.basename(fname))[0],var),
-		bbox_inches='tight')
-	plt.close()
+						res["springUHYTemp"] = springSeabird.cleanData.Temperature[springSeabird.cleanData.Depth == UHY].iloc[0] if UHY else springSeabird.cleanData.Temperature[springSeabird.cleanData.Depth<=maxDepth].iloc[-1]
+						res["summerUHYTemp"] = summerSeabird.cleanData.Temperature[summerSeabird.cleanData.Depth == UHY].iloc[0] if UHY else summerSeabird.cleanData.Temperature[summerSeabird.cleanData.Depth<=maxDepth].iloc[-1]
 
-def runApp():
-	from seabird.seabirdGUI import SeabirdGUI
-	import warnings
-	from Tkinter import Tk
-	with warnings.catch_warnings():
-		warnings.simplefilter("ignore")
-		root=Tk()
-		root.geometry("1200x650")
-		app=SeabirdGUI(master=root)
-		root.mainloop()
-		root.destroy()
+						res["springBottomTemp"] = springTemperature_UHY.iloc[-1] if UHY else springSeabird.cleanData.Temperature[springSeabird.cleanData.Depth<=maxDepth].iloc[-1]
+						res["summerBottomTemp"] = summerTemperature_UHY.iloc[-1] if UHY else summerSeabird.cleanData.Temperature[summerSeabird.cleanData.Depth<=maxDepth].iloc[-1]
 
+						res["summerTemperature_meanLEP"] = sum(summerTemperature_meanLEP)
+						res["springTemperature_meanLEP"] = sum(springTemperature_meanLEP)
+
+						res["summerTemperature_meanUHY"] = sum(summerTemperature_meanUHY)
+						res["springTemperature_meanUHY"] = sum(springTemperature_meanUHY)
+
+						res["springSum_5"] = sum(springTemperature_5)
+						res["summerSum_5"] = sum(summerTemperature_5)
+						
+						res["springSum_10"] = sum(springTemperature_10) 
+						res["summerSum_10"] = sum(summerTemperature_10)
+
+						res["springSum_15"] = sum(springTemperature_15) 
+						res["summerSum_15"] = sum(summerTemperature_15)
+
+						res["springSum_20"] = sum(springTemperature_20) 
+						res["summerSum_20"] = sum(summerTemperature_20)
+
+						res["summerSum_LEP"] = sum(summerTemperature_LEP) if LEP else None
+						res["springSum_LEP"] = sum(springTemperature_LEP) if LEP else None
+
+						res["summerSum_UHY"] = sum(summerTemperature_UHY) if UHY else None
+						res["springSum_UHY"] = sum(springTemperature_UHY) if UHY else None
+
+						res["summerSum_bottom"] = sum(summerTemperature_bottom)
+						res["springSum_bottom"] = sum(springTemperature_bottom)
+
+						# plot the data
+						import matplotlib.pyplot as plt
+						plt.figure(figsize=(6, 7), dpi=80)
+						plt.plot(summerSeabird.cleanData.Temperature,-summerSeabird.cleanData.Depth,"r")
+						plt.plot(springSeabird.cleanData.Temperature,-springSeabird.cleanData.Depth,"g")
+
+
+						plt.axhline(-mean_LEP,color = "r",ls = "--")
+						plt.axhline(-mean_UHY,color = "r",ls = "--")
+
+
+						if UHY:
+							plt.axhline(-UHY)
+						if LEP:
+							plt.axhline(-LEP)
+
+						plt.axhline(-maxDepth)
+
+						plt.xlabel("Temperature")
+						plt.ylabel("Depth")
+						plt.savefig("./analysis/results/flux/%s_%d_TP.png" %(station,year))
+						plt.close()
+
+					allResults.append(res)
+
+		return pd.DataFrame(allResults)
+
+	def detect(self):
+		# Detect the features
+		duplicateExpertNotes = []
+		errorFileId = []
+		results = []
+		for station in self.allStations.STATION:
+			for year in self.allYears:
+				print station,year
+				meta_res,expertnotes_res = self.findEntry(station, year)
+				expertNotes = {"LEP":None,"TRM":None,"UHY":None,"DCL":None}
+
+				if len(expertnotes_res) >0:
+					for i in range(expertnotes_res.shape[0]):
+						if expertNotes[expertnotes_res.DepthCode[i]] is not None:
+							duplicateExpertNotes.append(expertnotes_res)
+						expertNotes[expertnotes_res.DepthCode[i]] = expertnotes_res.Depth[i]
+
+				if meta_res.shape[0]>0:
+					fileId_ = self.filterDup(meta_res)  # choose the depth profile with maximum depth
+					print fileId_  
+
+					try:
+						mySeabird=seabird(config = self.config)
+						mySeabird.loadData(fileId = fileId_)
+						mySeabird.setExpert(notes = expertNotes)
+						# print expertNotes
+						mySeabird.preprocessing()
+						mySeabird.identify()
+						res = mySeabird.features
+						
+						res["fileId"] = mySeabird.fileId
+						res["site"] = mySeabird.site
+						res["time"] = mySeabird.time
+						res["year"] = year
+
+						for d in ["LEP","UHY","TRM","DCL"]:
+							res["expert_"+d] = expertNotes[d]
+
+						fname = "/Users/wenzhaoxu/Developer/Seabird/output/meta/"+mySeabird.site+"_"+str(year)+"_"+str(fileId_)
+						
+						pickle.dump(mySeabird,open(fname+".p","wb"))  # pickle the data
+						mySeabird.plot(filename = fname+".png") # plot the results
+						
+					except:
+						res = {"site":station,"year":year,"fileId":fileId_}
+						errorFileId.append(fileId_)
+						traceback.print_exc()
+				
+				else:
+					res = {"site":station,"year":year,"fileId":None}
+
+				results.append(res)
+
+		# print len(results)
+		results = pd.DataFrame(results)
+		results.to_csv("/Users/wenzhaoxu/Developer/Seabird/output/detectedFeatures.csv")
+		pickle.dump(duplicateExpertNotes,open("/Users/wenzhaoxu/Developer/Seabird/output/duplicateExpertNotes.p","wb"))
+		pickle.dump(errorFileId,open("/Users/wenzhaoxu/Developer/Seabird/output/errorFileId.p","wb"))
+
+		print duplicateExpertNotes
+		print errorFileId
+
+
+def extractWaterChemistryData(featureFile):
+	# Extract Water chemistry data
+	feature = pd.read_csv(featureFile)
+
+	varList = ["DO","Temperature","Specific_Conductivity","Fluorescence","Beam_Attenuation"]
+	epilimnionFeature = np.zeros((feature.shape[0],2*len(varList)))-1
+	hypolimnionFeature = np.zeros((feature.shape[0],2*len(varList)))-1
+
+	metaArray = []
+
+	for i in range(feature.shape[0]):
+		site = feature.site[i]
+		year = feature.year[i]
+		fid = feature.fileId[i]
+		metaArray.append([fid,site,year])
+		print fid
+
+		if fid  is None:
+			continue
+
+		LEP = feature.LEP_segment[i]
+		UHY = feature.UHY_segment[i]
+		
+		try:
+			mySeabird = pickle.load(open("/Users/wenzhaoxu/Developer/Seabird/output/meta/%s_%d_%d.p" %(site,int(year),int(fid)),"rb"))
+			data = mySeabird.cleanData
+			# print data.columns.values
+			for var in varList:
+				if var not in data.columns.values:
+					print var
+					# print data.columns.values
+					data[var]=np.nan
+
+			if LEP is not None:
+				epilimnion = data[data.Depth<LEP][varList]
+				epilimnionFeature[i,:len(varList)] = epilimnion.mean()
+				epilimnionFeature[i,len(varList):] = epilimnion.var()
+			if UHY is not None:
+				hypolimnion = data[data.Depth>UHY][varList]
+				hypolimnionFeature[i,:len(varList)] = hypolimnion.mean()
+				hypolimnionFeature[i,len(varList):] = hypolimnion.var()
+
+		except:
+			print "Unexpected error:", sys.exc_info()[0]
+			traceback.print_exc()
+			pass
+
+	epilimnionFeature = pd.DataFrame(epilimnionFeature,columns=["epi_mean_"+name for name in varList] + ["epi_var_"+name for name in varList])
+	hypolimnionFeature = pd.DataFrame(hypolimnionFeature,columns =["hyp_mean_"+name for name in varList] + ["hyp_var_"+name for name in varList])
+	# print epilimnionFeature
+	waterChemistryFeature = pd.concat([epilimnionFeature,hypolimnionFeature],axis=1)
+
+	metaArray = pd.DataFrame(metaArray,columns = ["fid","site","year"]) # create meta array
+	waterChemistryFeature = pd.concat([metaArray,waterChemistryFeature],axis = 1) # create final water chemistry
+
+	waterChemistryFeature.to_csv("../output/waterFeature.csv")
 
 if __name__ == '__main__':
-	# test()
-	# plotProfile(1000,var = "DCL", legendLoc=4) # ER78 2005, smoothing so that not able to detect DCL
-	# plotProfile(989,var = "DCL",legendLoc = 4) # ER36 2005 for DCL peak missing
-		# # plotProfile(1655,var = "Stratification_compare",legendLoc = 4) # for not good stratification
-	# # plotProfile(1380,var = "Stratification_compare",legendLoc = 4) # for not good stratification 1380
-	# plotProfile(466,var = "None",legendLoc = 4) # MI30 2000 for double thermocline
+	import json
 
-	# # plotProfile(776,var = "None",legendLoc = 4) # HU37 2006 for double thermocline
-	# # plotProfile(1426,var = "None",legendLoc = 4) # HU37 2006 for double thermocline
-	# # plotProfile(1637,var = "None",legendLoc = 4) # HU37 2006 for double thermocline	
+	engine = create_engine('mysql+mysqldb://root:XuWenzhaO@localhost/Seabird')
+	config = json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/config.json'))
+	GLSummary = summary(engine,config)
 
+	GLSummary.detect()
+	extractWaterChemistryData("/Users/WenzhaoXu/Developer/Seabird/output/detectedFeatures.csv")
 
-
-
-	# plotProfile(1544,var = "TRM_compare",legendLoc = 4) # SU15 2009 for TRM difference
-	# plotProfile(363,var = "Stratification_compare",legendLoc = 4) # MI47 1999 for not good stratification 363
-	# plotProfile(675,var = "Stratification_compare",legendLoc = 4) # 675 HU53 2002 for UHY difference
-
-	# plotProfile(1763,var = "DCL",legendLoc = 4) # SU09 2011 for DCL mislabled
-	# plotProfile(1444,var = "LEP",legendLoc = 4) # ER15_2009_1444 for LEP algorithm limitations
-	# plotProfile(734,var = "TRM",legendLoc = 4) # SU09 2002 for TRM definition
-	# plotProfile(1696,var = "DCL",legendLoc = 4) # HU32 2011 for DCL definition
-	# plotProfile(1037,var = "DCL",legendLoc = 4) # # MI40_2005_1037 for lage DCL peak
-	# plotProfile(383,var = "UHY",legendLoc = 4) # ON55_1999 for large transition zone
-
-	# plotProfile(1856,var = "None",legendLoc = 4) # ON33 2012 for positive temperature gradient
-	# plotProfile(1154,var = "None",legendLoc = 4) # MI42_2006_1154 for double thermocline
+	res = GLSummary.calculateThermoFlux()
+	res.to_csv("../output/thermoFlux_SU_new.csv")
+	pickle.dump(res, open("thermoFlux_SU_new.p","wb"))
 	
-	# plotProfile(1433,var = "None",legendLoc = 4)# 2008 SU17 for DCL asymesstry shape 1.459844
-	# plotProfile(438,var = "None",legendLoc = 4)# HU12 2000 for DCL symmetric shape b, 0.003450122
-	# plotProfile(1426,var = "None",legendLoc = 4)# SU11 2008 for DCL asymmetric shape c, -1.835088
-	# # outputData(1767)
-
-	# plotHistoryProfile("SU15",var = "TRM", targetYear=2009)
-	# plotHistoryProfile("SU05",var = "TRM", targetYear=2005)
-	# plotHistoryProfile("SU21",var = "TRM", targetYear=2002)
-	# plotHistoryProfile("SU21",var = "TRM", targetYear=2010)
-
-	plotHistoryProfile("SU07",var = "DCL", targetYear=2011)
-	plotHistoryProfile("SU05",var = "DCL", targetYear=2004)
+	# print GLSummary.allStations.STATION
+	# allTables = GLSummary.writeAllAlignments()
+	# allTables.to_csv("/Users/WenzhaoXu/Desktop/test2.csv")

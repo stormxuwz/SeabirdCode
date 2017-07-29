@@ -75,6 +75,7 @@ class seabird:
 		
 		self.rawData = sensorData
 	
+
 	def setExpert(self,notes):
 		"""
 		Load operator judgements:
