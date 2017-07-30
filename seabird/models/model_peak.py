@@ -114,59 +114,6 @@ def fitShape(y,direction,method="gaussian"):
 	return fit_y,x_for_fit, y_for_fit, popt
 
 
-def getStableGradientPoints(curve,slopeThres,SNRThres,diffThres, dirc = "up"):
-	"""
-	Function to get boundary point based on slope and Signal noise ratio, 
-		could be used to detect peaks that can't fit by a Gaussian shape
-	Args:
-		Input: curve: 
-		slopeThres: the maximum gradient available
-		SNRThres: the minimum SNR
-		diffThres: 
-		dirc: "up" means the shape, i.e. the half peak is going up; "down" means the shape is going down
-	Returns:
-		finalJ: the index of the boundary
-	"""
-	
-	maxSlope = 0
-	dataRange = max(curve)-min(curve)
-	finalJ = 5
-
-	if dirc == "up":
-		for j in range(finalJ,len(curve)-finalJ):  # 3 is a parameter that 
-			if len(curve[0:-j])<3:
-				next
-
-			slope,SNR,dataDiff = slope_SNR(curve[0:-j])
-			slope_tmp,SNR_tmp,dataDiff_tmp = slope_SNR(curve[(j-3):(j+3)])
-			# print slope_tmp
-			maxSlope = max(maxSlope,slope_tmp)
-			if slope < slopeThres*maxSlope and SNR > SNRThres and dataDiff < dataRange *diffThres:
-				# leftBoundary = middleNode - j
-				# print "left",slope,SNR
-				finalJ = j
-				break
-	else:
-		for j in range(finalJ,len(curve)-finalJ):
-			if len(curve[j:])<3:
-				next
-			slope,SNR,dataDiff = slope_SNR(curve[j:])
-			slope_tmp,SNR_tmp,dataDiff_tmp = slope_SNR(curve[(j-3):(j+3)])
-			
-			maxSlope = max(maxSlope,slope_tmp)
-			
-			# print "cond1",slope < slopeThres*maxSlope
-			# print "cond2",SNR > SNRThres
-			# print "cond3",dataDiff < dataRange *diffThres
-
-			if slope < slopeThres*maxSlope and SNR > SNRThres and dataDiff < dataRange *diffThres:
-				# rightBoundary = middleNode+j
-				finalJ = j
-				# print "right",slope,maxSlope,SNR
-				break
-	
-	return finalJ
-
 def zeroCrossing(signal, mode):
 	'''
 	find the index of points that intercept with x axis
@@ -188,59 +135,25 @@ def zeroCrossing(signal, mode):
 	else:
 		raise ValueError("mode can only be 0,1,2")
 
-
-def slope_SNR(x):
-	"""
-	get the slope and SNR of the signal x
-	Args:
-		x. input signal
-	Returns:
-		slope, the gradient of a fitted linear line
-		SNR: SNR
-		dataDiff: the change from the first point to the last point
-	"""
-
-	n = len(x)
-	l = np.poly1d(np.polyfit(range(n),x,1))(range(n))
-	slope = l[1]-l[0]
-
-	SNR = np.mean(x)/np.std(x)
-	# SNR = 1/np.std(l-x)
-	res = l - x
-	dataDiff = abs(l[0]-l[-1])
-
-	# print SNR,slope
-	return abs(slope), SNR, dataDiff
-
-
 def fit_error(x,xhat):
 	"""
 	return the error of x and fitted x (xhat)
 	"""
-	# # # using R^2, Coefficient of determination
-	# x_mean = np.mean(x)
-	# SStot = sum((x - x_mean)**2)
-	# SSres = sum((x-xhat)**2)
-	# print "R^2",1-SSres/SStot
-	return (np.corrcoef(x,xhat)[1,0])**2  # using r^2, not R^2 
-	# print "abs(dx)/x (0.95,max)",np.percentile(abs(x-xhat)/x, 0.95),max(abs(x-xhat)/x)
-	# return 1-SSres/SStot
-	# return (np.corrcoef(x,xhat)[1,0]) # return pearson coefficient
-	# print x,xhat
-	# print np.percentile(abs(x-xhat)/x, 0.5),np.percentile(abs(x-xhat)/x, 0.9),np.percentile(abs(x-xhat)/x, 0.99)
-	# return np.percentile(abs(x-xhat)/x, 0.95)
-	# print "RMSE_median normalized",np.mean((x-xhat)**2)/np.mean(x)
-	# return max(abs(x-xhat)/x)
-	# return np.mean((x-xhat)**2)/np.mean(x) # return the normalized RMSE as the performance measurement
-
+	# using r^2
+	return (np.corrcoef(x,xhat)[1,0])**2  
+	
 class peak(object):
 	def __init__(self,config,method = "gaussian"):
 		self.allPeaks = None
 		self.shape_fit = []
 		self.x = None
 		self.method = method
-		self.config = config
+
 		self.boundaries = None
+		self.minPeakMagnitude = config["minPeakMagnitude"] # minimum peak magnitude
+		self.peakHeight = config["peakHeight"]
+		self.peakSize = config["peakSize"]
+		self.peakMinInterval = config["peakMinInterval"]
 
 	def fit_predict(self,x):
 		"""
@@ -254,50 +167,31 @@ class peak(object):
 		x_gradient = np.diff(x) # find the gradient of x, len(x_gradient) = len(x)-1, x_gradient[0] = x[1]-x[0]
 		rawPeak = zeroCrossing(x_gradient, mode=1) 
 		
-		if False:
-			n = len(x)
-			plt.figure(figsize= (4.5,6))
-			plt.plot(x,-1*np.arange(n))
-			plt.plot(x[rawPeak],[-1*r for r in rawPeak],"ro")
-			plt.xlabel("Fluorescence")
-			plt.ylabel("Depth")
-			plt.xticks([], [])
-			plt.yticks([], [])
-			plt.show()
+		# the minimum maginitude that a peak should reach
+		threshold = (max(x)-min(x))*self.minPeakMagnitude + min(x) 
+		# the minimum height that a peak should have
+		peakHeightThreshold = (max(x)-min(x)) * self.peakHeight
 
-		threshold = (max(x)-min(x))*self.config["minPeakMagnitude"]+min(x) # the minimum maginitude that a peak should reach
-
-		rawPeak = self.initialFilter(rawPeak, x, threshold) # remove peaks by threshold
+		rawPeak = self.initialFilter(rawPeak, x, threshold, self.peakMinInterval) # remove peaks by threshold
 
 		# add the first and last points as the boundary
 		rawPeak.append(len(x)-1)
 		rawPeak = [0]+rawPeak
 
-		peakHeightThreshold = (max(x)-min(x))*self.config["peakHeight"]  # a tuning parameter
-		
 		while True:
-			if False: # plot the meta, for checking use
-				n = len(x)
-				plt.figure(figsize= (4.5,6))
-				plt.plot(x,-1*np.arange(n))
-				plt.plot(x[rawPeak[1:-1]],[-1*r for r in rawPeak[1:-1]],"ro")
-				plt.xlabel("Fluorescence")
-				plt.ylabel("Depth")
-				plt.xticks([], [])
-				plt.yticks([], [])
-				plt.show()
-
 			# find the heights of all possible peaks in rawPeak
 			shape_height = self.findPeakHeight(x,rawPeak)
 			
 			if len(shape_height) ==0:
+				# not peak is detected
 				break
 
 			minHeightPeak_index = np.argmin(shape_height) # find the minimum height amoung the peaks
 
-			if shape_height[minHeightPeak_index]<peakHeightThreshold:  # remove shallowest peak
-				rawPeak.pop(minHeightPeak_index+1) # +1 because the starting point as the 1st point in rawPeak
+			if shape_height[minHeightPeak_index] < peakHeightThreshold:  # remove shallowest peak
+				rawPeak.pop(minHeightPeak_index+1) # +1 because the starting point is the 0th point in rawPeak
 			else:
+				# all remaining peak is significant
 				break
 
 		self.boundaries = self.findBoundaries(x,rawPeak) # find the boundary of the peak in the rawPeak
@@ -310,8 +204,6 @@ class peak(object):
 		Returns:
 			a dataframe, with columns of 
 			"peakIndex": the index of the peak point
-			"leftIndex_gradient": the left (upper) boundary detected by the gradient methods
-			"rightIndex_gradient": the right (lower) boundary detected by the gradient methods
 			"leftIndex_fit": the left (upper) boundary detected by the Gaussian fitting methods
 			"rightIndex_fit": the right (lower) boundary detected by the Gaussian fitting methods
 			"leftErr":	the fitted error for left (upper) shape
@@ -329,9 +221,8 @@ class peak(object):
 		
 		allPeaks = {}
 		
-		featureMapDic = {"peakIndex":"middleNode",
-		"leftIndex_gradient":"leftBoundary_gradient",
-		"rightIndex_gradient":"rightBoundary_gradient",
+		featureMapDic = {
+		"peakIndex":"middleNode",
 		"leftIndex_fit":"leftBoundary_fit",
 		"rightIndex_fit":"rightBoundary_fit",
 		"leftErr":"leftShape_err",
@@ -392,26 +283,17 @@ class peak(object):
 			rightBoundary_gradient = rightBoundary
 
 			if i ==1: # get the left boundary of the first peak
-
-				# the boundary of left shape by analying the gradient
-				leftBoundary_gradient = middleNode - getStableGradientPoints(leftData, self.config["slope"], self.config["SNR"], self.config["stableDiff"])
-				
 				# the boundary of left shape by fitting half Gaussian
-				leftBoundary_fit = max(1,middleNode - int(np.ceil(self.config["peakSize"]*np.sqrt(leftShape[3][1]))))  # use two and half sigma as the peak half width
+				# use two and half sigma as the peak half width
+				leftBoundary_fit = max(1,middleNode - int(np.ceil(self.peakSize * np.sqrt(leftShape[3][1]))))  
 
 			if i == len(peaks) -2: # get the right boundary of the last peak
-				
-				# the boundary of right shape by analying the gradient
-				rightBoundary_gradient = middleNode + getStableGradientPoints(rightData, self.config["slope"], self.config["SNR"], self.config["stableDiff"],"down")
-				
 				# the boundary of right shape by fitting half Gaussian
-				# print self.config["peakSize"]
-				rightBoundary_fit = min(len(x)-2, middleNode + int(np.ceil(self.config["peakSize"]*np.sqrt(rightShape[3][1]))))  #  use two and half sigma as the peak half width
+				# use two and half sigma as the peak half width
+				rightBoundary_fit = min(len(x)-2, middleNode + int(np.ceil(self.peakSize * np.sqrt(rightShape[3][1])))) 
 
 			boundaries.append({
 				"middleNode":middleNode,
-				"leftBoundary_gradient":leftBoundary_gradient,
-				"rightBoundary_gradient":rightBoundary_gradient,
 				"leftShape_err":leftShape_err,
 				"rightShape_err":rightShape_err,
 				"leftShape":leftShape[0],
@@ -497,15 +379,3 @@ class peak(object):
 					rawPeakIndex_new[-1] = peak_ind
 			
 		return rawPeakIndex_new
-
-
-
-def slopeSum(x,windowSize):
-	# get the sum of positive slopes, maybe useful in the future
-	gradient_x = np.diff(x)
-	windows = np.array([ np.arange(i-windowSize,i) for i in range(windowSize,len(x))])
-	y = []
-	for seg in windows:
-		y.append(np.sum(gradient_x[seg]*(gradient_x[seg]>0)))
-
-	return np.array(y)

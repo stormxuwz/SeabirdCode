@@ -6,7 +6,11 @@ import os
 
 class seabird_file_parser():
 	def __init__(self):
-		self.meta = {"longitude":None,"latitude":None,"UTC":None,"station":None,"cruise":None,"fileOriginName":None,"systemUpLoadTime":None,"fileName":None,"datcnv_date":None,"fileId":None,"lake":None,"stationInfered":None}
+		self.meta = {"longitude":None,
+		"latitude":None,
+		"UTC":None,
+		"station":None,
+		"cruise":None,"fileOriginName":None,"systemUpLoadTime":None,"fileName":None,"datcnv_date":None,"fileId":None,"lake":None,"stationInfered":None}
 
 		self.variable_name_dictionary={"depF":"Depth","depFM":"Depth","t068":"Temperature","t090":"Temperature","t090C":"Temperature","specc":"Specific_Conductivity","bat":"Beam_Attenuation","sbeox0Mg/L":"DO","oxMg/L":"DO","xmiss":"Beam_Transmission","flSP":"Fluorescence","flS":"Fluorescence","ph":"pH","c0mS/cm":"Conductivity","c0uS/cm":"Conductivity","par":"Par","spar":"SPar","prDE":"Pressure"}
 		
@@ -39,6 +43,7 @@ class seabird_file_parser():
 		self.meta["lake"] = os.path.basename(self.meta["fileName"])[:2].upper()
 		self.meta["stationInfered"] = os.path.basename(self.meta["fileName"])[:4].upper()
 			
+
 	def readCSVFile(self,filename,columns = None):
 		if columns is None:
 			return pd.read_csv(filename).rename(columns = self.variable_name_dictionary)
@@ -104,7 +109,7 @@ class seabird_file_parser():
 			sensordata = pd.DataFrame(data=np.array(sensordata),columns=self.dataColumn)
 		
 		if "c0mS/cm" in sensordata.columns.values:
-			sensordata["c0mS/cm"] = sensordata["c0mS/cm"] * 1000
+			sensordata["c0mS/cm"] = sensordata["c0mS/cm"] * 1000 # change to uS/cm
 		
 		return sensordata
 		
@@ -164,7 +169,7 @@ class seabird_file_parser():
 		meta.to_sql(tableName["meta"],engine,flavor="mysql",if_exists="append",index = False)
 
 	def saveToCSV(self,fileToSave):
-		pass
+		self.sensordata
 
 
 
