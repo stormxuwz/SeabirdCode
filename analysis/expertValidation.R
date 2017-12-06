@@ -1,5 +1,5 @@
 # scripts to validate expert notes
-
+require(Metrics)
 
 addingFeatures_expertDiff <- function(features){
 	features$TRM_diff <- features$TRM_segment-features$expert_TRM
