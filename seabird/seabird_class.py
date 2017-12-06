@@ -105,7 +105,7 @@ class seabird:
 		"""
 		Function to do preprocess the data, including separating and smoothing
 		"""
-		self.downCastRawData, self.cleanData = seabird_pp(self.rawData, self.config)
+		self.downCastRawData, self.cleanData = seabird_pp(self.rawData, self.config["Preprocessing"])
 		
 
 	def identify(self,saveModel = True):

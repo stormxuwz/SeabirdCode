@@ -44,3 +44,7 @@ analysis/.Rhistory
 *.pyc
 analysis/.DS_Store
 .DS_Store
+summary_SQL.py
+*.pyc
+*.R
+*.pyc

@@ -43,16 +43,17 @@ class thermocline_segmentation(thermocline_base):
 		self.num_segments = None
 		self.num_belowTRM = None
 		self.model = None
-		self.depthInterval = self.config["Preprocessing"]["Interval"]
+		self.depthInterval = self.config["Preprocessing"]["depthInterval"]
 		self.positiveSeg = []
 		self.doubleTRM = []
 		self.gradient = []
 
 		self.maxTempertureChange = 2
 		
-		self.stableGradient = config["Algorithm"]["segment"]["stable_gradient"]
-		self.stableGradient_relaxed = config["Algorithm"]["segment"]["stable_gradient2"]
-		self.minimumGradient_TRM = self.config["Algorithm"]["segment"]["minTRM_gradient"]
+		self.stableGradient = config["Algorithm"]["PLR"]["stable_gradient"]
+		self.stableGradient_relaxed = config["Algorithm"]["PLR"]["stable_gradient2"]
+		self.minimumGradient_TRM = self.config["Algorithm"]["PLR"]["minTRM_gradient"]
+		self.max_error = self.config["Algorithm"]["PLR"]["max_error"]
 
 	def getGradientFromSegment(self,seg):
 		"""
@@ -117,7 +118,7 @@ class thermocline_segmentation(thermocline_base):
 		Returns:
 			None
 		"""
-		model = bottomUp(max_error = self.config["Algorithm"]["segment"]["max_error"])
+		model = bottomUp(max_error = self.max_error)
 		
 		# detect the TRM features
 		model.fit_predict(data.Temperature)
@@ -229,7 +230,7 @@ class thermocline(object):
 		self.features = {}
 		self.models = {}
 		
-	def detect(self,data,methods = ["segmentation","HMM","threshold"], saveModel = True):
+	def detect(self,data,methods = ["segmentation"], saveModel = True):
 		"""
 		Function to detect features of thermocline
 		Args:

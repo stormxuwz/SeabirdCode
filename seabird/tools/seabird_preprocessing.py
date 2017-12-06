@@ -1,23 +1,22 @@
 '''
-	This file contains all the data noise removal functions
+This file contains all the data noise removal functions
 '''
 import numpy as np
 import pandas as pd
-from scipy.interpolate import UnivariateSpline
-import pywt
-import logging
 
 def window_smooth(x, window_len=11, window='hanning'):
 	"""
 	Function to smooth signal based moving window
+	modified from http://scipy-cookbook.readthedocs.io/items/SignalSmooth.html
 	Args:
 		x: signal
-		window_len: window size
+		window_len: window size, should be an odd number
 		window: window shape
 	Returns
 		y: smoothed data
 	"""
 	window_len = min(int(len(x)/5),window_len)
+
 	if window_len % 2 ==0:
 		window_len+=1
 	if x.ndim != 1:
@@ -50,17 +49,11 @@ def spline_smooth(x, smoothing_para=1):
 	Returns
 		y: smoothed data
 	"""
+	from scipy.interpolate import UnivariateSpline
 	ind=range(1,len(x)+1)
 	y = UnivariateSpline(ind, x, k=3, s=smoothing_para)
 	return y(ind)
 
-
-def testFilter(x, smoothing_para=1):
-	'''
-	Not implemented yet
-	'''
-	from scipy.signal import wiener, filtfilt, butter, gaussian, freqz
-	pass
 
 
 def dwt_smooth(x, smoothing_para={'wavelet':'bior3.1','level':0}):
@@ -72,6 +65,7 @@ def dwt_smooth(x, smoothing_para={'wavelet':'bior3.1','level':0}):
 	Returns:
 		y: smoothed data
 	"""
+	import pywt
 	wavelet=smoothing_para["wavelet"]
 	level = smoothing_para["level"]
 	num = len(x)
@@ -124,7 +118,6 @@ def init_filter(data, depth_threshold=1):
 	data = data[data.Depth > depth_threshold-0.5]
 	data = data[data.Temperature>0]
 	data = data[data.Depth<1000]
-	logging.debug("finished init_filter")
 	return data
 
 
@@ -155,22 +148,24 @@ def resample(sensordata, interval=0.25):
 	depth = np.array(sensordata.Depth)
 
 	featureNum = sensordata.shape[1] - 1
+	
+	# generate depths at which to aggregate or interpolate, # starting from the minimum depth
 	new_depth = np.arange(np.ceil(depth.min()), depth.max(), interval)
-	new_sensordata = np.zeros((len(new_depth), sensordata.shape[1]-1))
+	new_sensordata = np.zeros((len(new_depth), featureNum))
 	new_sensordata[:, 0] = new_depth
 
-	dataAgged = True
+	dataAgged = True # whether data have been aggregated
 	meanRange = []
 
 	if min(np.abs(np.diff(depth)))<= 2*interval:
-		dataAgged = False
+		dataAgged = False # the data is raw data
 		meanRange = [(depth >= d-interval) * (depth<=d+interval) >0 for d in new_depth]
 
 	for i in range(1, sensordata.shape[1]-1):
 		if sum(~sensordata.iloc[:,i].isnull())<1: # no data 
 			new_sensordata[:, i] = np.nan
 		else:
-			if dataAgged:
+			if dataAgged: # if data are already aggregated, to interpolation
 				new_sensordata[:, i] = np.interp(new_depth, depth, sensordata.iloc[:, i])
 			else:
 				oldFeatures = np.array(sensordata.iloc[:, i])
@@ -196,7 +191,7 @@ def filter(data,config):
 	"""
 	function to smooth each column of data
 	Args:
-		data: input data
+		data: pandas dataframe
 		config: configuration dictionary
 	Returns:
 		data, the smoothed data
@@ -204,10 +199,10 @@ def filter(data,config):
 
 	for var in data.columns.values[1:]:
 
-		if var in config["SmoothingMethod"]:
-			smoothCfg=config["SmoothingMethod"][var]
+		if var in config["smoothingMethod"]:
+			smoothCfg=config["smoothingMethod"][var]
 		else:
-			smoothCfg = config["SmoothingMethod"]["Other"]
+			smoothCfg = config["smoothingMethod"]["Other"]
 
 		method=smoothCfg[0]
 		# print var, method
@@ -229,17 +224,17 @@ def preprocessing(data,config):
 	"""
 	function to preprocess the raw input data by separating, resampling and smoothing
 	Args:
-		data: input data
+		data: pandas dataframe
 		config: configuration dictionary
 	Returns:
 		downcast: the raw downcast
 		filtered_data: the cleaned downcast
 	"""
 	downcast, upcast = separate(data)
-	pre_data = init_filter(downcast,config["Preprocessing"]["badDepthThreshold"])
+	pre_data = init_filter(downcast,config["badDepthThreshold"])
 	if pre_data.shape[0]<1:
 		return None,None
-	pre_data_resample = resample(sensordata=pre_data, interval=config["Preprocessing"]["Interval"])
+	pre_data_resample = resample(sensordata=pre_data, interval=config["depthInterval"])
 
 	if pre_data_resample.shape[0] % 2 > 0:
 		pre_data_resample = pre_data_resample.iloc[:-1, :]

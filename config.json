@@ -1,38 +1,26 @@
 {
-	"DataFolder":{
-		"csvFolder":"/Users/WenzhaoXu/Developer/Project_IO/Seabird/csvFile/"
-	},
-	"SmoothingMethod":{
-		"Temperature":["window",9],
-		"Fluorescence":["window",9],
-		"Fluorescence_old":["dwt","db2",0],
-		"Other":["spline",1]
-	},
 	"Preprocessing":{
-		"Interval":0.25,
-		"badDepthThreshold":3
+		"depthInterval":0.25,
+		"badDepthThreshold":3,
+		"smoothingMethod":{
+			"Temperature":["window",9],
+			"Fluorescence":["window",9],
+			"Other":["spline",1]
+		}
 	},
 	
 	"Algorithm":{
 		"Peak":{
-			"peakInterval": 25,
+			"peakMinInterval": 10,
 			"minPeakMagnitude": 0.3,
-			"minBoundaryValue": 0.2,
-			"maxBoundaryGradient": 0.1,
 			"peakHeight": 0.2,
-			"tailTol": 0.2,
-			"peakFitTol":0.05,
-			"SNR":10,
-			"slope":0.1,
-			"stableDiff":0.2,
 			"peakSize":2.5
 		},
-		"Spectrum":{"windowSize":8,"threshold":null},
-		"segment":{
+		"PLR":{
 			"max_error":0.3,
 			"stable_gradient2":0.25,
 			"stable_gradient":0.1,
-			"minTRM_gradient":0.15,
-			"minTRM_gradient_backUP":0.25}
+			"minTRM_gradient":0.15
+		}
 	}
 }
