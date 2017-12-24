@@ -7,6 +7,10 @@ It can:
 * Detect deep chlorophyll layers by fitting two half gaussian curves on peak points
 
 ---
+To Install:
+Installl anaconda and bokeh
+
+
 To use:
 	
 	from seabird.seabird_class import seabird

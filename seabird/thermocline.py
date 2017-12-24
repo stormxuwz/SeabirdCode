@@ -4,7 +4,7 @@ Thermocline Class
 import numpy as np
 import traceback
 import sys
-from models.model_HMM import hmmModel
+# from models.model_HMM import hmmModel
 from models.model_segmentation import bottomUp
 from models.model_threshold import thresholdModel
 from tools.signalProcessing import extractSignalFeatures
