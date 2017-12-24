@@ -17,7 +17,7 @@ def gauss_function(x, a, x0, sigma2,y0,k):
 		x: x
 		a: magnitude
 		x0: center
-		sigma: normalize factor/standard deviation
+		sigma2: normalize factor/standard deviation ** 2
 		y0: background level
 		k: the background concentration trend
 	Returns:
@@ -45,7 +45,7 @@ def fitGaussian(x,y,x_mean,weight= None):
 	bounds=([0,0,-0.15*maxK], [np.inf,np.inf,0.15*maxK])  
 	# bounds = (-np.inf,np.inf)
 	if weight is None:
-		popt, pcov = curve_fit(f=lambda x,a,sigma,k: gauss_function(x,a,x_mean,sigma,max(y)-a,k), xdata=x, ydata=y,bounds = bounds)
+		popt, pcov = curve_fit(f=lambda x,a,sigma2,k: gauss_function(x,a,x_mean,sigma2,max(y)-a,k), xdata=x, ydata=y,bounds = bounds)
 	else:
 		raise ValueError("WLS not implemented")
 		# popt, pcov = curve_fit(lambda x,a,sigma: gauss_function(x,a,x_mean,sigma,max(y)-a), x, y, sigma=weight)
@@ -300,8 +300,8 @@ class peak(object):
 				"rightShape":rightShape[0],
 				"leftBoundary_fit":leftBoundary_fit,
 				"rightBoundary_fit":rightBoundary_fit,
-				"leftSigma": np.sqrt(leftShape[3][1]),
-				"rightSigma": np.sqrt(rightShape[3][1])
+				"leftSigma": np.sqrt(leftShape[3][1]), # sqrt(sigma2) to get the sigma
+				"rightSigma": np.sqrt(rightShape[3][1]) # sqrt(sigma2) to get the sigma
 				})
 
 		return boundaries

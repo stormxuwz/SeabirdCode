@@ -70,7 +70,7 @@ class DCL(object):
 		
 		"DCL_leftSigma":None,  # the std of the Gaussian shape fitted for upper shape
 		"DCL_rightSigma":None,  # the std of the Gaussian shape fitted for lower shape
-		"DCL_aboveConc": None # the sum of concentrations above a depth threshold
+		"allConc_upper": None # the sum of concentrations above a depth threshold
 		}
 
 		# initialize peak model
@@ -147,7 +147,6 @@ class DCL(object):
 			features["DCL_bottomDepth_fit"] =  data.Depth[self.allPeaks.rightIndex_fit[DCL_idx]]
 
 		
-		print "DCL Features", features
 		return features
 
 
