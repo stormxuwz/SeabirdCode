@@ -172,18 +172,21 @@ class peak(object):
 		# the minimum height that a peak should have
 		peakHeightThreshold = (max(x)-min(x)) * self.peakHeight
 
+		
 		rawPeak = self.initialFilter(rawPeak, x, threshold, self.peakMinInterval) # remove peaks by threshold
 
 		# add the first and last points as the boundary
 		rawPeak.append(len(x)-1)
 		rawPeak = [0]+rawPeak
 
+		# print(rawPeak)
+
 		while True:
 			# find the heights of all possible peaks in rawPeak
 			shape_height = self.findPeakHeight(x,rawPeak)
 			
 			if len(shape_height) ==0:
-				# not peak is detected
+				# no peak is detected
 				break
 
 			minHeightPeak_index = np.argmin(shape_height) # find the minimum height amoung the peaks
@@ -196,6 +199,7 @@ class peak(object):
 
 		self.boundaries = self.findBoundaries(x,rawPeak) # find the boundary of the peak in the rawPeak
 		self.x = x
+
 		self.allPeaks = self.featureExtraction() # extract the features of the peak
 		
 	def featureExtraction(self):
@@ -232,7 +236,7 @@ class peak(object):
 		"leftSigma":"leftSigma",
 		"rightSigma":"rightSigma"}
 
-		for k,v in featureMapDic.iteritems():
+		for k,v in featureMapDic.items():
 			allPeaks[k] = [boundary[v] for boundary in self.boundaries]		
 
 		return pd.DataFrame(allPeaks)

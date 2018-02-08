@@ -5,10 +5,10 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from tools.seabird_preprocessing import preprocessing as seabird_pp
-from tools.seabird_parser import seabird_file_parser
-from thermocline import thermocline
-from deepChlLayers import DCL
+from .tools.seabird_preprocessing import preprocessing as seabird_pp
+from .tools.seabird_parser import seabird_file_parser
+from .thermocline import thermocline
+from .deepChlLayers import DCL
 
 class seabird:
 	def __init__(self, config):
@@ -42,7 +42,7 @@ class seabird:
 		# self.bottleData = None
 		# self.bottleFile = None # maybe useful
 
-	def loadData(self,dataFile = None,fileId = None, dbEngine = None):
+	def loadData(self,dataFile = None, fileId = None, dbEngine = None, columns = None):
 		"""
 		Load data into the Seabird Class
 		Args:
@@ -55,7 +55,7 @@ class seabird:
 		if fileId is None:
 			# read from the seabird raw data.
 			parser = seabird_file_parser()
-			parser.readFile(dataFile)
+			parser.readFile(dataFile, columns = columns)
 			sensorData = parser.sensordata
 			self.time = parser.meta["systemUpLoadTime"]
 			self.site = parser.meta["stationInfered"]
@@ -119,11 +119,17 @@ class seabird:
 		TRM_features = self.thermocline.detect(data = self.cleanData[["Depth","Temperature"]],\
 		                                       saveModel = saveModel)
 
+		if TRM_features["LEP_segment"] is None:
+			peakMinDepth = 0
+			peakUpperDepthBoundary = 0
+		else:
+			peakMinDepth = TRM_features["LEP_segment"]
+			peakUpperDepthBoundary =TRM_features["LEP_segment"]
 		# detect DCL features
 		DCL_features = self.DCL.detect(data = self.cleanData[["Depth","Fluorescence"]],\
 									   rawData = self.downCastRawData[["Depth","Fluorescence"]],\
-		                               peakMinDepth = TRM_features["LEP_segment"],\
-		                               peakUpperDepthBoundary = TRM_features["LEP_segment"],\
+		                               peakMinDepth = peakMinDepth,\
+		                               peakUpperDepthBoundary = peakUpperDepthBoundary,\
 		                               saveModel = saveModel)
 
 		self.features = TRM_features.copy()
@@ -201,11 +207,12 @@ class seabird:
 
 							peakIndex = meta_allPeaks["peakIndex"][i]
 
-							leftShapeIndex = range(peakIndex-len(leftShapeFit),peakIndex)
+							leftShapeIndex = range(peakIndex-len(leftShapeFit)+1,peakIndex+1)
 							rightShapeIndex = range(peakIndex,peakIndex+len(rightShapeFit))
-
-							ax2.plot(leftShapeFit,-self.cleanData.Depth[leftShapeIndex])
-							ax2.plot(rightShapeFit,-self.cleanData.Depth[rightShapeIndex])
+							print(leftShapeIndex)
+							print(rightShapeIndex)
+							ax2.plot(leftShapeFit,-self.cleanData.Depth.iloc[leftShapeIndex])
+							ax2.plot(rightShapeFit,-self.cleanData.Depth.iloc[rightShapeIndex])
 
 				# if detected DCL, plo the depth of the DCL peak
 				if self.features["DCL_depth"] is not None:
@@ -227,6 +234,7 @@ class seabird:
 		from mpl_toolkits.axes_grid1 import host_subplot
 		import mpl_toolkits.axisartist as AA
 
+		# create a map from water feature to plot line color 
 		col = dict(zip(["Temperature", "DO", "Specific_Conductivity", "Fluorescence", "Beam_Attenuation", "Par"],
 		               ["r", "b", "y", "g", "m", "k"]))
 

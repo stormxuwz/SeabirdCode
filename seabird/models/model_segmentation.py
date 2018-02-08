@@ -45,10 +45,10 @@ class slidingWindow(timeSeriesSegmentation):
 		n=len(x)
 		leftNode=0
 		segmentList=[]
-		print n
+		print(n)
 		
 		while leftNode<n-1:
-			print leftNode
+			print(leftNode)
 			newSeg = False
 			for rightNode in range(leftNode+3,n):
 				testSeg=x[leftNode:rightNode]

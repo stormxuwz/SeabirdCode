@@ -10,7 +10,14 @@ class seabird_file_parser():
 		"latitude":None,
 		"UTC":None,
 		"station":None,
-		"cruise":None,"fileOriginName":None,"systemUpLoadTime":None,"fileName":None,"datcnv_date":None,"fileId":None,"lake":None,"stationInfered":None}
+		"cruise":None,
+		"fileOriginName":None,
+		"systemUpLoadTime":None,
+		"fileName":None,
+		"datcnv_date":None,
+		"fileId":None,
+		"lake":None,
+		"stationInfered":None}
 
 		self.variable_name_dictionary={"depF":"Depth","depFM":"Depth","t068":"Temperature","t090":"Temperature","t090C":"Temperature","specc":"Specific_Conductivity","bat":"Beam_Attenuation","sbeox0Mg/L":"DO","oxMg/L":"DO","xmiss":"Beam_Transmission","flSP":"Fluorescence","flS":"Fluorescence","ph":"pH","c0mS/cm":"Conductivity","c0uS/cm":"Conductivity","par":"Par","spar":"SPar","prDE":"Pressure"}
 		
@@ -20,35 +27,39 @@ class seabird_file_parser():
 		self.dataColumn = []
 		self.sensordata = None
 
-	def readFile(self,filename,fileId = None,columns = None):
+	def readFile(self,filename, fileId = None, columns = None):
 		self.meta["fileId"] = fileId
+		
+		if columns is None:
+			columns = self.variable_name_dictionary
 
 		if filename.lower().endswith(".cnv"):
 			sensordata = self.readCnvFile(filename)
-		elif filename.lower().endswith(".csv"):
-			sensordata = self.readCSVFile(filename,columns=columns)
+			self.sensordata = sensordata.rename(columns = columns)
 		
+			for var in self.variableFinal:
+				if var not in self.sensordata.columns.values:
+					self.sensordata[var] = np.nan
+
+			self.sensordata = self.sensordata[self.variableFinal]
+			self.sensordata["fileId"] = self.meta["fileId"]
+
+			self.meta["lake"] = os.path.basename(self.meta["fileName"])[:2].upper()
+			self.meta["stationInfered"] = os.path.basename(self.meta["fileName"])[:4].upper()
+
+
+		elif filename.lower().endswith(".csv"):
+			self.sensordata = self.readCSVFile(filename,columns=columns)
+			
 		if self.badFile:
 			return None
 
-		self.sensordata = sensordata.rename(columns = self.variable_name_dictionary)
+		self.sensordata = self.sensordata[list(columns.values())]
+
 		
-		for var in self.variableFinal:
-			if var not in self.sensordata.columns.values:
-				self.sensordata[var] = np.nan
-
-		self.sensordata = self.sensordata[self.variableFinal]
-		self.sensordata["fileId"] = self.meta["fileId"]
-
-		self.meta["lake"] = os.path.basename(self.meta["fileName"])[:2].upper()
-		self.meta["stationInfered"] = os.path.basename(self.meta["fileName"])[:4].upper()
-			
-
 	def readCSVFile(self,filename,columns = None):
-		if columns is None:
-			return pd.read_csv(filename).rename(columns = self.variable_name_dictionary)
-		else:
-			return pd.read_csv(filename).rename(columns = columns)
+		return pd.read_csv(filename).rename(columns = columns)
+
 
 	def readCnvFile(self,filename):
 		sensordata = []

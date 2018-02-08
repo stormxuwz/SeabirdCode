@@ -20,13 +20,13 @@ def window_smooth(x, window_len=11, window='hanning'):
 	if window_len % 2 ==0:
 		window_len+=1
 	if x.ndim != 1:
-		raise ValueError, "smooth only accepts 1 dimension arrays."
+		raise ValueError("smooth only accepts 1 dimension arrays.")
 	if x.size < window_len:
-		raise ValueError, "Input vector needs to be bigger than window size."
+		raise ValueError("Input vector needs to be bigger than window size.")
 	if window_len < 3:
 		return x
 	if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
-		raise ValueError, "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
+		raise ValueError("Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
 
 	s = np.r_[x[window_len - 1:0:-1], x, x[-1:-window_len:-1]]
 	if window == 'flat':  # moving average
@@ -147,31 +147,33 @@ def resample(sensordata, interval=0.25):
 	"""
 	depth = np.array(sensordata.Depth)
 
-	featureNum = sensordata.shape[1] - 1
+	sensordata = sensordata.drop(["Depth"], axis = 1)
 	
 	# generate depths at which to aggregate or interpolate, # starting from the minimum depth
 	new_depth = np.arange(np.ceil(depth.min()), depth.max(), interval)
-	new_sensordata = np.zeros((len(new_depth), featureNum))
+	new_sensordata = np.zeros((len(new_depth), sensordata.shape[1] + 1))
 	new_sensordata[:, 0] = new_depth
 
 	dataAgged = True # whether data have been aggregated
 	meanRange = []
 
-	if min(np.abs(np.diff(depth)))<= 2*interval:
+	if min(np.abs(np.diff(depth))) <= 2*interval:
 		dataAgged = False # the data is raw data
 		meanRange = [(depth >= d-interval) * (depth<=d+interval) >0 for d in new_depth]
 
-	for i in range(1, sensordata.shape[1]-1):
+	for i in range(sensordata.shape[1]):
 		if sum(~sensordata.iloc[:,i].isnull())<1: # no data 
-			new_sensordata[:, i] = np.nan
+			new_sensordata[:, i+1] = np.nan
 		else:
 			if dataAgged: # if data are already aggregated, to interpolation
-				new_sensordata[:, i] = np.interp(new_depth, depth, sensordata.iloc[:, i])
+				new_sensordata[:, i+1] = np.interp(new_depth, depth, sensordata.iloc[:, i])
 			else:
 				oldFeatures = np.array(sensordata.iloc[:, i])
-				new_sensordata[:, i] = [np.mean(oldFeatures[meanRange[j]]) for j in range(len(new_depth))]
-				
-	return pd.DataFrame(new_sensordata,columns=sensordata.columns.values[:-1])
+				new_sensordata[:, i+1] = [np.mean(oldFeatures[meanRange[j]]) for j in range(len(new_depth))]
+
+	#print(["Depth"] + sensordata.columns.values)
+	#print(new_sensordata.shape)
+	return pd.DataFrame(new_sensordata, columns= ["Depth"] + sensordata.columns.values.tolist())
 
 
 def transTransimissionToBAT(transmission):
@@ -211,7 +213,7 @@ def filter(data,config):
 		
 		elif method == "dwt":
 			smoothing_para={'wavelet':smoothCfg[1],'level':smoothCfg[2]}
-			print smoothing_para
+			print(smoothing_para)
 			data[var] = dwt_smooth(data[var],smoothing_para)
 
 		elif method == "window":

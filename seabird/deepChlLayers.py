@@ -2,7 +2,7 @@
 Class of DCL
 """
 
-from models.model_peak import peak
+from .models.model_peak import peak
 import pandas as pd
 import numpy as np
 
@@ -86,7 +86,8 @@ class DCL(object):
 		depthInterval = data.Depth[1]-data.Depth[0]
 		
 		features["allConc"] = np.sum((data.Fluorescence))
-		peakUpperDepthBoundary_idx = np.searchsorted(data.Depth,peakUpperDepthBoundary)[0]+1 # find the boundary index
+
+		peakUpperDepthBoundary_idx = np.searchsorted(data.Depth, peakUpperDepthBoundary)[0]+1 # find the boundary index
 		features["allConc_upper"] = np.sum(data.Fluorescence[:peakUpperDepthBoundary_idx])
 
 		if self.allPeaks is None or self.allPeaks.shape[0]<1:

@@ -5,9 +5,8 @@ import numpy as np
 import traceback
 import sys
 # from models.model_HMM import hmmModel
-from models.model_segmentation import bottomUp
-from models.model_threshold import thresholdModel
-from tools.signalProcessing import extractSignalFeatures
+from .models.model_segmentation import bottomUp
+from .tools.signalProcessing import extractSignalFeatures
 
 class thermocline_base(object):
 	"""
@@ -89,7 +88,8 @@ class thermocline_segmentation(thermocline_base):
 				self.doubleTRM.append(i)
 
 		if len(self.doubleTRM)>0:
-			print "detected double thermocline", self.doubleTRM
+			print("detected double thermocline")
+			print(self.doubleTRM)
 
 	def detectPositiveGradient(self,segmentList):
 		"""
@@ -130,7 +130,7 @@ class thermocline_segmentation(thermocline_base):
 		
 		# get the gradient of all segments
 		gradient = [self.getGradientFromSegment(seg) for seg in model.segmentList]
-		print gradient
+		print(gradient)
 		maxGradient_index = np.argmax(gradient)
 		
 		# remove the segment caused by the noise
@@ -139,7 +139,8 @@ class thermocline_segmentation(thermocline_base):
 			if tmpDepth[-1] - tmpDepth[0] < 2:
 				# if the first segment is less than 2 meters and has the maximum gradient
 				# then the first segment would be a noise or peak, need to remove
-				print "**** first segment is affected by noise",tmpDepth
+				print("**** first segment is affected by noise")
+				print(tmpDepth)
 				model.segmentList.pop(0)
 				gradient = [self.getGradientFromSegment(seg) for seg in model.segmentList]
 				maxGradient_index = np.argmax(gradient)
@@ -187,8 +188,10 @@ class thermocline_segmentation(thermocline_base):
 			if UHY_index:
 				self.UHY = data.Depth[UHY_index]
 		else:
-			print "minimum Gradient",gradient[maxGradient_index], self.minimumGradient_TRM
-			print "No TRM deteted"
+			print("minimum Gradient")
+			print(gradient[maxGradient_index]) 
+			print(self.minimumGradient_TRM)
+			print("No TRM deteted")
 		
 		self.TRM_gradient = max(gradient)
 		self.num_segments = len(segmentList)
@@ -283,8 +286,8 @@ class thermocline(object):
 				if saveModel:
 					self.models["segmentation"] = model.model
 
-			except Exception,err:
-				print "segmentation Fail"
+			except Exception as err:
+				print("segmentation Fail")
 				print(traceback.format_exc())
 
 		if "HMM" in methods:
@@ -295,8 +298,8 @@ class thermocline(object):
 				features["TRM_HMM"] = model.TRM
 				features["LEP_HMM"] = model.LEP
 				features["UHY_HMM"] = model.UHY
-			except Exception,err:
-				print "HMM Fail"
+			except Exception as err:
+				print("HMM Fail")
 				print(traceback.format_exc())
 
 		if "threshold" in methods:
@@ -308,8 +311,8 @@ class thermocline(object):
 				features["TRM_threshold"] = model.TRM
 				features["LEP_threshold"] = model.LEP
 				features["UHY_threshold"] = model.UHY
-			except Exception,err:
-				print "threshold Fail"
+			except Exception as err:
+				print("threshold Fail")
 				print(traceback.format_exc())
 
 		return features
