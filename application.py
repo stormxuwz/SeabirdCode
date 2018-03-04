@@ -53,6 +53,8 @@ def seabirdAnalysis(filename = None):
         mySeabird = seabird(config = config)
         
         mySeabird.loadData(dataFile = os.path.join(app.config['UPLOAD_FOLDER'],filename))
+
+
         mySeabird.preprocessing()
         mySeabird.identify()
 

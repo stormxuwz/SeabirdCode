@@ -5,6 +5,12 @@ This folder creates a tool to analyze CTD (conductivity, Temperature, and depth)
 It can:
 * Detect lake stratification (the location of thermocline, epilimnion, hypolimnion) using piecewise linear segmentation (HMM with maximum gradient is currently turned off to save compuation time)
 * Detect deep chlorophyll layers by fitting two half gaussian curves on peak points
+* A Flask Python app is available, run 
+
+	python application.py
+
+![Web App Snapshot](img/AppSnapshot.png)
+
 
 ---
 To Install:
@@ -76,5 +82,6 @@ File structure:
 		-- thermocline.py: thermocline class
 		--tools: contain general file parser, database connection
 		--models: Piecewise linear segmentation, HMM and threshold methods. 
+
 
 

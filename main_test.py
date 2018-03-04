@@ -14,8 +14,10 @@ if __name__ == '__main__':
 	# config["Algorithm"]["segment"]["max_error"] = 0.3
 	
 	mySeabird = seabird(config = config)
-	mySeabird.loadData(fileId = 1611)
+	# mySeabird.loadData(fileId = 1611)
 	
+	mySeabird.loadData(dataFile = "sample.cnv")
+	print(mySeabird.rawData.columns.values)
 	# 904: Two peaks
 	# 1000: a narrow peak
 	# 546: continously increasing conc
@@ -26,8 +28,7 @@ if __name__ == '__main__':
 	# 1682: platform at the begining
 	# 1526,1532,69,1533: common peak
 	# 1876: fitting may be a problem
-	# 
-
+	
 	print mySeabird.site
 	mySeabird.preprocessing()
 	mySeabird.identify()
