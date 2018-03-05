@@ -19,9 +19,38 @@ class seabird_file_parser():
 		"lake":None,
 		"stationInfered":None}
 
-		self.variable_name_dictionary={"depF":"Depth","depFM":"Depth","t068":"Temperature","t090":"Temperature","t090C":"Temperature","specc":"Specific_Conductivity","bat":"Beam_Attenuation","sbeox0Mg/L":"DO","oxMg/L":"DO","xmiss":"Beam_Transmission","flSP":"Fluorescence","flS":"Fluorescence","ph":"pH","c0mS/cm":"Conductivity","c0uS/cm":"Conductivity","par":"Par","spar":"SPar","prDE":"Pressure"}
+		self.variable_name_dictionary={
+		"depF":"Depth",
+		"depFM":"Depth",
+		"t068":"Temperature",
+		"t090":"Temperature",
+		"t090C":"Temperature",
+		"specc":"Specific_Conductivity",
+		"bat":"Beam_Attenuation",
+		"sbeox0Mg/L":"DO",
+		"oxMg/L":"DO",
+		"xmiss":"Beam_Transmission",
+		"flSP":"Fluorescence",
+		"flS":"Fluorescence",
+		"ph":"pH",
+		"c0mS/cm":"Conductivity",
+		"c0uS/cm":"Conductivity",
+		"par":"Par",
+		"spar":"SPar",
+		"prDE":"Pressure"}
 		
-		self.variableFinal = ["Depth","Temperature","Specific_Conductivity","Beam_Attenuation","DO","Beam_Transmission","Fluorescence","pH","Conductivity","Par","SPar","Pressure"]
+		self.variableFinal = [
+		"Depth",
+		"Temperature",
+		"Specific_Conductivity",
+		"Beam_Attenuation",
+		"DO","Beam_Transmission",
+		"Fluorescence","pH",
+		"Conductivity",
+		"Par",
+		"SPar",
+		"Pressure"]
+
 		self.badFile = False
 		self.cruise = None
 		self.dataColumn = []
@@ -41,8 +70,8 @@ class seabird_file_parser():
 				if var not in self.sensordata.columns.values:
 					self.sensordata[var] = np.nan
 
-			self.sensordata = self.sensordata[self.variableFinal]
-			self.sensordata["fileId"] = self.meta["fileId"]
+			# self.sensordata = self.sensordata[self.variableFinal]
+			# self.sensordata["fileId"] = self.meta["fileId"]
 
 			self.meta["lake"] = os.path.basename(self.meta["fileName"])[:2].upper()
 			self.meta["stationInfered"] = os.path.basename(self.meta["fileName"])[:4].upper()
@@ -54,7 +83,7 @@ class seabird_file_parser():
 		if self.badFile:
 			return None
 
-		self.sensordata = self.sensordata[list(columns.values())]
+		self.sensordata = self.sensordata[self.variableFinal]
 
 		
 	def readCSVFile(self,filename,columns = None):
