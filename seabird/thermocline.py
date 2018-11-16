@@ -5,7 +5,7 @@ import numpy as np
 import traceback
 import sys
 # from models.model_HMM import hmmModel
-from .models.model_segmentation import bottomUp
+from .models.model_segmentation import bottomUp as segModel # or choose between splitAndMerge or bottomUp
 from .tools.signalProcessing import extractSignalFeatures
 
 class thermocline_base(object):
@@ -118,7 +118,7 @@ class thermocline_segmentation(thermocline_base):
 		Returns:
 			None
 		"""
-		model = bottomUp(max_error = self.max_error)
+		model = segModel(max_error = self.max_error)
 		
 		# detect the TRM features
 		model.fit_predict(data.Temperature)

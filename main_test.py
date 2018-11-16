@@ -1,8 +1,9 @@
+from __future__ import print_function
 from seabird.seabird_class import seabird
 from seabird.models.stratificationIndex import *
 from seabird.models.model_peak import peak
 from scipy import signal
-import cPickle as pickle
+import pickle
 import os
 
 
@@ -14,9 +15,9 @@ if __name__ == '__main__':
 	# config["Algorithm"]["segment"]["max_error"] = 0.3
 	
 	mySeabird = seabird(config = config)
-	# mySeabird.loadData(fileId = 1611)
+	mySeabird.loadData(fileId = 1672)
 	
-	mySeabird.loadData(dataFile = "sample.cnv")
+	# mySeabird.loadData(dataFile = "sample.cnv")
 	print(mySeabird.rawData.columns.values)
 	# 904: Two peaks
 	# 1000: a narrow peak
@@ -29,17 +30,17 @@ if __name__ == '__main__':
 	# 1526,1532,69,1533: common peak
 	# 1876: fitting may be a problem
 	
-	print mySeabird.site
+	print(mySeabird.site)
 	mySeabird.preprocessing()
 	mySeabird.identify()
 
 	# plotSegment(mySeabird)
 
-	print mySeabird.features
-	print mySeabird.features["DCL_leftShapeFitErr"], mySeabird.features["DCL_rightShapeFitErr"]
-	print mySeabird.features["DCL_leftSigma"], mySeabird.features["DCL_rightSigma"]
+	print (mySeabird.features)
+	print (mySeabird.features["DCL_leftShapeFitErr"], mySeabird.features["DCL_rightShapeFitErr"])
+	print (mySeabird.features["DCL_leftSigma"], mySeabird.features["DCL_rightSigma"])
 	depth = mySeabird.cleanData.Depth
-	print depth 
+	print (depth )
 	Fluorescence = mySeabird.cleanData.Fluorescence
 
 

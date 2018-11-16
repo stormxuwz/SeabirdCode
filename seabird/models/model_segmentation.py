@@ -190,3 +190,138 @@ class bottomUp(timeSeriesSegmentation):
 		"""
 		segList[index]=(segList[index]+segList[index+1]) # merge 
 		segList.pop(index+1) # pop the right segment
+
+
+
+class splitAndMerge(bottomUp):
+	
+	def fit_predict(self, x):
+		n = len(x)
+		x = np.array(x)
+		segmentIndexList = self.randomInitialization(n)
+		iterNum = 0
+
+		while iterNum < n*5:
+			segmentIndexList_step1 = []
+			segmentIndexList_step2 = []
+
+			converged = True
+			for i in range(len(segmentIndexList)):
+				y = x[segmentIndexList[i]]
+				y_fit = self.createLine(y)
+				error = self.calculate_error(y, y_fit)
+				if error > self.max_error:
+					newSegs = self.split(segmentIndexList[i], y, y_fit)
+					segmentIndexList_step1 = segmentIndexList_step1 + newSegs
+					converged = False
+				else:
+					segmentIndexList_step1.append(segmentIndexList[i])
+			
+			#print("segmentIndexList_step1")
+			#print(segmentIndexList_step1)
+			
+			if not converged:
+				i = 0
+				while i < len(segmentIndexList_step1):
+
+					if i == len(segmentIndexList_step1) - 1:
+						segmentIndexList_step2.append(segmentIndexList_step1[i])
+						break
+
+					mergeRightCost = self.mergeCost(x[segmentIndexList_step1[i]], x[segmentIndexList_step1[i + 1]][1:] )
+					if mergeRightCost < self.max_error:
+						segmentIndexList_step2.append(segmentIndexList_step1[i] + segmentIndexList_step1[i + 1][1:])
+						i += 2
+					else:
+						segmentIndexList_step2.append(segmentIndexList_step1[i])
+						i += 1
+			else:
+				segmentIndexList_step2 = segmentIndexList_step1
+
+			#print("segmentIndexList_step2")
+			#print(segmentIndexList_step2)
+
+			if not converged:
+				segmentIndexList = self.splitAdjust_overall(x, segmentIndexList_step2)
+			else:
+				segmentIndexList = segmentIndexList_step2 
+
+			#print("segmentIndexList")
+			#print(segmentIndexList)
+
+			if converged:
+				break
+
+			iterNum += 1
+
+		if iterNum == n*5:
+			print("iter maximum reached")
+		# get the final results
+		self.x = x
+		self.segmentList=[[self.createLine(x[segIndex],"regression"),segIndex] for segIndex in segmentIndexList]
+
+
+	def split(self, x, y, y_fit):
+		# first find which points are larger than the maximum error
+		# x = [2,3,4,5,6,7]
+		errorPoints = np.where(abs(y - y_fit) > self.max_error)[0]
+		#print("errorPoints")
+		#print(errorPoints)
+
+		if len(errorPoints) >= 2:
+			# splitPoint = (errorPoints[0] + errorPoints[1]) // 2
+			splitPoint = len(x) // 2
+		else:
+			splitPoint = len(x) // 2
+
+		newSegs = [[x[i] for i in range(splitPoint+1)], [x[i] for i in range(splitPoint, len(x))]]
+		#print(newSegs)
+		return newSegs
+
+	def randomInitialization(self, n):
+		segmentIndexList = [[i for i in range(n//2)], [i for i in range(n//2-1, n)]]
+		return segmentIndexList
+
+
+	def splitAdjust_overall(self, x, segmentIndexList):
+		nSeg = len(segmentIndexList)
+		i = 0
+		
+		while i < nSeg - 1:
+			newSeg1, newSeg2 = self.splitAdjust(x, segmentIndexList[i], segmentIndexList[i+1])
+			# print seg1, seg2
+			segmentIndexList[i] = newSeg1
+			segmentIndexList[i+1] = newSeg2
+			i += 1
+		
+		return segmentIndexList
+
+	def splitAdjust(self, x, segIndexList1, segIndexList2):
+		segIdx = segIndexList1 + segIndexList2[1:]
+		segX = x[segIdx]
+		minErr = self.max_error*99999
+		n = len(segIdx)
+
+		if len(segIdx) < 4:
+			return segIndexList1, segIndexList2
+
+		for i in range(2, n - 1):
+			s1 = segX[:i]
+			s2 = segX[i-1:]
+			# print s1, s2
+			if len(s1) > 2:
+				e1 = self.calculate_error(self.createLine(s1), s1)
+			else:
+				e1 = 0
+
+			if len(s2) > 2:
+				e2 = self.calculate_error(self.createLine(s2), s2)
+			else:
+				e2 = 0
+
+			if max(e1,e2)< minErr:
+				minErr = max(e1,e2)
+				minErrIdx = i
+	
+		return (segIdx[:(minErrIdx+1)],segIdx[minErrIdx:])
+
