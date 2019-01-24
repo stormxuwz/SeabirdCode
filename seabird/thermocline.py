@@ -5,7 +5,7 @@ import numpy as np
 import traceback
 import sys
 # from models.model_HMM import hmmModel
-from .models.model_segmentation import bottomUp as segModel # or choose between splitAndMerge or bottomUp
+from .models.model_segmentation import splitAndMerge as segModel # or choose between splitAndMerge or bottomUp
 from .tools.signalProcessing import extractSignalFeatures
 
 class thermocline_base(object):
@@ -47,7 +47,7 @@ class thermocline_segmentation(thermocline_base):
 		self.doubleTRM = []
 		self.gradient = []
 
-		self.maxTempertureChange = 2
+		self.maxTempertureChange = 2.0
 		
 		self.stableGradient = config["Algorithm"]["PLR"]["stable_gradient"]
 		self.stableGradient_relaxed = config["Algorithm"]["PLR"]["stable_gradient2"]
@@ -174,6 +174,7 @@ class thermocline_segmentation(thermocline_base):
 
 			# detect the UHY
 			for i in range(len(model.segmentList) - 1, maxGradient_index, -1):
+				print(model.segmentList[i][0][0] - bottomTemperature)
 				if not (gradientIsStable[i] and model.segmentList[i][0][0] - bottomTemperature < self.maxTempertureChange):
 					if i < len(model.segmentList) - 1:
 						UHY_index = model.segmentList[i + 1][1][0]
