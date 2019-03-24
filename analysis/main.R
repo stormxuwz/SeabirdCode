@@ -38,6 +38,14 @@ print("****************")
 print("analyze Lake SU")
 
 SUData <- subset(detectedFeatures,lake == "SU")
+
+# generate mean UHY and LEP
+SUData %>% group_by(site) %>% summarise(
+	mean_UHY = mean(UHY_segment, na.rm = TRUE),
+	mean_LEP = mean(LEP_segment, na.rm = TRUE),
+	max_UHY = max(UHY_segment, na.rm = TRUE)) %>% data.frame()
+
+
 for(lakeLegend in c("TRM_segment","DCL_depth","DCL_conc","LEP_segment","UHY_segment")){
 	gly_LakeSU(SUData, lakeLegend)
 }
@@ -46,4 +54,7 @@ gly_thermoFlux(thermofluxDataSU)
 
 compareWithExpert(subset(SUData, year < 2013 & year > 1997) , "TRM_segment", "expert_TRM", "Thermocline Depth (m)", TRUE)
 compareWithExpert(subset(SUData, year < 2013 & year > 1997) , "DCL_depth", "expert_DCL", "DCL Depth (m)", TRUE)
+
+
+
 

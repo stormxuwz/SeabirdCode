@@ -94,7 +94,7 @@ class seabird_file_parser():
 		sensordata = []
 		dataStarts = False
 		self.meta["fileName"] = filename
-		with open(filename,"r") as file:
+		with open(filename,"r", errors='ignore') as file:
 			lines = file.readlines();
 			if(lines == []):
 				self.badFile = True

@@ -49,3 +49,5 @@ compareWithExpert <- function(SUData, algorithmLabel, expertLabel, valueLabel, r
 		dev.off()
 	}
 }
+
+
