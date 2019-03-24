@@ -15,7 +15,7 @@ if __name__ == '__main__':
 	# config["Algorithm"]["segment"]["max_error"] = 0.3
 	
 	mySeabird = seabird(config=config)
-	mySeabird.loadData(fileId=1441) # 1441 has not converge error # 519 different gradient check
+	mySeabird.loadData(fileId=1437) # 1441 has not converge error # 519 different gradient check
 	
 	# mySeabird.loadData(dataFile = "sample.cnv")
 	print(mySeabird.rawData.columns.values)

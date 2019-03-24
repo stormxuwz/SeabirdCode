@@ -5,7 +5,7 @@ import numpy as np
 import traceback
 import sys
 # from models.model_HMM import hmmModel
-from .models.model_segmentation import splitAndMerge as segModel # or choose between splitAndMerge or bottomUp
+from .models.model_segmentation import bottomUp as segModel # or choose between splitAndMerge or bottomUp
 from .tools.signalProcessing import extractSignalFeatures
 
 class thermocline_base(object):

@@ -14,10 +14,8 @@ getSUmap <- function(df){
 	saveRDS(myMap, "SUMap.rds")
 }
 
-
 plot_gly_on_map <- function(newDF, global = FALSE, trend = FALSE, outputFile = "test.png", reverse = TRUE){
 	# function to plot glygraph
-
 	myMap <- readRDS("SU_map.rds")
 	SU_locations <- unique(newDF[,c("Station","Lat","Long")])
 	
@@ -41,11 +39,6 @@ plot_gly_on_map <- function(newDF, global = FALSE, trend = FALSE, outputFile = "
 		subdf <- subset(newDF, Station == station_)
 		subdf <- merge(subdf, data.frame(year = c(globalXRange[1]:globalXRange[2])), by = "year", all.y = TRUE)
 		
-		# check subdf availability
-		#if(sum(is.na(subdf$value)) > nrow(subdf) - 3){
-		#	next
-		#} 
-		
 		mid <- SU_locations[i,c("Long","Lat")] %>% as.numeric()
 
 		model <- lm(value~year,data = na.omit(subdf[,c("year","value")]))
@@ -61,7 +54,6 @@ plot_gly_on_map <- function(newDF, global = FALSE, trend = FALSE, outputFile = "
 		localYRange <- range(subdf$value, na.rm = TRUE)
 
 		if(trend){
-			# p2 <- p2 + stat_smooth(aes(x = year, y = value),method = "lm",color = "red", size = 1, alpha = 0.5)
 			p2 <- p2 + geom_smooth (aes(x = year, y = value),method = "lm", alpha=0.4, linetype=0) + 
 				stat_smooth (geom="line",aes(x = year, y = value),method = "lm",color = "red", size = 0.8, alpha = 0.5)
 		}
@@ -76,21 +68,15 @@ plot_gly_on_map <- function(newDF, global = FALSE, trend = FALSE, outputFile = "
 		# add the bounding box
 		p2 <- p2 + geom_rect(aes(xmin = x1, xmax = x2, ymin = y1, ymax = y2),
 												 data =data.frame(x1 = globalXRange[1], x2 = globalXRange[2], y1 = localYRange[1], y2 = localYRange[2]), fill = "NA", color="black", linetype = "dashed")
-
 		# add theme
 		p2 <- p2 + theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(),
 			axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank(),
 			panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
 			panel.background = element_rect(fill = "transparent",colour = NA),
         	plot.background = element_rect(fill = "transparent",colour = NA),
-        	# panel.border = element_rect(linetype = "dashed", fill = NA),
 			plot.margin = unit(c(0.1,0.1,0.1,0),"cm"))
 
-		# fname <- paste0("./flux/",station_ ,"_thermo_flux.png")
 		fname <- "tmp.png"
-		# png(fname, width = 80, height = 60)
-		# print(p2)
-		# dev.off()
 		png(fname, width = 80, height = 60)
 		ggsave(fname, p2, bg = "transparent")
 		dev.off()
@@ -100,8 +86,10 @@ plot_gly_on_map <- function(newDF, global = FALSE, trend = FALSE, outputFile = "
 		
 		p <- p + annotation_custom(g, xmin=mid[1]-width, xmax=mid[1]+width, ymin=mid[2]-height, ymax=mid[2]+height)
 	}
-
-	saveRDS(pValueList,paste0(outputFile,"_pvalue.rds"))
+	
+	# save alpha and p
+	data.frame(pValueList) %>% t() %>% data.frame() %>% write.csv(paste0(outputFile, "_pValues.csv"))
+	
 	png(paste0(outputFile, ".png"), width = 3000, height = 1500)
 	print(p)
 	dev.off()
@@ -118,10 +106,9 @@ plot_gly <- function(feature,variable, reverse = TRUE){
 	}
 	temp.gly <- glyphs(feature, "Long", "year", "Lat", variable , height=0.25,width = 0.5)
 	
-	pdf(sprintf("../../output/%s_glymaps.pdf",variable),height = 5, width = 8)
+	pdf(sprintf("%s/%s_glymaps.pdf",outputFolder, variable),height = 5, width = 8)
 	print(ggplot(temp.gly, ggplot2::aes(gx, gy, group = gid)) +add_ref_lines(temp.gly, color = "grey90") +add_ref_boxes(temp.gly, color = "grey90") +geom_path() + geom_point(size = 0.8)+theme_bw() + labs(x = "lon", y = "lat"))
 	dev.off()
-	
 }
 
 
@@ -129,7 +116,6 @@ visGeoLocations <- function(locations){
 	# plot the location of each sensor
   leaflet(data = locations) %>% addTiles() %>% addMarkers(~Long, ~Lat, popup = ~as.character(Station))
 }
-
 
 plotSPData <- function(data,varName){
 	# plot the varName data spatially, with color as the value
@@ -153,7 +139,6 @@ plotSPData <- function(data,varName){
   }
 }
 
-
 labeledBoxplot_ggplot <- function(df,diffVar,label = TRUE,outlier=TRUE){
 	# boxplot
 	if(outlier){
@@ -165,7 +150,6 @@ labeledBoxplot_ggplot <- function(df,diffVar,label = TRUE,outlier=TRUE){
 	if(label){
 		p <- p+	geom_text(aes(lake,df[,diffVar],label = paste(site,year)),data = df)
 	}
-	
 	return(p)
 }
 
@@ -173,10 +157,12 @@ boxplot_base <- function(df,diffVar, outlier = TRUE){
 	boxplot(TRM_diff~lake,data = subset(df, is.na(TRM_diff)<1),outline = FALSE)
 }
 
-
-
-
-
-
+# plot Figure 4. The gradients at the depth in LEP and UHY found in the operator's note
+plotExpertDepthGradient <- function(featuresAtExpertDepths){
+	data <- featuresAtExpertDepths[,c("LEP","UHY")]
+	pdf(file.path(outputFolder, "Figure 4.pdf"), width = 5, height = 4)
+	print(boxplot(data, outline = FALSE,  whisklty = 0, staplelty = 0, ylim = c(0, 0.4), ylab = "°C/meter"))
+	dev.off()
+}
 
 

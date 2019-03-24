@@ -10,22 +10,14 @@ gaussianFit <- function(features,threshold=0.9){
 
 shapeAnalysis_DCL <- function(features){
 	# those features should be fit by Gaussian shape well
-	
 	features$DCL_upperSize <- features$DCL_depth-features$DCL_upperDepth_fit
 	features$DCL_bottomSize <- features$DCL_bottomDepth_fit-features$DCL_depth
 	features$DCL_size <- features$DCL_upperSize+features$DCL_bottomSize
-
-	# features$DCL_sizeRatio <- features$DCL_upperSize/features$DCL_bottomSize
-	# features$DCL_sizeRatio <- (features$DCL_upperSize - features$DCL_bottomSize)/(features$DCL_upperSize + features$DCL_bottomSize)
 	features$DCL_sizeRatio <- (features$DCL_leftSigma-features$DCL_rightSigma)/((features$DCL_leftSigma+features$DCL_rightSigma)*0.5)
-	# features$DCL_upperConc <- features$DCL_upperDepth_fit
-	# features$DCL_bottomConc <- features$DCL_bottomDepth_fit
-	#features <- subset(features,DCL_sizeRatio<Inf & DCL_sizeRatio>0)
 	print(summary(features[,c("DCL_upperSize","DCL_bottomSize","DCL_sizeRatio","DCL_size")]))
 	
 	print("peak size")
 	print(head(arrange(features,desc(DCL_size))[,c("year","site","DCL_size","DCL_upperSize","DCL_bottomSize","DCL_depth","DCL_upperDepth_fit","DCL_bottomDepth_fit","fileId")],10))
-	
 	
 	return(features)
 }
@@ -46,7 +38,6 @@ getGoodFitRatio <- function(features,threshold = seq(0,1,0.1)){
 
 main_analysis_DCL <- function(features){
 	# analyze each lake
-
 	# filte the data set to detected DCL and peakNums = 1
 	DCLfeatures <- subset(features, !is.na(DCL_depth) & peakNums == 1)
 
@@ -67,34 +58,22 @@ main_analysis_DCL <- function(features){
 	allFitRatios <- getGoodFitRatio(DCLfeatures) %>% 
 		melt(id.vars = c("thres"),value.name = "Ratio",variable.name = "Lake")
 	
-	pdf("../../output/DCL_Fit_ratio.pdf",height = 3, width = 5)
+	pdf(file.path(outputFolder, "DCL_Fit_ratio.pdf"),height = 3, width = 5)
 	print(qplot(thres, Ratio, data=allFitRatios, color = Lake)+xlab("Threshold")+geom_line()+theme_bw())
 	dev.off()
 	
-	# DCLfeatures <- subset(DCLfeatures, DCL_upperDepth_fit > LEP_segment + 0.01)
-
 	allGoodFit <- gaussianFit(DCLfeatures,threshold = 0.9) %>% shapeAnalysis_DCL()
 	
 	# plot the size boxplot
-
-	# note Julu 1st, peak size is not reasonable as it may be cut out by the sampling ranges. 
-	pdf("../../output/peaksize.pdf",width = 5, height = 3.25)
-	print(boxplot(DCL_size~lake,data = allGoodFit,ylab ="DCL Peak Size (m)"))
-	dev.off()
-
-	# allGoodFit <- subset(allGoodFit, DCL_depth - 0.05*DCL_leftSigma > LEP_segment)
-
-	pdf("../../output/peakSizeRatio.pdf",width = 3.25, height = 2)
+	pdf(file.path(outputFolder, "peakSizeRatio.pdf"),width = 3.25, height = 2)
 	print(ggplot(data = allGoodFit) + geom_boxplot(aes(lake, DCL_sizeRatio)) + theme_bw() + 
 		xlab("")+ ylab("Gamma"))
-	# print(boxplot(DCL_sizeRatio~lake,data = allGoodFit,ylab ="Symmetry Metric"))
 	dev.off()
 
 
-	pdf("../../output/peakThinness.pdf",width = 3.25, height = 2)
+	pdf(file.path(outputFolder, "peakThinness.pdf"),width = 3.25, height = 2)
 	print(ggplot(data = allGoodFit) + geom_boxplot(aes(lake, (DCL_leftSigma+DCL_rightSigma)/2)) + theme_bw() + 
 		xlab("")+ ylab("Mean Gamma"))
-	# print(boxplot(DCL_sizeRatio~lake,data = allGoodFit,ylab ="Symmetry Metric"))
 	dev.off()
 	
 	print("sizeRatio descrease")
@@ -105,7 +84,5 @@ main_analysis_DCL <- function(features){
 	print("sizeRatio middle")
 	print(head(subset(allGoodFit,DCL_sizeRatio<0.05 & DCL_sizeRatio>-0.05)[,c("year","site","DCL_sizeRatio","DCL_upperSize","DCL_bottomSize","DCL_depth","DCL_upperDepth_fit","DCL_bottomDepth_fit","fileId")],20))
 	
-	#print("peak size")
-	# print(head(arrange(allGoodFit,desc(DCL_size))[,c("year","site","DCL_size","DCL_upperSize","DCL_bottomSize","DCL_depth","DCL_upperDepth_fit","DCL_bottomDepth_fit","fileId")],10))
 	labeledBoxplot_ggplot(allGoodFit, "DCL_sizeRatio", outlier = TRUE)
 }

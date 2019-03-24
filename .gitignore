@@ -5,20 +5,6 @@
 
 *.pyc
 
-*.pyc
-
-*.cnv
-
-*.pyc
-
-*.pyc
-
-*.pyc
-
-*.pyc
-
-*.pyc
-
 seabird/tools/seabird_preprocessing.pyc
 
 *.csv
@@ -34,19 +20,16 @@ analysis/.Rhistory
 *.zip
 
 *.pdf
-
-*.pyc
-*.pyc
 *.txt
-
-*.pyc
-
-*.pyc
 analysis/.DS_Store
 .DS_Store
 summary_SQL.py
-*.pyc
-*.R
-*.pyc
-*.pyc
-*.pyc
+.DS_Store
+*.aux
+*.fdb_latexmk
+*.fls
+*.xml
+*.ipynb
+*.xml
+*.iml
+*.xml
