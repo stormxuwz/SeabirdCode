@@ -173,8 +173,8 @@ def plotProfile(fid=None, fileName=None, var="DCL", legendLoc=4, expertNote=None
 	plt.close()
 
 if __name__ == '__main__':
-	outputFolder = "./data/sampleData/"
 	dataFolder = "./data/sampleData/"
+	outputFolder = "./paperResults/plot9and11/"
 
 	expertNote = {
 

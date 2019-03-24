@@ -5,7 +5,6 @@
 
 *.pyc
 *.p
-*.png
 *.DS_Store
 *.aux
 *.fdb_latexmk
