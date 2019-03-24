@@ -39,6 +39,12 @@ plot_gly_on_map <- function(newDF, global = FALSE, trend = FALSE, outputFile = "
 		print(station_)
 		
 		subdf <- subset(newDF, Station == station_)
+		subdf <- merge(subdf, data.frame(year = c(globalXRange[1]:globalXRange[2])), by = "year", all.y = TRUE)
+		
+		# check subdf availability
+		#if(sum(is.na(subdf$value)) > nrow(subdf) - 3){
+		#	next
+		#} 
 		
 		mid <- SU_locations[i,c("Long","Lat")] %>% as.numeric()
 
@@ -46,15 +52,18 @@ plot_gly_on_map <- function(newDF, global = FALSE, trend = FALSE, outputFile = "
 		pValue <- summary(model)$coefficients[2,4]
 
 		pValueList[[station_]] <- c(p=pValue,alpha = model$coefficients["year"])
-
+	
+		# plot the dotted line
 		p2 <- ggplot(subdf[,c("year","value")])
 		p2 <- p2 + geom_line(aes(x = year,y = value),size=0.8) + 
-				 geom_point(aes(x = year,y = value),size=2)
+				 geom_point(aes(x = year,y = value),size=1.5)
 		
 		localYRange <- range(subdf$value, na.rm = TRUE)
 
 		if(trend){
-			p2 <- p2 + stat_smooth(aes(x = year, y = value),method = "lm",color = "red", size = 1)
+			# p2 <- p2 + stat_smooth(aes(x = year, y = value),method = "lm",color = "red", size = 1, alpha = 0.5)
+			p2 <- p2 + geom_smooth (aes(x = year, y = value),method = "lm", alpha=0.4, linetype=0) + 
+				stat_smooth (geom="line",aes(x = year, y = value),method = "lm",color = "red", size = 0.8, alpha = 0.5)
 		}
 
 		if(global){
@@ -65,7 +74,8 @@ plot_gly_on_map <- function(newDF, global = FALSE, trend = FALSE, outputFile = "
 		p2 <- p2 + ylim(localYRange)
 
 		# add the bounding box
-		p2 <- p2 + geom_rect(aes(xmin = x1, xmax = x2, ymin = y1, ymax = y2),data =data.frame(x1 = globalXRange[1], x2 = globalXRange[2], y1 = localYRange[1], y2 = localYRange[2]), fill = "NA", color="black", linetype = "dashed")
+		p2 <- p2 + geom_rect(aes(xmin = x1, xmax = x2, ymin = y1, ymax = y2),
+												 data =data.frame(x1 = globalXRange[1], x2 = globalXRange[2], y1 = localYRange[1], y2 = localYRange[2]), fill = "NA", color="black", linetype = "dashed")
 
 		# add theme
 		p2 <- p2 + theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(),

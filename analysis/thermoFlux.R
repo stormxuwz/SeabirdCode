@@ -54,10 +54,10 @@ plotTherFluxBySite <- function(df){
 
 
 thermoFlux <- function(){
-	df <- read.csv("~/Developer/Seabird/SeabirdCode/thermoFlux_SU_new.csv")%>% subset(year>1995)
+	df <- read.csv("~/Developer/Seabird/output/thermoFlux_SU_new.csv")%>% subset(year>1995)
 	stations <- unique(df$station)
 
-	locations <- read.csv("~/Developer/Seabird//input/station_loc.csv")
+	locations <- read.csv("~/Developer/Seabird/input/station_loc.csv")
 	newDF <- merge(locations,df,by.x = "Station",by.y = "station")
 	newDF <- subset(newDF, !Station %in% c("SU20","SU21","SU22","SU23"))
 	newDF$Long <- -newDF$Long

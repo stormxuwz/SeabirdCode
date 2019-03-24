@@ -5,10 +5,10 @@ preprocessing <- function(features,locations,waterChemistry, startYear = 1996){
 	locations$Long <- -locations$Long
 	
 	features <- features %>% 
-		addingMoreFeatures() %>% # adding more features
+		# addingMoreFeatures() %>% # adding more features
 		merge(locations,by.x = "site",by.y = "Station") %>% # appending location features
 		subset(year>=startYear & lake %in% c("ER","HU","SU","ON","MI") & !is.na(fileId)) %>% # cleaning data
-		merge(waterChemistry,by.x = c("fileId","site","year"),by.y = c("fid","site","year")) %>% # merge with water chemistry data
+		# merge(waterChemistry,by.x = c("fileId","site","year"),by.y = c("fid","site","year")) %>% # merge with water chemistry data
 		arrange(site,year) # rearrange data
 	
 	return(features)

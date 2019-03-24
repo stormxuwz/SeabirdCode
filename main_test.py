@@ -14,8 +14,8 @@ if __name__ == '__main__':
 	# config["Algorithm"]["Peak"]["peakSize"] = 2.0
 	# config["Algorithm"]["segment"]["max_error"] = 0.3
 	
-	mySeabird = seabird(config = config)
-	mySeabird.loadData(fileId = 1672)
+	mySeabird = seabird(config=config)
+	mySeabird.loadData(fileId=1441) # 1441 has not converge error # 519 different gradient check
 	
 	# mySeabird.loadData(dataFile = "sample.cnv")
 	print(mySeabird.rawData.columns.values)
@@ -30,7 +30,7 @@ if __name__ == '__main__':
 	# 1526,1532,69,1533: common peak
 	# 1876: fitting may be a problem
 	
-	print(mySeabird.site)
+	print(mySeabird.site, mySeabird.time)
 	mySeabird.preprocessing()
 	mySeabird.identify()
 
@@ -40,7 +40,7 @@ if __name__ == '__main__':
 	print (mySeabird.features["DCL_leftShapeFitErr"], mySeabird.features["DCL_rightShapeFitErr"])
 	print (mySeabird.features["DCL_leftSigma"], mySeabird.features["DCL_rightSigma"])
 	depth = mySeabird.cleanData.Depth
-	print (depth )
+	print (depth)
 	Fluorescence = mySeabird.cleanData.Fluorescence
 
 

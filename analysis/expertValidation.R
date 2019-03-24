@@ -1,6 +1,15 @@
 # scripts to validate expert notes
 require(Metrics)
 
+lakeToPlotMapper <- list(
+	ER = "(a) Lake Erie (ER)",
+	HU = "(b) Lake Huron (HU) ",
+	MI = "(c) Lake Michigan (MI)",
+	ON = "(d) Lake Ontario (ON)",
+	SU = "(e) Lake Superior (SU)"
+)
+
+
 addingFeatures_expertDiff <- function(features){
 	features$TRM_diff <- features$TRM_segment-features$expert_TRM
 	features$LEP_diff <- features$LEP_segment-features$expert_LEP
@@ -44,17 +53,17 @@ feature_stat <- function(df,varName = "TRM"){
 	res <- group_by(df,lake) %>% summarise(totalN = n(),only_pred = sum(only_pred),only_expert = sum(only_expert),allExist = sum(pred_expert))
 	print(res)
 	
-	pdf(sprintf("../../output/%s_diff_meta.pdf",varName),height = 50, width = 30)
+	pdf(sprintf("%s/%s_diff_meta.pdf",outputFolder,varName),height = 50, width = 30)
 	print(qplot(lake,df[,diffVar],data = df)+geom_boxplot()+geom_text(aes(lake,df[,diffVar],label = paste(site,year)),data =df))
 	dev.off()
 	
-	pdf(sprintf("../../output/%s_diff.pdf",varName),height = 4, width = 7)
+	pdf(sprintf("%s/%s_diff.pdf",outputFolder,varName),height = 4, width = 7)
 	print(
 		qplot(lake,df[,diffVar],data = df)+geom_boxplot(size = 1)+theme_bw()+xlab("Lake")+ylab("Absolute Depth Differences (m)")
 	)
 	dev.off()
 
-	pdf(sprintf("../../output/%s_diff_NoOutlier.pdf",varName),height = 4, width = 7)
+	pdf(sprintf("%s/%s_diff_NoOutlier.pdf",outputFolder,varName),height = 4, width = 7)
 	print(
 		boxplot(as.formula(paste(diffVar,"lake",sep="~")),data = df,outline = FALSE,xlab = "Lake",ylab = "Depth Differences")
 	)
@@ -118,11 +127,11 @@ scatterPlot2 <- function(features, lake_, note = FALSE){
 
 
 	if(note){
-		pdf(sprintf("../../output/%s_algorithmScatterPlot_HMM_%s.pdf",lake_,note),height = 20, width = 20)
+		pdf(sprintf("%s/%s_algorithmScatterPlot_HMM_%s.pdf",outputFolder,lake_,note),height = 20, width = 20)
 		print(grid.arrange(p_TRM, p_LEP, p_UHY, nrow = 2))
 		dev.off()
 	}else{
-		pdf(sprintf("../../output/%s_algorithmScatterPlot_HMM_%s.pdf",lake_,note),height = 6, width = 6)
+		pdf(sprintf("%s/%s_algorithmScatterPlot_HMM_%s.pdf",outputFolder,lake_,note),height = 6, width = 6)
 		print(grid.arrange(p_TRM, p_LEP, p_UHY, nrow = 2))
 		dev.off()
 	}
@@ -138,6 +147,7 @@ scatterPlot <- function(features, lake_, note = FALSE){
 	}else{
 		subFeatures <- features
 	}
+	
 	
 
 	TRMSub <- subFeatures[,c("year","site","expert_TRM","TRM_segment")] %>% rename(Algorithm = TRM_segment, Human = expert_TRM) %>% na.omit()
@@ -170,107 +180,36 @@ scatterPlot <- function(features, lake_, note = FALSE){
 			coord_fixed(ratio = 1) + theme_bw() + 
 			geom_abline(intercept = 0, slope = 1) + xlab("Human (m)") + ylab("Algorithm (m)") + 
 			xlim(range(data[,c("Human","Algorithm")])) + ylim(range(data[,c("Human","Algorithm")])) + 
-			ggtitle(bquote(.(subName) ~r^2:~.(d_cor) ~"," ~"RMSE:"~.(d_rmse)~"m")) + 
+			ggtitle(bquote(.(subName) ~" ("~r^2:~.(d_cor) ~"," ~"RMSE:"~.(d_rmse)~"m"~")")) + 
 			theme(plot.title = element_text(size = 12, face = "bold"))
 		
 		allP[[subName]] <- p
 	}
 	
+	if(lake_ == "SU"){
+		if(note == FALSE){
+			print("bug point")
+		}
+	}
+	
 	if(note){
-		pdf(sprintf("../../output/%s_algorithmScatterPlot_%s.pdf",lake_,note),height = 20, width = 20)
-		print(grid.arrange(allP[[1]], allP[[2]], allP[[3]], allP[[4]], nrow = 2))
+		pdf(sprintf("%s/%s_algorithmScatterPlot_%s.pdf",outputFolder,lake_,note),height = 20, width = 20)
+		print(grid.arrange(allP[[1]], allP[[2]], allP[[3]], allP[[4]], nrow = 2, 
+											 bottom = textGrob(lakeToPlotMapper[[lake_]], gp=gpar(fontsize=15))
+											 ))
 		dev.off()
 	}else{
-		pdf(sprintf("../../output/%s_algorithmScatterPlot_%s.pdf",lake_,note),height = 6, width = 6)
-		print(grid.arrange(allP[[1]], allP[[2]], allP[[3]], allP[[4]], nrow = 2))
+		pdf(sprintf("%s/%s_algorithmScatterPlot_%s.pdf",outputFolder,lake_,note),height = 6, width = 6)
+		print(grid.arrange(allP[[1]], allP[[2]], allP[[3]], allP[[4]], nrow = 2, 
+											 bottom = textGrob(lakeToPlotMapper[[lake_]],gp=gpar(fontsize=15))
+											 ))
 		dev.off()
 	}
-	# 
-	# 
-	# 
-	# p_TRM <- ggplot(TRMSub) + 
-	# 	geom_point(aes(Human, Algorithm)) + 
-	# 	coord_fixed(ratio = 1) + theme_bw() + 
-	# 	geom_abline(intercept = 0, slope = 1) + xlab("Human (m)") + ylab("Algorithm (m)") + 
-	# 	xlim(range(TRMSub[,c("Human","Algorithm")])) + ylim(range(TRMSub[,c("Human","Algorithm")])) + 
-	# 	ggtitle(sprintf("%s (r^2:%.2f, err: %.2f m)", "TRM", 
-	# 									cor(TRMSub[,c("Human","Algorithm")])[1,2]^2, mean(TRMSub$Algorithm-TRMSub$Human)))
-	# 
-	# if(note){
-	# 	p_TRM = p_TRM + geom_text(aes(Human,Algorithm, label = paste(year,site)))
-	# }
-	# 
-	# 
-	# LEP_corf <- cor(LEPSub[,c("Human","Algorithm")])[1,2]^2 %>% sprintf("%.2f",.)
-	# LEP_rmse <- rmse(LEPSub$Algorithm-LEPSub$Human) %>% sprintf("%.2f",.)
-	# 
-	# p_LEP <- ggplot(LEPSub) + 
-	# 	geom_point(aes(Human, Algorithm)) + 
-	# 	coord_fixed(ratio = 1) + theme_bw() + 
-	# 	geom_abline(intercept = 0, slope = 1) + xlab("Human (m)") + ylab("Algorithm (m)") + 
-	# 	xlim(range(LEPSub[,c("Human","Algorithm")])) + ylim(range(LEPSub[,c("Human","Algorithm")])) + 
-	# 	ggtitle(~"UHY", LEP_corf)
-	# 
-	# if(note){
-	# 	p_LEP = p_LEP + geom_text(aes(Human,Algorithm, label = paste(year,site)))
-	# }	
-	# 
-	# p_UHY <- ggplot(UHYSub) + 
-	# 	geom_point(aes(Human, Algorithm)) + 
-	# 	coord_fixed(ratio = 1) + theme_bw() + 
-	# 	geom_abline(intercept = 0, slope = 1) + xlab("Human (m)") + ylab("Algorithm (m)") + 
-	# 	xlim(range(UHYSub[,c("Human","Algorithm")])) + ylim(range(UHYSub[,c("Human","Algorithm")])) + 
-	# 	ggtitle(
-	# 		sprintf("%s (r^2:%.2f, err: %.2f m)", "UHY", 
-	# 									cor(UHYSub[,c("Human","Algorithm")])[1,2]^2, mean(UHYSub$Algorithm-UHYSub$Human)))
-	# 
-	# if(note){
-	# 	p_UHY = p_UHY + geom_text(aes(Human,Algorithm, label = paste(year,site)))
-	# }
-	# 
-	# p_DCL <- ggplot(DCLSub) + 
-	# 	geom_point(aes(Human, Algorithm)) + 
-	# 	coord_fixed(ratio = 1) + theme_bw() + 
-	# 	geom_abline(intercept = 0, slope = 1) + xlab("Human (m)") + ylab("Algorithm (m)") + 
-	# 	xlim(range(DCLSub[,c("Human","Algorithm")])) + ylim(range(DCLSub[,c("Human","Algorithm")])) + 
-	# 	ggtitle(sprintf("%s (r^2:%.2f, err: %.2f m)", "DCL", 
-	# 									cor(DCLSub[,c("Human","Algorithm")])[1,2]^2, mean(DCLSub$Algorithm-DCLSub$Human)))
-	# 
-	# 
-	# 
-	# if(note){
-	# 	p_DCL = p_DCL + geom_text(aes(Human,Algorithm, label = paste(year,site)))
-	# }
-	# 
-	# 
-	# 
-	# UHY_DCL <- subFeatures[,c("year","site","expert_UHY","DCL_depth")] %>% rename(Human_UHY = expert_UHY, Algorithm_DCL = DCL_depth) %>% na.omit()
-	# p_UHY_DCL <- ggplot(UHY_DCL) + geom_point(aes(Human_UHY, Algorithm_DCL)) + 
-	# 	coord_fixed(ratio = 1) + theme_bw() + 
-	# 	geom_abline(intercept = 0, slope = 1) + xlab("Human UHY (m)") + ylab("Algorithm DCL (m)") + 
-	# 	xlim(range(UHY_DCL[,c("Human_UHY","Algorithm_DCL")])) + ylim(range(UHY_DCL[,c("Human_UHY","Algorithm_DCL")])) + 
-	# 	ggtitle(sprintf("%s (r^2:%.2f, RMSE: %.2f m^2)", "UHY_DCL", 
-	# 									cor(UHY_DCL[,c("Human_UHY","Algorithm_DCL")])[1,2]^2, mean(UHY_DCL$Human_UHY-UHY_DCL$Algorithm_DCL)))
-	# 	
-	# 
-	# if(note){
-	# 	p_UHY_DCL = p_UHY_DCL + geom_text(aes(Human_UHY,Algorithm_DCL, label = paste(year,site)))
-	# 	pdf(sprintf("../../output/%s_algorithmScatterPlot_%s_UHYDCL.pdf",lake_,note),height = 10, width = 10)
-	# 	print(p_UHY_DCL)
-	# 	dev.off()
-	# }else{
-	# 	pdf(sprintf("../../output/%s_algorithmScatterPlot_%s_UHYDCL.pdf",lake_,note),height = 5, width = 5)
-	# 	print(p_UHY_DCL)
-	# 	dev.off()
-	# }
-	# 
-
 
 }
 
 main_expertValidation <- function(features){
 	# only use data from 1998 to 2012
-	features <- subset(features, year < 2013 & year > 1997) 
 	features <- addingFeatures_expertDiff(features)
 	feature_stat(features,varName = "DCL")
 	feature_stat(features,varName = "TRM")
@@ -285,12 +224,10 @@ main_expertValidation <- function(features){
 
 	for(lake in c("all")){
 		scatterPlot(features, lake)
-		# scatterPlot(features, lake, note = TRUE)
-		scatterPlot2(features, lake)
+		scatterPlot(features, lake, note = TRUE)
+		# scatterPlot2(features, lake)
 		# scatterPlot2(features, lake, note = TRUE)
 	}
-
-
 }
 
 

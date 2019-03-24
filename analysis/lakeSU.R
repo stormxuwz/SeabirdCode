@@ -5,12 +5,42 @@ gly_LakeSU <- function(SUData, lakeLegend){
 	print(lakeLegend)
 	SUData$value <- SUData[,lakeLegend]
 	SUData$Station <- SUData$site
+	
 	reverse <- TRUE
 	if(lakeLegend == "DCL_conc"){
 		reverse <- FALSE
 	}
 	plot_gly_on_map(SUData, global=TRUE, trend = TRUE, outputFile = sprintf("../../output/SU_%s", lakeLegend), reverse = reverse)
 	plot_gly_on_map(SUData, global=FALSE, trend = TRUE, outputFile = sprintf("../../output/SU_Local_%s", lakeLegend), reverse = reverse)	
+}
+
+
+compareWithExpert <- function(SUData, algorithmLabel, expertLabel, valueLabel, reverse = FALSE){
+	SU_locations <- unique(SUData[,c("site","Lat","Long")])
+	
+	SUData$Algorithm <- SUData[,algorithmLabel]
+	SUData$Expert <- SUData[, expertLabel]
+	
+	
+	if(reverse){
+		SUData[,c("Algorithm","Expert")] <- -1 * SUData[,c("Algorithm","Expert")]
+	}
+	
+	SUData <- SUData %>% 
+		select(site, year, Algorithm, Expert) %>% 
+		melt(id.vars = c("site", "year"), variable.name ="Source")
+	
+	for(i in 1:nrow(SU_locations)){
+		station_ <- SU_locations[i,"site"] %>% as.character()
+		print(station_)
+		subdf <- subset(SUData, site == station_)
+		
+		pdf(paste0("../../output/compareWithExpert/", valueLabel,"_",station_,"_", "compareWithExpert.pdf"),width = 3, height = 3)
+		print(ggplot(data = subdf, aes(x = year, y = value, color = Source)) + 
+						geom_line() + geom_point() + ylab(valueLabel) + xlab("Year") + 
+						theme_bw() + theme(legend.position="top") + labs(color = station_))
+		dev.off()
+	}
 }
 
 
@@ -42,6 +72,7 @@ main_lakeSU <- function(features){
 	
 	locations <- read.csv("../../input/station_loc.csv")
 	SUData <- subset(features,lake == "SU")
+	
 	# SUData <- subset(SUData, fileId!=1544)
 	SUData$metalimnion <- (SUData$UHY_segment +  SUData$LEP_segment)/2
 	print(summary(SUData[,c("year","DCL_depth","TRM_segment","DCL_conc")]))
@@ -66,5 +97,11 @@ main_lakeSU <- function(features){
 			print(cor.test(cleanData[,surfaceWC],cleanData[,aa],use = "complete.obs"))
 		}
 	}
+	
+	# analyze the differences between algorithm and expert for Lake SU
+	compareWithExpert(subset(SUData, year < 2013 & year > 1997) , "TRM_segment", "expert_TRM", "Thermocline Depth (m)", TRUE)
+	compareWithExpert(subset(SUData, year < 2013 & year > 1997) , "DCL_depth", "expert_DCL", "DCL Depth (m)", TRUE)
 }
+
+
 

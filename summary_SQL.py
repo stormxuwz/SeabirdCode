@@ -6,9 +6,6 @@ import traceback
 import pickle
 import sys
 
-OUTPUT_FOLDER = "/Users/wenzhaoxu/Developer/Seabird/output_splitMerge/"
-
-
 class summary(object):
     def __init__(self,engine,config): 
         self.engine = engine
@@ -40,7 +37,7 @@ class summary(object):
                 print (station, year)
                 meta_res,expertnotes_res = self.findEntry(station, year)
                 # tables.append(pd.merge(meta_res,expertnotes_res,left_on = 'datcnv_date', right_on = 'SAMPLING_DATE',how = "outer"))
-                tables.append(pd.merge(meta_res,expertnotes_res,left_on = 'Year', right_on = 'YEAR',how = "right"))
+                tables.append(pd.merge(meta_res, expertnotes_res, left_on='Year', right_on='YEAR',how="right"))
 
         allTables = pd.concat(tables)
         return allTables
@@ -257,9 +254,9 @@ class summary(object):
                     print(fileId_)  
 
                     try:
-                        mySeabird=seabird(config = self.config)
-                        mySeabird.loadData(fileId = fileId_)
-                        mySeabird.setExpert(notes = expertNotes)
+                        mySeabird=seabird(config=self.config)
+                        mySeabird.loadData(fileId=fileId_)
+                        mySeabird.setExpert(notes=expertNotes)
                         # print expertNotes
                         mySeabird.preprocessing()
                         mySeabird.identify()
@@ -360,6 +357,8 @@ if __name__ == '__main__':
     import json
     import os
 
+    OUTPUT_FOLDER = "/Users/wenzhaoxu/Developer/Seabird/output_sm_midpoint/"
+
     try:  
         os.mkdir(OUTPUT_FOLDER)
     except:
@@ -374,7 +373,6 @@ if __name__ == '__main__':
     config = json.load(open('/Users/WenzhaoXu/Developer/Seabird/SeabirdCode/config.json'))
     GLSummary = summary(engine,config)
 
-    
     GLSummary.detect()
     #extractWaterChemistryData("/Users/WenzhaoXu/Developer/Seabird/output/detectedFeatures.csv")
 

@@ -12,6 +12,8 @@ source("./analysis_TRM.R")
 source("./global.R") # some global varialbes
 source("./seg_comparison.R")
 
+outputFolder <- "../../output/"
+
 otherData <- function(){
 	waterChemistry <- 
 	expertNotes <- read.csv("../../input/All_Lakes_through2012.csv")
@@ -23,13 +25,15 @@ main<- function(){
 	locations <- read.csv("../../input/station_loc.csv")
 	waterChemistry <- read.csv("../../output/waterFeature.csv")
 	
-	features <- read.csv("../../output/detectedFeatures.csv") %>%
+	# starting from 1996 for SU lake 
+	features <- read.csv(paste0(outputFolder,"/detectedFeatures.csv")) %>%
 		preprocessing(locations = locations, waterChemistry = waterChemistry, startYear = 1996)
 	
+	
 	print("Doing algorithm validation")
-	main_expertValidation(features)  # expert comparision
+	main_expertValidation(subset(features, year < 2013 & year > 1997))  # expert comparision, will filter data using only [1998, 2012]
 	print("****************")
-	main_seg_comparison(features)	# HMM comparison
+	#main_seg_comparison(features)	# HMM comparison
 	print("****************")
 	print("Doing DCL algorithm")
 	print("****************")
@@ -43,11 +47,18 @@ main<- function(){
 }
 
 
+df = read.csv("/Users/wenzhaoxu/Desktop/Research Desktop Backup/tmp.csv") %>% filter(year > 1997)
+df2 = merge(df, locations, by.x = "site", by.y = "Station")[,c("LEP_dataGradient", "UHY_dataGradient")]
+names(df2) = c("LEP","UHY")
+
+pdf("~/Desktop/Figure 4.pdf", width = 5, height = 4)
+print(boxplot(df2, outline = FALSE,  whisklty = 0, staplelty = 0, ylim = c(0, 0.4), ylab = "°C/meter"))
+dev.off()
 
 
-sink(sprintf("./results/%s_results.txt",Sys.Date()))
+ #sink(sprintf("./results/%s_results.txt",Sys.Date()))
 main()
-sink()
-sink()
+#sink()
+#sink()
 
 
