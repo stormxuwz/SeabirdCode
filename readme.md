@@ -76,7 +76,6 @@ File structure:
 
  	
 	--Seabird:
-		--seabirdGUI.py: GUI build based on Tkinter
 		--seabird_class.py: seabird class
 		-- deepChlLayers.py: DCL class
 		-- thermocline.py: thermocline class
