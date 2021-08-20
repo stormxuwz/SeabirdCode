@@ -18,7 +18,7 @@ class DCL(object):
 		self.DCL_idx = None
 		self.model = None
 		
-	def correctConc(self,DCLDepth,rawData):
+	def adjust_conc(self,DCLDepth,rawData):
 		"""
 		Function to correct the fluorescence concentration by searching 
 		the maximum fluorescence in the raw data within 1 meter around the 
@@ -29,7 +29,7 @@ class DCL(object):
 		Returns:
 			corrected chlorophyll concentration
 		"""
-		DCLConc_rawData = rawData.loc[(rawData.Depth< DCLDepth+0.5) & (rawData.Depth > DCLDepth-0.5),"Fluorescence"]
+		DCLConc_rawData = rawData.loc[(rawData.Depth < DCLDepth + 0.5) & (rawData.Depth > DCLDepth - 0.5), "Fluorescence"]
 		return np.max(DCLConc_rawData)
 
 	def detect(self,data,rawData,peakMinDepth=None,peakUpperDepthBoundary=None,saveModel=True):
@@ -87,7 +87,7 @@ class DCL(object):
 		
 		features["allConc"] = np.sum((data.Fluorescence))
 
-		peakUpperDepthBoundary_idx = np.searchsorted(data.Depth, peakUpperDepthBoundary)[0]+1 # find the boundary index
+		peakUpperDepthBoundary_idx = np.searchsorted(data.Depth, peakUpperDepthBoundary) + 1 # find the boundary index
 		features["allConc_upper"] = np.sum(data.Fluorescence[:peakUpperDepthBoundary_idx])
 
 		if self.allPeaks is None or self.allPeaks.shape[0]<1:

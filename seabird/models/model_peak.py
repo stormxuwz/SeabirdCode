@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 # Fit a gaussian functions
-def gauss_function(x, a, x0, sigma2,y0,k):
+def gauss_function(x, a, x0, sigma2, y0, k):
 	'''
 	Define a Gaussian function with background trend
 	Args:
@@ -23,9 +23,9 @@ def gauss_function(x, a, x0, sigma2,y0,k):
 	Returns:
 		the gaussian Y values
 	'''
-	return a*np.exp(-(x-x0)**2/(2*sigma2))+y0+k*(x-x0)
+	return a * np.exp(-(x - x0) ** 2 / (2 * sigma2)) + y0 + k * (x - x0)
 
-def fitGaussian(x,y,x_mean,weight= None):
+def fit_gaussian(x, y, x_mean, weight=None):
 	"""
 	Function to fit the Gaussian
 	Args:
@@ -49,7 +49,7 @@ def fitGaussian(x,y,x_mean,weight= None):
 	else:
 		raise ValueError("WLS not implemented")
 		# popt, pcov = curve_fit(lambda x,a,sigma: gauss_function(x,a,x_mean,sigma,max(y)-a), x, y, sigma=weight)
-	fit_y = gauss_function(x, popt[0], x_mean, popt[1],max(y)-popt[0],popt[2])
+	fit_y = gauss_function(x, popt[0], x_mean, popt[1], max(y) - popt[0], popt[2])
 	return fit_y,popt
 
 
@@ -90,7 +90,7 @@ def fitShape(y,direction,method="gaussian"):
 		popt: estimated parameters
 	"""
 	if method == "gaussian":
-		fit_func=fitGaussian
+		fit_func=fit_gaussian
 	elif  method == "t":
 		fit_func=fit_t_pdf
 	elif method == "laplace":
@@ -114,7 +114,7 @@ def fitShape(y,direction,method="gaussian"):
 	return fit_y,x_for_fit, y_for_fit, popt
 
 
-def zeroCrossing(signal, mode):
+def zero_crossing(signal, mode):
 	'''
 	find the index of points that intercept with x axis
 	Args:
@@ -125,24 +125,24 @@ def zeroCrossing(signal, mode):
 	Returns:
 		a list of all crossing points
 	'''
-	allIndex = np.where((signal[1:] * signal[:-1] < 0) == True)[0]
+	all_index = np.where((signal[1:] * signal[:-1] < 0) == True)[0]
 	if mode == 0:
-		return allIndex+1  # +1 indicates return 1 in the example of [-1,1]
+		return all_index + 1  # +1 indicates return 1 in the example of [-1,1]
 	elif mode == 1:
-		return allIndex[signal[allIndex] > 0]+1
+		return all_index[signal[all_index] > 0] + 1
 	elif mode == 2:
-		return allIndex[signal[allIndex] < 0]+1
+		return all_index[signal[all_index] < 0] + 1
 	else:
 		raise ValueError("mode can only be 0,1,2")
 
-def fit_error(x,xhat):
+def fit_error(x, xhat):
 	"""
 	return the error of x and fitted x (xhat)
 	"""
 	# using r^2
 	return (np.corrcoef(x,xhat)[1,0])**2  
 	
-class peak(object):
+class Peak(object):
 	def __init__(self,config,method = "gaussian"):
 		self.allPeaks = None
 		self.shape_fit = []
@@ -165,7 +165,7 @@ class peak(object):
 		"""
 		x = np.array(x)
 		x_gradient = np.diff(x) # find the gradient of x, len(x_gradient) = len(x)-1, x_gradient[0] = x[1]-x[0]
-		rawPeak = zeroCrossing(x_gradient, mode=1) 
+		rawPeak = zero_crossing(x_gradient, mode=1) 
 		
 		# the minimum maginitude that a peak should reach
 		threshold = (max(x)-min(x))*self.minPeakMagnitude + min(x) 
@@ -225,7 +225,7 @@ class peak(object):
 		
 		allPeaks = {}
 		
-		featureMapDic = {
+		FEATURE_MAP = {
 		"peakIndex":"middleNode",
 		"leftIndex_fit":"leftBoundary_fit",
 		"rightIndex_fit":"rightBoundary_fit",
@@ -236,12 +236,12 @@ class peak(object):
 		"leftSigma":"leftSigma",
 		"rightSigma":"rightSigma"}
 
-		for k,v in featureMapDic.items():
+		for k,v in FEATURE_MAP.items():
 			allPeaks[k] = [boundary[v] for boundary in self.boundaries]		
 
 		return pd.DataFrame(allPeaks)
 
-	def findBoundaries(self,x,peaks):
+	def find_boundaries(self, x, peaks):
 		"""
 		Function to find the boundaries of each peak
 		Args:

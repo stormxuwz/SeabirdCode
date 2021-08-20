@@ -1,8 +1,6 @@
 import numpy as np
 import logging
 
-
-
 def debugPlot(x, segList, createLineFunc, plotTitle):
 	import matplotlib.pyplot as plt
 	plt.figure()
@@ -15,8 +13,7 @@ def debugPlot(x, segList, createLineFunc, plotTitle):
 	plt.savefig(plotTitle + ".png")
 	plt.close()
 
-
-class timeSeriesSegmentation(object):
+class TimeSeriesSegmentation(object):
 	def __init__(self,max_error):
 		self.segmentList=None
 		self.x=None
@@ -36,7 +33,7 @@ class timeSeriesSegmentation(object):
 			plt.plot(seg[1],seg[0],"+-")
 		plt.show()
 
-	def createLine(self,x,method="regression"):
+	def create_line(self,x,method="regression"):
 		x = np.array(x)
 		n=len(x)
 
@@ -52,7 +49,7 @@ class timeSeriesSegmentation(object):
 		return line
 
 
-class slidingWindow(timeSeriesSegmentation):
+class SlidingWindow(TimeSeriesSegmentation):
 	"""
 	segment signal using sliding window approach (not used)
 	"""
@@ -62,7 +59,7 @@ class slidingWindow(timeSeriesSegmentation):
 		segmentList=[]
 		print(n)
 		
-		while leftNode<n-1:
+		while leftNode < n-1:
 			print(leftNode)
 			newSeg = False
 			for rightNode in range(leftNode+3,n):
@@ -84,7 +81,7 @@ class slidingWindow(timeSeriesSegmentation):
 		self.segmentList=segmentList
 		self.x=x
 
-class bottomUp(timeSeriesSegmentation):
+class BottomUp(TimeSeriesSegmentation):
 	"""
 	segment signal using sliding bottom up approach (not used)
 	"""
@@ -97,13 +94,13 @@ class bottomUp(timeSeriesSegmentation):
 		Returns:
 			None
 		"""
-		n=len(x)
+		n = len(x)
 		segmentIndexList = [[i,i+1] for i in range(0,n,2)]
 		errorList = [self.mergeCost(x[segmentIndexList[i]], x[segmentIndexList[i+1]]) for i in range(len(segmentIndexList)-1)]
 
 		while True:
 			minIndex = np.argmin(errorList)
-			self.mergeRight(segmentIndexList,minIndex)
+			self.merge_next(segmentIndexList,minIndex)
 			
 			if len(segmentIndexList) == 3:
 				break
@@ -126,21 +123,14 @@ class bottomUp(timeSeriesSegmentation):
 		
 		# self.finalAdjust()
 		
-
 	def finalAdjust(self):
 		nSeg = len(self.segmentList)
-		
-		newSegment = []
 		i = 0
-		
 		while i < nSeg - 1:
-			newSeg1, newSeg2 = self.splitAdjust(self.segmentList[i],self.segmentList[i+1])
-			# print seg1, seg2
-			self.segmentList[i] = newSeg1
-			self.segmentList[i+1] = newSeg2
+			new_seg1, new_seg2 = self.splitAdjust(self.segmentList[i],self.segmentList[i+1])
+			self.segmentList[i] = new_seg1
+			self.segmentList[i+1] = new_seg2
 			i += 1
-			# print newSeg1, newSeg2
-
 
 	def splitAdjust(self, seg1, seg2):
 		# function to find the best split point given seg1 and seg2
@@ -154,8 +144,7 @@ class bottomUp(timeSeriesSegmentation):
 		
 		n = len(segIdx)
 
-
-		minErr = self.max_error*100
+		minErr = self.max_error * 100
 		minErrIdx = 1
 
 		for i in range(1, n - 2):
@@ -176,14 +165,9 @@ class bottomUp(timeSeriesSegmentation):
 				minErr = e1 + e2
 				minErrIdx = i
 	
-		# print "***", minErrIdx, s1, s2
-
 		return [self.createLine(segX[:minErrIdx]), segIdx[:minErrIdx] ], [self.createLine(segX[minErrIdx:]), segIdx[minErrIdx:] ]
 
-		
-
-
-	def mergeCost(self, leftSeg,rightSeg):
+	def get_merge_cost(self, leftSeg,rightSeg):
 		"""
 		function to calculate the error when merging the right segment
 		Args:
@@ -196,9 +180,9 @@ class bottomUp(timeSeriesSegmentation):
 		line = self.createLine(allSeg)
 		return self.calculate_error(line, allSeg)
 
-	def mergeRight(self,segList,index):
+	def merge_next(self,segList,index):
 		"""
-		function to merge the segment of "index" with its right segment
+		function to merge the segment of "index" with its next segment
 		Args:
 			segList: a list of segment
 			index: the segment to merge with its right segment
@@ -207,7 +191,7 @@ class bottomUp(timeSeriesSegmentation):
 		segList.pop(index+1) # pop the right segment
 
 
-class splitAndMerge(bottomUp):
+class SplitAndMerge(BottomUp):
 
     def fit_predict(self, x):
         n = len(x)
@@ -239,7 +223,7 @@ class splitAndMerge(bottomUp):
                 i = 0
                 while i < len(segmentIndexList_step2) - 1:
 
-                    mergeRightCost = self.mergeCost(x[segmentIndexList_step2[i]], x[segmentIndexList_step2[i + 1]])
+                    mergeRightCost = self.get_merge_cost(x[segmentIndexList_step2[i]], x[segmentIndexList_step2[i + 1]])
 
                     if mergeRightCost < self.max_error:
                         segmentIndexList_step2[i] = segmentIndexList_step2[i] + segmentIndexList_step2[i + 1]
@@ -283,7 +267,7 @@ class splitAndMerge(bottomUp):
         newSegs = [[x[i] for i in range(splitPoint)], [x[i] for i in range(splitPoint, len(x))]]
         return newSegs
 
-    def randomInitialization(self, n):
+    def random_initialization(self, n):
         splitPoint = n // 2
         splitPoint = np.random.randint(n // 3, 2 * n // 3)
         segmentIndexList = [[i for i in range(splitPoint)], [i for i in range(splitPoint, n)]]

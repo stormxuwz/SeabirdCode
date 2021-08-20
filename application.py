@@ -16,7 +16,6 @@ from werkzeug.utils import secure_filename
 from bokeh.embed import components
 from bokeh.plotting import figure
 from bokeh.resources import INLINE
-from bokeh.util.string import encode_utf8
 from bokeh.models import LinearAxis, Range1d,Span, BoxAnnotation
 
 
@@ -159,7 +158,7 @@ def seabirdAnalysis(filename = None):
         rightShapeR2 = rightShapeR2,
         leftShapeR2 = leftShapeR2
     )
-    return encode_utf8(html)
+    return html
 
 @app.route('/', methods=['GET', 'POST'])
 def index():

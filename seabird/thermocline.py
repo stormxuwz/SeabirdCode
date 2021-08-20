@@ -4,11 +4,10 @@ Thermocline Class
 import numpy as np
 import traceback
 import sys
-# from models.model_HMM import hmmModel
 from .models.model_segmentation import bottomUp as segModel # or choose between splitAndMerge or bottomUp
 from .tools.signalProcessing import extractSignalFeatures
 
-class thermocline_base(object):
+class _ThermoclineBase(object):
 	"""
 	Base class for thermocline.
 	"""
@@ -17,9 +16,9 @@ class thermocline_base(object):
 		Args:
 			config: configuration dictionary
 		"""
-		self.LEP = None
-		self.TRM = None
-		self.UHY = None
+		self.lep = None
+		self.trm = None
+		self.uhy = None
 		self.config = config
 		
 	def detect(self,data):
@@ -28,7 +27,7 @@ class thermocline_base(object):
 		'''
 		raise ValueError("not implementated")
 
-class thermocline_segmentation(thermocline_base):
+class ThermoclineSegmentation(_ThermoclineBase):
 	"""
 	Class to detect TRM using time series segmentation methods
 	"""
@@ -37,24 +36,24 @@ class thermocline_segmentation(thermocline_base):
 		Args:
 			config: configuration dictionary
 		"""
-		super(thermocline_segmentation, self).__init__(config)
-		self.TRM_gradient = None
+		super(ThermoclineSegmentation, self).__init__(config)
+		self.trm_gradient = None
 		self.num_segments = None
-		self.num_belowTRM = None
+		self.num_below_trm = None
 		self.model = None
-		self.depthInterval = self.config["Preprocessing"]["depthInterval"]
-		self.positiveSeg = []
-		self.doubleTRM = []
+		self.depth_interval = self.config["preprocessing"]["depth_interval"]
+		self.positive_seg = []
+		self.double_trm = []
 		self.gradient = []
 
-		self.maxTempertureChange = 2.0
+		self.MAX_TEMPERATURE_CHANGE = 2.0 # maximum temprature difference
 		
-		self.stableGradient = config["Algorithm"]["PLR"]["stable_gradient"]
-		self.stableGradient_relaxed = config["Algorithm"]["PLR"]["stable_gradient2"]
-		self.minimumGradient_TRM = self.config["Algorithm"]["PLR"]["minTRM_gradient"]
-		self.max_error = self.config["Algorithm"]["PLR"]["max_error"]
+		self.stable_gradient = config["algorithm"]["plr"]["stable_gradient"]
+		self.stable_gradient_relaxed = config["algorithm"]["plr"]["stable_gradient_relaxed"]
+		self.min_trm_gradient = self.config["algorithm"]["plr"]["min_trm_gradient"]
+		self.max_error = self.config["algorithm"]["plr"]["max_error"]
 
-	def getGradientFromSegment(self,seg):
+	def get_gradient_from_segment(self,seg):
 		"""
 		Function to get gradients of each segment, 
 		positive means the temperature is decreasing with depth
@@ -64,9 +63,9 @@ class thermocline_segmentation(thermocline_base):
 		Returns:
 			the gradient of seg
 		"""
-		return (seg[0][0]-seg[0][1])/self.depthInterval
+		return (seg[0][0] - seg[0][1]) / self.depth_interval
 
-	def detectDoubleTRM(self,segmentList):
+	def detect_double_trm(self, segmentList):
 		"""
 		Functions to detect double thermocline. The index of segments which represent
 		double thermocline will be appended to doubleTRM
@@ -77,7 +76,7 @@ class thermocline_segmentation(thermocline_base):
 			None
 		"""
 		for i in range(1,len(segmentList)-1):
-			segGradient = self.getGradientFromSegment(segmentList[i])
+			seg_gradient = self.getGradientFromSegment(segmentList[i])
 			previousSegGradient = self.getGradientFromSegment(segmentList[i-1])
 			nextSegGradient = self.getGradientFromSegment(segmentList[i+1])
 
@@ -204,27 +203,6 @@ class thermocline_segmentation(thermocline_base):
 		if saveModel:
 			self.model = model
 
-class thermocline_HMM(thermocline_base):
-	"""
-	HMM model
-	"""
-	def detect(self,data):
-		signal_data = extractSignalFeatures(data, "Temperature")
-		model = hmmModel(nc = 3)
-		res = model.fit_predict(signal_data)
-		self.TRM = signal_data.Depth[res[0]]
-		self.LEP = signal_data.Depth[res[1]]
-		self.UHY = signal_data.Depth[res[2]]
-
-class thermocline_threshold(thermocline_base):
-	def detect(self,data):
-		signal_data = extractSignalFeatures(data, "Temperature")
-		model = thresholdModel(threshold = None)
-		res = model.fit_predict(signal_data.Power)
-		self.TRM = signal_data.Depth[res[0]]
-		self.LEP = signal_data.Depth[res[1]]
-		self.UHY = signal_data.Depth[res[2]]
-
 class thermocline(object):
 	"""
 	Function to detect
@@ -256,8 +234,8 @@ class thermocline(object):
 
 		if "segmentation" in methods:
 			try:
-				model = thermocline_segmentation(self.config)
-				model.detect(data,saveModel = saveModel)
+				model = ThermoclineSegmentation(self.config)
+				model.detect(data, saveModel=saveModel)
 
 				# the gradient of TRM
 				features["TRM_gradient_segment"] = model.TRM_gradient
@@ -290,32 +268,7 @@ class thermocline(object):
 			except Exception as err:
 				print("segmentation Fail")
 				print(traceback.format_exc())
-
-		if "HMM" in methods:
-			try:
-				model = thermocline_HMM(self.config)
-				model.detect(data)
-				# the depth of TRM, LEP and UHY
-				features["TRM_HMM"] = model.TRM
-				features["LEP_HMM"] = model.LEP
-				features["UHY_HMM"] = model.UHY
-			except Exception as err:
-				print("HMM Fail")
-				print(traceback.format_exc())
-
-		if "threshold" in methods:
-			try:
-				model = thermocline_threshold(self.config)
-				model.detect(data)
-
-				# the depth of TRM, LEP and UHY
-				features["TRM_threshold"] = model.TRM
-				features["LEP_threshold"] = model.LEP
-				features["UHY_threshold"] = model.UHY
-			except Exception as err:
-				print("threshold Fail")
-				print(traceback.format_exc())
-
+				
 		return features
 
 

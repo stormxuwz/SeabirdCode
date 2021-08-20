@@ -10,7 +10,7 @@ from .tools.seabird_parser import seabird_file_parser
 from .thermocline import thermocline
 from .deepChlLayers import DCL
 
-class seabird:
+class Seabird:
 	def __init__(self, config):
 		"""
 		Args: 
@@ -42,7 +42,7 @@ class seabird:
 		# self.bottleData = None
 		# self.bottleFile = None # maybe useful
 
-	def loadData(self,dataFile = None, fileId = None, dbEngine = None, columns = None):
+	def load_data(self, dataFile=None, fileId=None, dbEngine=None, columns=None):
 		"""
 		Load data into the Seabird Class
 		Args:
@@ -75,8 +75,7 @@ class seabird:
 		
 		self.rawData = sensorData
 	
-
-	def setExpert(self,notes):
+	def set_expert(self, notes):
 		"""
 		Load operator judgements:
 		Args:
@@ -89,7 +88,7 @@ class seabird:
 		self.expert["UHY"] = notes["UHY"]
 		self.expert["DCL"] = notes["DCL"]
 
-	def updateConfig(self,new_config):
+	def update_config(self,new_config):
 		"""
 		Function to update configuration, useful when users want to change configurations
 		interactively
@@ -101,7 +100,7 @@ class seabird:
 		self.DCL = DCL(new_config)
 		self.features = None
 
-	def preprocessing(self):
+	def preprocess(self):
 		"""
 		Function to do preprocess the data, including separating and smoothing
 		"""
