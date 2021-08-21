@@ -75,7 +75,7 @@ def dwt_smooth(x, smoothing_para={'wavelet':'bior3.1','level':0}):
 	if level > 0:
 		level = int(level)
 	elif level < 0:
-		level=maxlevel;
+		level = maxlevel
 	else:  # level==0, choose the max level-4
 		level = max(1, maxlevel - 4)
 
@@ -171,8 +171,6 @@ def resample(sensordata, interval=0.25):
 				oldFeatures = np.array(sensordata.iloc[:, i])
 				new_sensordata[:, i+1] = [np.mean(oldFeatures[meanRange[j]]) for j in range(len(new_depth))]
 
-	#print(["Depth"] + sensordata.columns.values)
-	#print(new_sensordata.shape)
 	return pd.DataFrame(new_sensordata, columns= ["Depth"] + sensordata.columns.values.tolist())
 
 
