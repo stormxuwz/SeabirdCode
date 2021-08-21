@@ -15,7 +15,7 @@ def window_smooth(x, window_len=11, window='hanning'):
 	Returns
 		y: smoothed data
 	"""
-	window_len = min(int(len(x)/5),window_len)
+	window_len = min(int(len(x)/5), window_len)
 
 	if window_len % 2 ==0:
 		window_len+=1
@@ -182,11 +182,11 @@ def transTransimissionToBAT(transmission):
 	"""
 	return -np.log(transmission/100)*4
 	
-def transCondToSpecCond(conductitivty,temperature):
+def transCondToSpecCond(conductitivty, temperature):
 	"""
 	function to conductivity to specific conductivity
 	"""
-	return conductitivty/(1+0.02*(self.temperature-25))
+	return conductitivty/(1+0.02*(temperature - 25))
 
 
 def filter(data,config):
@@ -201,10 +201,10 @@ def filter(data,config):
 
 	for var in data.columns.values[1:]:
 
-		if var in config["smoothingMethod"]:
-			smoothCfg=config["smoothingMethod"][var]
+		if var in config["smoothing_method"]:
+			smoothCfg=config["smoothing_method"][var]
 		else:
-			smoothCfg = config["smoothingMethod"]["Other"]
+			smoothCfg = config["smoothing_method"]["Other"]
 
 		method=smoothCfg[0]
 		# print var, method
@@ -222,7 +222,7 @@ def filter(data,config):
 	return data
 
 
-def preprocessing(data,config):
+def preprocess(data,config):
 	"""
 	function to preprocess the raw input data by separating, resampling and smoothing
 	Args:
@@ -232,17 +232,16 @@ def preprocessing(data,config):
 		downcast: the raw downcast
 		filtered_data: the cleaned downcast
 	"""
-	downcast, upcast = separate(data)
-	pre_data = init_filter(downcast,config["badDepthThreshold"])
+	downcast, _ = separate(data)
+	pre_data = init_filter(downcast, config["bad_depth_threshold"])
 	if pre_data.shape[0]<1:
-		return None,None
-	pre_data_resample = resample(sensordata=pre_data, interval=config["depthInterval"])
+		return None, None
+	pre_data_resample = resample(sensordata=pre_data, interval=config["depth_interval"])
 
 	if pre_data_resample.shape[0] % 2 > 0:
 		pre_data_resample = pre_data_resample.iloc[:-1, :]
 
 	filtered_data = filter(pre_data_resample, config)
-	# filtered_data = pre_data_resample
 
 	return downcast, filtered_data
 	

@@ -2,11 +2,10 @@ from __future__ import print_function
 
 # ps -fA | grep python
 import os
-from seabird.seabird_class import seabird
+from seabird.seabird import Seabird
 import numpy as np
 import pandas as pd
-import json,sys
-import logging
+import json
 from sqlalchemy import create_engine
 
 import flask
@@ -52,30 +51,30 @@ def seabirdAnalysis(filename = None):
     if filename is not None:
         # print("I have the file"+filename,file=sys.stderr)
         config=json.load(open('./config.json')) # load 
-        mySeabird = seabird(config = config)
+        seabird = Seabird(config = config)
         
-        mySeabird.loadData(dataFile = os.path.join(app.config['UPLOAD_FOLDER'],filename))
+        seabird.load_data(data_file=os.path.join(app.config['UPLOAD_FOLDER'],filename))
 
 
-        mySeabird.preprocessing()
-        mySeabird.identify()
+        seabird.preprocess()
+        seabird.identify()
 
         # plot functions
         fig = figure(title=filename,x_axis_label='Temperature (C)',y_axis_label = "Depth (m)")
         
-        fig.line(mySeabird.cleanData.Temperature, -mySeabird.cleanData.Depth, color = "red",legend = "Temperature")
-        fig.line(mySeabird.downCastRawData.Temperature, -mySeabird.downCastRawData.Depth, color = "red",line_dash = [5])
+        fig.line(seabird.cleandata.Temperature, -seabird.cleandata.Depth, color = "red",legend = "Temperature")
+        fig.line(seabird.downcast_rawdata.Temperature, -seabird.downcast_rawdata.Depth, color = "red",line_dash = [5])
         
-        fig.extra_x_ranges = {"Fluorescence": Range1d(start=min(mySeabird.cleanData.Fluorescence), end=max(mySeabird.cleanData.Fluorescence))}
+        fig.extra_x_ranges = {"Fluorescence": Range1d(start=min(seabird.cleandata.Fluorescence), end=max(seabird.cleandata.Fluorescence))}
         fig.add_layout(LinearAxis(x_range_name="Fluorescence",axis_label = "Fluorescence (ug/L)"), 'below')
-        fig.line(mySeabird.cleanData.Fluorescence, -mySeabird.cleanData.Depth, \
+        fig.line(seabird.cleandata.Fluorescence, -seabird.cleandata.Depth, \
                 color = "green", x_range_name="Fluorescence",legend = "Fluorescence")
-        fig.line(mySeabird.downCastRawData.Fluorescence, -mySeabird.downCastRawData.Depth, \
+        fig.line(seabird.downcast_rawdata.Fluorescence, -seabird.downcast_rawdata.Depth, \
                 color = "green",line_dash = [5],x_range_name = "Fluorescence")
 
-        depth_TRM = mySeabird.features["TRM_segment"]
-        depth_LEP = mySeabird.features["LEP_segment"]
-        depth_UHY = mySeabird.features["UHY_segment"]
+        depth_TRM = seabird.features["TRM_segment"]
+        depth_LEP = seabird.features["LEP_segment"]
+        depth_UHY = seabird.features["UHY_segment"]
 
 
         # depth_TRM = -99 if depth_TRM is None else depth_TRM
@@ -84,20 +83,20 @@ def seabirdAnalysis(filename = None):
         # depth_DCL = -99 if depth_DCL is None else depth_DCL
 
         
-        if mySeabird.features["DCL_concProp_fit"] is not None:
-            depth_DCL = mySeabird.features["DCL_depth"]
-            conc_DCL = np.round(mySeabird.features["DCL_conc"]  ,decimals =2)
-            rightShapeR2 = np.round(mySeabird.features["DCL_rightShapeFitErr"],decimals=2)
-            leftShapeR2 = np.round(mySeabird.features["DCL_leftShapeFitErr"],decimals=2)
-            Prop_DCL = np.round(mySeabird.features["DCL_concProp_fit"],decimals=2)
-            peak_box = BoxAnnotation(bottom=-mySeabird.features["DCL_bottomDepth_fit"], \
-                top=-mySeabird.features["DCL_upperDepth_fit"], fill_alpha=0.1, fill_color='green')
+        if seabird.features["DCL_concProp_fit"] is not None:
+            depth_DCL = seabird.features["DCL_depth"]
+            conc_DCL = np.round(seabird.features["DCL_conc"]  ,decimals =2)
+            rightShapeR2 = np.round(seabird.features["DCL_rightShapeFitErr"],decimals=2)
+            leftShapeR2 = np.round(seabird.features["DCL_leftShapeFitErr"],decimals=2)
+            Prop_DCL = np.round(seabird.features["DCL_concProp_fit"],decimals=2)
+            peak_box = BoxAnnotation(bottom=-seabird.features["DCL_bottomDepth_fit"], \
+                top=-seabird.features["DCL_upperDepth_fit"], fill_alpha=0.1, fill_color='green')
             fig.add_layout(peak_box)
             
 
-            # DCL_upper = Span(location=-mySeabird.features["DCL_upperDepth_fit"], \
+            # DCL_upper = Span(location=-seabird.features["DCL_upperDepth_fit"], \
                 # dimension='width', line_color='green', line_width=3,x_range_name = "Fluorescence",line_dash = [3]) #red line at 0
-            # DCL_bottom = Span(location=-mySeabird.features["DCL_bottomDepth_fit"], \
+            # DCL_bottom = Span(location=-seabird.features["DCL_bottomDepth_fit"], \
                 # dimension='width', line_color='green', line_width=3,x_range_name = "Fluorescence",line_dash = [3]) #red line at 0
 
         # low_box = BoxAnnotation(top=80, fill_alpha=0.1, fill_color='red')
@@ -106,8 +105,8 @@ def seabirdAnalysis(filename = None):
         # met_box = BoxAnnotation(top = -depth_UHY, bottom = -depth_LEP, fill_alpha = 0.1, fill_color = "red")
 
        
-        # peak_box2 = BoxAnnotation(bottom=-mySeabird.features["DCL_bottomDepth_gradient"], \
-            # top=-mySeabird.features["DCL_upperDepth_gradient"], fill_alpha=0.1, fill_color='red')
+        # peak_box2 = BoxAnnotation(bottom=-seabird.features["DCL_bottomDepth_gradient"], \
+            # top=-seabird.features["DCL_upperDepth_gradient"], fill_alpha=0.1, fill_color='red')
         # high_box = BoxAnnotation(bottom=180, fill_alpha=0.1, fill_color='red')
         
         # fig.add_layout(epi_box)

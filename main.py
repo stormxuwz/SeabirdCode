@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 import pandas as pd
 import numpy as np
-from seabird.seabird_class import seabird
+from seabird.seabird import Seabird
 import traceback
 import pickle
 import sys
@@ -89,7 +89,7 @@ class summary(object):
 
                         print(station, year, fileId_summer, fileId_spring)
                         
-                        springSeabird = seabird(self.config)
+                        springSeabird = Seabird(self.config)
                         springSeabird.rawData = pd.read_sql_query("Select * from %s_data where fileId = %d Order By 'index' ASC" %("spring",fileId_spring)
                             ,self.engine).drop('index',axis = 1)
 
@@ -233,7 +233,7 @@ class summary(object):
                     print(fileId_)  
 
                     try:
-                        mySeabird=seabird(config=self.config)
+                        mySeabird=Seabird(config=self.config)
                         mySeabird.loadData(fileId=fileId_)
                         mySeabird.setExpert(notes=expertNotes)
                         # print expertNotes

@@ -73,8 +73,7 @@ def fit_laplace(x,y,x_mean,weight=None):
 	return fit_y,popt
 
 
-
-def fitShape(y,direction,method="gaussian"): 
+def fit_shape(y,direction,method="gaussian"): 
 	"""
 	Functions to fit the data with the predefined shape
 	Args:
@@ -141,21 +140,22 @@ def fit_error(x, xhat):
 	"""
 	# using r^2
 	return (np.corrcoef(x,xhat)[1,0])**2  
-	
+
+
 class Peak(object):
 	def __init__(self,config,method = "gaussian"):
-		self.allPeaks = None
+		self.all_peaks = None
 		self.shape_fit = []
 		self.x = None
 		self.method = method
 
 		self.boundaries = None
-		self.minPeakMagnitude = config["minPeakMagnitude"] # minimum peak magnitude
-		self.peakHeight = config["peakHeight"]
-		self.peakSize = config["peakSize"]
-		self.peakMinInterval = config["peakMinInterval"]
+		self.peak_minimum_magnitude = config["minPeakMagnitude"] # minimum peak magnitude
+		self.peak_height = config["peakHeight"]
+		self.peak_size = config["peakSize"]
+		self.peak_minimum_interval = config["peakMinInterval"]
 
-	def fit_predict(self,x):
+	def fit_predict(self, x):
 		"""
 		Function to detect peak in signal x
 		Args:
@@ -165,44 +165,38 @@ class Peak(object):
 		"""
 		x = np.array(x)
 		x_gradient = np.diff(x) # find the gradient of x, len(x_gradient) = len(x)-1, x_gradient[0] = x[1]-x[0]
-		rawPeak = zero_crossing(x_gradient, mode=1) 
+		raw_peaks = zero_crossing(x_gradient, mode=1) 
 		
 		# the minimum maginitude that a peak should reach
-		threshold = (max(x)-min(x))*self.minPeakMagnitude + min(x) 
+		threshold = (max(x) - min(x)) * self.peak_minimum_magnitude + min(x) 
 		# the minimum height that a peak should have
-		peakHeightThreshold = (max(x)-min(x)) * self.peakHeight
-
-		
-		rawPeak = self.initialFilter(rawPeak, x, threshold, self.peakMinInterval) # remove peaks by threshold
+		peak_height_threshold = (max(x) - min(x)) * self.peak_height
+		raw_peaks = self.initial_filter(raw_peaks, x, threshold, self.peak_minimum_interval) # remove peaks by threshold
 
 		# add the first and last points as the boundary
-		rawPeak.append(len(x)-1)
-		rawPeak = [0]+rawPeak
-
-		# print(rawPeak)
+		raw_peaks = [0] + raw_peaks + [len(x)-1]
 
 		while True:
 			# find the heights of all possible peaks in rawPeak
-			shape_height = self.findPeakHeight(x,rawPeak)
+			shape_height = self.find_peak_heights(x, raw_peaks)
 			
-			if len(shape_height) ==0:
+			if len(shape_height) == 0:
 				# no peak is detected
 				break
 
-			minHeightPeak_index = np.argmin(shape_height) # find the minimum height amoung the peaks
+			minimum_peak_height_index = np.argmin(shape_height) # find the minimum height amoung the peaks
 
-			if shape_height[minHeightPeak_index] < peakHeightThreshold:  # remove shallowest peak
-				rawPeak.pop(minHeightPeak_index+1) # +1 because the starting point is the 0th point in rawPeak
+			if shape_height[minimum_peak_height_index] < peak_height_threshold:  # remove shallowest peak
+				raw_peaks.pop(minimum_peak_height_index + 1) # +1 because the starting point is the 0th point in rawPeak
 			else:
 				# all remaining peak is significant
 				break
 
-		self.boundaries = self.findBoundaries(x,rawPeak) # find the boundary of the peak in the rawPeak
+		self.boundaries = self.find_boundaries(x, raw_peaks) # find the boundary of the peak in the rawPeak
 		self.x = x
-
-		self.allPeaks = self.featureExtraction() # extract the features of the peak
+		self.all_peaks = self.feature_extraction() # extract the features of the peak
 		
-	def featureExtraction(self):
+	def feature_extraction(self):
 		"""
 		Extract features from the fitted peaks
 		Returns:
@@ -223,7 +217,7 @@ class Peak(object):
 		if len(self.boundaries)==0:
 			return None
 		
-		allPeaks = {}
+		result = {}
 		
 		FEATURE_MAP = {
 		"peakIndex":"middleNode",
@@ -237,9 +231,9 @@ class Peak(object):
 		"rightSigma":"rightSigma"}
 
 		for k,v in FEATURE_MAP.items():
-			allPeaks[k] = [boundary[v] for boundary in self.boundaries]		
+			result[k] = [boundary[v] for boundary in self.boundaries]		
 
-		return pd.DataFrame(allPeaks)
+		return pd.DataFrame(result)
 
 	def find_boundaries(self, x, peaks):
 		"""
@@ -253,65 +247,59 @@ class Peak(object):
 		"""
 		boundaries = []
 
-		for i in range(1,len(peaks)-1):
+		for i in range(1, len(peaks) - 1):
 
-			leftNode = peaks[i-1]
-			middleNode = peaks[i]
-			rightNode = peaks[i+1]
+			prev_point = peaks[i - 1]
+			curr_point = peaks[i]
+			next_point = peaks[i + 1]
 
-			leftBoundary = np.argmin(x[leftNode:middleNode])+leftNode
-			rightBoundary = np.argmin(x[middleNode:rightNode])+middleNode
+			left_boundary_index = np.argmin(x[prev_point : curr_point]) + prev_point
+			right_boundary_index = np.argmin(x[curr_point : next_point + 1]) + curr_point
 			
-			if i ==1: # for the first peak
-				leftBoundary = 0
+			if i == 1: # for the first peak
+				left_boundary_index = 0
 			
 			if i == len(peaks)-2:  # for the last peak
-				rightBoundary = len(x)-1
+				right_boundary_index = len(x)-1
 
-			leftData = x[leftBoundary:(peaks[i]+1)]
-			rightData = x[peaks[i]:rightBoundary+1]
+			left_data = x[left_boundary_index:(peaks[i] + 1)]
+			right_data = x[peaks[i]:right_boundary_index + 1]
 
 			# for left shape
-			leftShape = fitShape(leftData, "left",self.method) # fit the half Gaussian to the left shape
-			leftShape_err = fit_error(x = leftShape[2], xhat = leftShape[0]) # calculate the fitting error
+			left_shape = fit_shape(left_data, "left", self.method) # fit the half Gaussian to the left shape
+			left_shape_error = fit_error(x=left_shape[2], xhat=left_shape[0]) # calculate the fitting error
 			
 			# for right shape
-			rightShape = fitShape(rightData,"right",self.method) # fit the half Gaussian to the right shape
-			rightShape_err = fit_error(x = rightShape[2], xhat = rightShape[0])  # calculate the fitting error
-			
-			# get peak boundary
-			leftBoundary_fit = leftBoundary
-			leftBoundary_gradient = leftBoundary
+			right_shape = fit_shape(right_data,"right", self.method) # fit the half Gaussian to the right shape
+			right_shape_error = fit_error(x=right_shape[2], xhat=right_shape[0])  # calculate the fitting error
 
-			rightBoundary_fit = rightBoundary
-			rightBoundary_gradient = rightBoundary
-
-			if i ==1: # get the left boundary of the first peak
+			# change the boundary 
+			if i == 1: # get the left boundary of the first peak
 				# the boundary of left shape by fitting half Gaussian
 				# use two and half sigma as the peak half width
-				leftBoundary_fit = max(1,middleNode - int(np.ceil(self.peakSize * np.sqrt(leftShape[3][1]))))  
+				left_boundary_index = max(1, curr_point - int(np.ceil(self.peak_size * np.sqrt(left_shape[3][1]))))  
 
 			if i == len(peaks) -2: # get the right boundary of the last peak
 				# the boundary of right shape by fitting half Gaussian
 				# use two and half sigma as the peak half width
-				rightBoundary_fit = min(len(x)-2, middleNode + int(np.ceil(self.peakSize * np.sqrt(rightShape[3][1])))) 
+				right_boundary_index = min(len(x)-2, curr_point + int(np.ceil(self.peak_size * np.sqrt(right_shape[3][1])))) 
 
 			boundaries.append({
-				"middleNode":middleNode,
-				"leftShape_err":leftShape_err,
-				"rightShape_err":rightShape_err,
-				"leftShape":leftShape[0],
-				"rightShape":rightShape[0],
-				"leftBoundary_fit":leftBoundary_fit,
-				"rightBoundary_fit":rightBoundary_fit,
-				"leftSigma": np.sqrt(leftShape[3][1]), # sqrt(sigma2) to get the sigma
-				"rightSigma": np.sqrt(rightShape[3][1]) # sqrt(sigma2) to get the sigma
+				"middleNode":curr_point,
+				"leftShape_err":left_shape_error,
+				"rightShape_err":right_shape_error,
+				"leftShape":left_shape[0],
+				"rightShape":right_shape[0],
+				"leftBoundary_fit":left_boundary_index,
+				"rightBoundary_fit":right_boundary_index,
+				"leftSigma": np.sqrt(left_shape[3][1]), # sqrt(sigma2) to get the sigma
+				"rightSigma": np.sqrt(right_shape[3][1]) # sqrt(sigma2) to get the sigma
 				})
 
 		return boundaries
 
 
-	def findPeakHeight(self,x,rawPeak):
+	def find_peak_heights(self, x, raw_peaks):
 		"""
 		Calcualte the peak heights of all peaks in the rawPeak
 		Args:
@@ -322,64 +310,59 @@ class Peak(object):
 		"""
 
 		shape_height = []
-		shape_fit = []
-		boundaries = []
 
-		for i in range(1,len(rawPeak)-1): # start from 1 to the second to the last
-			
-			leftNode = rawPeak[i-1]
-			middleNode = rawPeak[i]
-			rightNode =rawPeak[i+1]
+		for i in range(1, len(raw_peaks) - 1): # start from 1 to the second to the last
+			prev_point = raw_peaks[i - 1]
+			curr_point = raw_peaks[i]
+			next_point = raw_peaks[i + 1]
 
-			leftBoundary = np.argmin(x[leftNode:middleNode])+leftNode
-			rightBoundary = np.argmin(x[middleNode:rightNode+1])+middleNode
+			left_boundary_index = np.argmin(x[prev_point : curr_point]) + prev_point
+			right_boundary_index = np.argmin(x[curr_point : next_point + 1]) + curr_point
 			
 			if i == 1: # the first peak
-				leftBoundary = 0
+				left_boundary_index = 0
 
-			if i == len(rawPeak)-2: # the last peak
-				rightBoundary = len(x)-1
+			if i == len(raw_peaks) - 2: # the last peak
+				right_boundary_index = len(x) - 1
 
-			leftData = x[leftBoundary:(rawPeak[i]+1)] # including the peak
-			rightData = x[rawPeak[i]:rightBoundary+1] # including the peak point
+			left_data = x[left_boundary_index : (curr_point + 1)] # including the peak
+			right_data = x[curr_point : right_boundary_index + 1] # including the peak point
 
-			leftShape_diff = leftData[-1]-min(leftData) # the height of the left shape
-			rightShape_diff = rightData[0]-min(rightData) # the height of the right shape
+			left_peak_height = x[curr_point] - min(left_data) # the height of the left shape
+			right_peak_height = x[curr_point] - min(right_data) # the height of the right shape
 
-			shape_height.append(min(rightShape_diff,leftShape_diff))  # take the minimum differences as the heights
+			shape_height.append(min(left_peak_height, right_peak_height))  # take the minimum differences as the heights
 
 		return shape_height
 
 	
-	def initialFilter(self,rawPeakIndex,x,threshold, minDistance=10):
+	def initial_filter(self, raw_peaks, x, threshold, minimum_point_distance=10):
 		"""
 		function to remove peaks based on minimum magnitude and merge close peaks
 		Args:
-			rawPeakIndex: the list stored all the index of peaks
+			raw_peaks: the list stored all the index of peaks
 			x: signal
 			threshold: minimum magnitude threshold
-			minDistance: the minimum distance two peaks should separate
+			minimum_point_distance: the minimum distance two peaks should separate
 		Returns:
-			rawPeakIndex_new: a list containing peaks
+			raw_peaks_new: a list containing peaks
 		"""
 
 		n = len(x)
+		raw_peaks = raw_peaks[x[raw_peaks] > threshold] # keep the index that have significant magnitude
+		raw_peaks_new = []
 
-		rawPeakIndex = rawPeakIndex[x[rawPeakIndex]>threshold] # keep the index that have significant magnitude
-		
-		rawPeakIndex_new=[]
-
-		if len(rawPeakIndex)==0:
-			return rawPeakIndex_new
+		if len(raw_peaks) == 0:
+			return raw_peaks_new
 
 		# Combine two peaks if they are too close, choose the larger one
-		rawPeakIndex_new = [rawPeakIndex[0]]
+		raw_peaks_new = [raw_peaks[0]]
 
-		for i, peak_ind in enumerate(rawPeakIndex[1:]):
-			if peak_ind-rawPeakIndex_new[-1]>minDistance:
-				rawPeakIndex_new.append(peak_ind)
+		for i, peak_ind in enumerate(raw_peaks_new[1:]):
+			if peak_ind - raw_peaks_new[-1] > minimum_point_distance:
+				raw_peaks_new.append(peak_ind)
 			else:
-				if x[peak_ind]>x[rawPeakIndex_new[-1]]: # if the next peak is larger than previous peak
-					rawPeakIndex_new[-1] = peak_ind
+				if x[peak_ind] > x[raw_peaks_new[-1]]: # if the next peak is larger than previous peak
+					raw_peaks_new[-1] = peak_ind
 			
-		return rawPeakIndex_new
+		return raw_peaks_new

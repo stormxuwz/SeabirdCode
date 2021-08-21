@@ -4,7 +4,7 @@ from datetime import datetime
 from pytz import timezone
 import os
 
-class seabird_file_parser():
+class SeabirdFileParser():
 	def __init__(self):
 		self.meta = {"longitude":None,
 		"latitude":None,
@@ -56,14 +56,14 @@ class seabird_file_parser():
 		self.dataColumn = []
 		self.sensordata = None
 
-	def readFile(self,filename, fileId = None, columns = None):
+	def read_file(self,filename, fileId = None, columns = None):
 		self.meta["fileId"] = fileId
 		
 		if columns is None:
 			columns = self.variable_name_dictionary
 
 		if filename.lower().endswith(".cnv"):
-			sensordata = self.readCnvFile(filename)
+			sensordata = self.read_cnv(filename)
 			self.sensordata = sensordata.rename(columns = columns)
 		
 			for var in self.variableFinal:
@@ -78,19 +78,17 @@ class seabird_file_parser():
 
 
 		elif filename.lower().endswith(".csv"):
-			self.sensordata = self.readCSVFile(filename,columns=columns)
+			self.sensordata = self.read_csv(filename,columns=columns)
 			
 		if self.badFile:
 			return None
 
 		self.sensordata = self.sensordata[self.variableFinal]
 
-		
-	def readCSVFile(self,filename,columns = None):
+	def read_csv(self,filename,columns = None):
 		return pd.read_csv(filename).rename(columns = columns)
 
-
-	def readCnvFile(self,filename):
+	def read_cnv(self,filename):
 		sensordata = []
 		dataStarts = False
 		self.meta["fileName"] = filename

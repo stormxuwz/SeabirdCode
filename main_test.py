@@ -1,30 +1,26 @@
 from __future__ import print_function
-from seabird.seabird_class import seabird
-from seabird.models.stratificationIndex import *
-from seabird.models.model_peak import peak
-from scipy import signal
-import pickle
-import os
+from seabird.seabird import Seabird
+import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
 	import json
 	config=json.load(open('config.json'))
 
-	mySeabird = seabird(config=config)	
-	mySeabird.loadData(dataFile="sample.cnv")
+	seabird_obj = Seabird(config=config)	
+	seabird_obj.load_data(data_file="sample.cnv")
 
-	print(mySeabird.site, mySeabird.time)
-	mySeabird.preprocessing()
-	mySeabird.identify()
+	print(seabird_obj.site, seabird_obj.time)
+	seabird_obj.preprocess()
+	seabird_obj.identify()
 
-	print (mySeabird.features)
-	print (mySeabird.features["DCL_leftShapeFitErr"], mySeabird.features["DCL_rightShapeFitErr"])
-	print (mySeabird.features["DCL_leftSigma"], mySeabird.features["DCL_rightSigma"])
-	depth = mySeabird.cleanData.Depth
-	print (depth)
-	Fluorescence = mySeabird.cleanData.Fluorescence
+	print(seabird_obj.features)
+	print(seabird_obj.features["DCL_leftShapeFitErr"], seabird_obj.features["DCL_rightShapeFitErr"])
+	print(seabird_obj.features["DCL_leftSigma"], seabird_obj.features["DCL_rightSigma"])
+	depth = seabird_obj.cleandata.Depth
+	print(depth)
+	fluorescence = seabird_obj.cleandata.Fluorescence
 
 	plt.figure()
-	plt.plot(Fluorescence)
-	mySeabird.plot()
+	plt.plot(fluorescence)
+	seabird_obj.plot()
 	plt.show()

@@ -2,8 +2,7 @@
 Class of DCL
 """
 
-from .models.model_peak import peak
-import pandas as pd
+from .models.model_peak import Peak
 import numpy as np
 
 class DCL(object):
@@ -14,11 +13,11 @@ class DCL(object):
 			config: dictionary, the configuration
 		"""
 		self.config  = config
-		self.allPeaks = None
-		self.DCL_idx = None
+		self.all_peaks = None
+		self.dcl_index = None
 		self.model = None
 		
-	def adjust_conc(self,DCLDepth,rawData):
+	def adjust_concentration(self, dcl_depth, rawdata):
 		"""
 		Function to correct the fluorescence concentration by searching 
 		the maximum fluorescence in the raw data within 1 meter around the 
@@ -29,10 +28,10 @@ class DCL(object):
 		Returns:
 			corrected chlorophyll concentration
 		"""
-		DCLConc_rawData = rawData.loc[(rawData.Depth < DCLDepth + 0.5) & (rawData.Depth > DCLDepth - 0.5), "Fluorescence"]
-		return np.max(DCLConc_rawData)
+		values = rawdata.loc[(rawdata.Depth < dcl_depth + 0.5) & (rawdata.Depth > dcl_depth - 0.5), "Fluorescence"]
+		return np.max(values)
 
-	def detect(self,data,rawData,peakMinDepth=None,peakUpperDepthBoundary=None,saveModel=True):
+	def detect(self, data, rawdata, chl_peak_min_depth=None, chl_peak_upper_depth_boundary=None, save_model=True):
 		"""
 		function to detect DCL
 		Args:
@@ -74,80 +73,79 @@ class DCL(object):
 		}
 
 		# initialize peak model
-		model = peak(self.config["Algorithm"]["Peak"]) 
+		model = Peak(self.config["algorithm"]["peak"]) 
 		
-		if saveModel: # save model
+		if save_model: # save model
 			self.model = model
 		
 		model.fit_predict(data.Fluorescence) # Detect the peak
 		
-		self.allPeaks = model.allPeaks # a np.array storing
+		self.all_peaks = model.all_peaks # a np.array storing
 		
-		depthInterval = data.Depth[1]-data.Depth[0]
+		depth_interval = data.Depth[1]-data.Depth[0]
 		
 		features["allConc"] = np.sum((data.Fluorescence))
 
-		peakUpperDepthBoundary_idx = np.searchsorted(data.Depth, peakUpperDepthBoundary) + 1 # find the boundary index
-		features["allConc_upper"] = np.sum(data.Fluorescence[:peakUpperDepthBoundary_idx])
+		chl_peak_upper_depth_boundary_index = np.searchsorted(data.Depth, chl_peak_upper_depth_boundary) + 1 # find the boundary index
+		features["allConc_upper"] = np.sum(data.Fluorescence[:chl_peak_upper_depth_boundary_index])
 
-		if self.allPeaks is None or self.allPeaks.shape[0]<1:
+		if self.all_peaks is None or self.all_peaks.shape[0] < 1:
 			# no peak exists
 			features["peakNums"] = 0
 			features["DCL_exists"] = 0
 			return features
 		
 		else:
-			features["peakNums"] = self.allPeaks.shape[0] 
-			peakDepths = np.array(data.Depth[self.allPeaks.peakIndex]) # the peak depth
+			features["peakNums"] = self.all_peaks.shape[0] 
+			chl_peak_depths = np.array(data.Depth[self.all_peaks.peakIndex]) # the peak depth
 			
-			if peakMinDepth is not None and all(peakDepths<peakMinDepth):
+			if chl_peak_min_depth is not None and all(chl_peak_depths < chl_peak_min_depth):
 				# No peaks exists below the depth threshold
 				features["DCL_exists"] = 0
 				return features
 
 			# choose which peak represents DCM
-			if peakMinDepth is None:
-				DCL_idx = np.argmax(np.array(data.Fluorescence[self.allPeaks.peakIndex]))
+			if chl_peak_min_depth is None:
+				dcl_idx = np.argmax(np.array(data.Fluorescence[self.all_peaks.peakIndex]))
 			else:
-				availablePeakIdx = np.array(self.allPeaks.peakIndex*(peakDepths>peakMinDepth))
-				DCL_idx = np.argmax(np.array(data.Fluorescence[availablePeakIdx])) # choose the maximum concentration as the peak
+				available_peak_index = np.array(self.all_peaks.peakIndex * (chl_peak_depths > chl_peak_min_depth))
+				dcl_idx = np.argmax(np.array(data.Fluorescence[available_peak_index])) # choose the maximum concentration as the peak
 			
 
-			DCL_idx = int(DCL_idx)
-			self.DCL_idx = DCL_idx
+			dcl_idx = int(dcl_idx)
+			self.dcl_idx = dcl_idx
 
 			features["DCL_exists"] = 1
-			features["DCL_depth"] = peakDepths[DCL_idx]
+			features["DCL_depth"] = chl_peak_depths[dcl_idx]
 			
 			# features["DCL_conc"] = data.Fluorescence[self.allPeaks.peakIndex[DCL_idx]]
-			features["DCL_conc"] = self.correctConc(peakDepths[DCL_idx], rawData) # correct the peak concentration
+			features["DCL_conc"] = self.adjust_concentration(chl_peak_depths[dcl_idx], rawdata) # correct the peak concentration
 
-			features["DCL_leftShapeFitErr"] = self.allPeaks.leftErr[DCL_idx]
-			features["DCL_rightShapeFitErr"] = self.allPeaks.rightErr[DCL_idx]
+			features["DCL_leftShapeFitErr"] = self.all_peaks.leftErr[dcl_idx]
+			features["DCL_rightShapeFitErr"] = self.all_peaks.rightErr[dcl_idx]
 
-			features["DCL_leftSigma"] = self.allPeaks.leftSigma[DCL_idx]
-			features["DCL_rightSigma"] = self.allPeaks.rightSigma[DCL_idx]
+			features["DCL_leftSigma"] = self.all_peaks.leftSigma[dcl_idx]
+			features["DCL_rightSigma"] = self.all_peaks.rightSigma[dcl_idx]
 
 			# apply the DCL upper boundary for Gaussian fitting method boundary
-			sizeUpperDepth_fit = data.Depth[self.allPeaks.leftIndex_fit[DCL_idx]]
-			features["DCL_Org_UpperDepth_fit"] = sizeUpperDepth_fit
+			chl_peak_upper_depth = data.Depth[self.all_peaks.leftIndex_fit[dcl_idx]]
+			features["DCL_Org_UpperDepth_fit"] = chl_peak_upper_depth
 
-			if sizeUpperDepth_fit > peakUpperDepthBoundary:
-				# if the peak upper is deeper than peakUpperDepthBoundary
-				features["DCL_upperDepth_fit"] = sizeUpperDepth_fit
-				features["DCL_upperConc_fit"] = data.Fluorescence[self.allPeaks.leftIndex_fit[DCL_idx]]
-				features["DCL_concProp_fit"] = np.sum(data.Fluorescence[self.allPeaks.leftIndex_fit[DCL_idx]:(self.allPeaks.rightIndex_fit[DCL_idx]+1)]) / features["allConc"]
+			if chl_peak_upper_depth > chl_peak_upper_depth_boundary:
+				# if the peak upper is deeper than chl_peak_upper_depth_boundary
+				features["DCL_upperDepth_fit"] = chl_peak_upper_depth
+				features["DCL_upperConc_fit"] = data.Fluorescence[self.all_peaks.leftIndex_fit[dcl_idx]]
+				features["DCL_concProp_fit"] = np.sum(data.Fluorescence[self.all_peaks.leftIndex_fit[dcl_idx]:(self.all_peaks.rightIndex_fit[dcl_idx] + 1)]) / features["allConc"]
 			else:
 				# if the peak upper boundary is shallower than peakUpperDepthBoundary, using the upperboundary as the upper DCL boundary
-				features["DCL_upperDepth_fit"] = peakUpperDepthBoundary
-				features["DCL_upperConc_fit"] = data.Fluorescence[peakUpperDepthBoundary_idx]
-				features["DCL_concProp_fit"] = np.sum(data.Fluorescence[peakUpperDepthBoundary_idx:(self.allPeaks.rightIndex_fit[DCL_idx]+1)]) / features["allConc"]
+				features["DCL_upperDepth_fit"] = chl_peak_upper_depth_boundary
+				features["DCL_upperConc_fit"] = data.Fluorescence[chl_peak_upper_depth_boundary_index]
+				features["DCL_concProp_fit"] = np.sum(data.Fluorescence[chl_peak_upper_depth_boundary_index:(self.all_peaks.rightIndex_fit[dcl_idx] + 1)]) / features["allConc"]
 			
 			# find the DCL lower boundary
-			features["DCL_bottomConc_fit"] = data.Fluorescence[self.allPeaks.rightIndex_fit[DCL_idx]]
-			features["DCL_bottomDepth_fit"] =  data.Depth[self.allPeaks.rightIndex_fit[DCL_idx]]
+			features["DCL_bottomConc_fit"] = data.Fluorescence[self.all_peaks.rightIndex_fit[dcl_idx]]
+			features["DCL_bottomDepth_fit"] =  data.Depth[self.all_peaks.rightIndex_fit[dcl_idx]]
 
-		
 		return features
 
 

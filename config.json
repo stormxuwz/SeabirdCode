@@ -1,26 +1,26 @@
 {
-	"Preprocessing":{
-		"depthInterval":0.25,
-		"badDepthThreshold":3,
-		"smoothingMethod":{
+	"preprocessing":{
+		"depth_interval":0.25,
+		"bad_depth_threshold":3,
+		"smoothing_method":{
 			"Temperature":["window",9],
 			"Fluorescence":["window",9],
 			"Other":["spline",1]
 		}
 	},
 	
-	"Algorithm":{
-		"Peak":{
+	"algorithm":{
+		"peak":{
 			"peakMinInterval": 10,
 			"minPeakMagnitude": 0.3,
 			"peakHeight": 0.2,
 			"peakSize":2.5
 		},
-		"PLR":{
+		"plr":{
 			"max_error":0.3,
-			"stable_gradient2":0.25,
+			"stable_gradient_relaxed":0.25,
 			"stable_gradient":0.1,
-			"minTRM_gradient":0.15
+			"min_trm_gradient":0.15
 		}
 	}
 }

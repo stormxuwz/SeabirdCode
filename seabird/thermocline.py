@@ -3,9 +3,8 @@ Thermocline Class
 """
 import numpy as np
 import traceback
-import sys
-from .models.model_segmentation import bottomUp as segModel # or choose between splitAndMerge or bottomUp
-from .tools.signalProcessing import extractSignalFeatures
+from .models.model_segmentation import BottomUp as SegmentationModel
+import logging
 
 class _ThermoclineBase(object):
 	"""
@@ -20,6 +19,7 @@ class _ThermoclineBase(object):
 		self.trm = None
 		self.uhy = None
 		self.config = config
+		self.trm_idx = None
 		
 	def detect(self,data):
 		'''
@@ -42,7 +42,7 @@ class ThermoclineSegmentation(_ThermoclineBase):
 		self.num_below_trm = None
 		self.model = None
 		self.depth_interval = self.config["preprocessing"]["depth_interval"]
-		self.positive_seg = []
+		self.positive_gradient_segment = []
 		self.double_trm = []
 		self.gradient = []
 
@@ -65,7 +65,7 @@ class ThermoclineSegmentation(_ThermoclineBase):
 		"""
 		return (seg[0][0] - seg[0][1]) / self.depth_interval
 
-	def detect_double_trm(self, segmentList):
+	def detect_double_trm(self, segment_list):
 		"""
 		Functions to detect double thermocline. The index of segments which represent
 		double thermocline will be appended to doubleTRM
@@ -75,22 +75,23 @@ class ThermoclineSegmentation(_ThermoclineBase):
 		Retures:
 			None
 		"""
-		for i in range(1,len(segmentList)-1):
-			seg_gradient = self.getGradientFromSegment(segmentList[i])
-			previousSegGradient = self.getGradientFromSegment(segmentList[i-1])
-			nextSegGradient = self.getGradientFromSegment(segmentList[i+1])
+		self.double_trm = []
 
-			if abs(segGradient) < self.stableGradient and \
-				previousSegGradient > self.minimumGradient_TRM and \
-				nextSegGradient > self.stableGradient:
+		for i in range(1,len(segment_list)-1):
+			seg_gradient = self.get_gradient_from_segment(segment_list[i])
+			prev_seg_gradient = self.get_gradient_from_segment(segment_list[i-1])
+			next_seg_gradient = self.get_gradient_from_segment(segment_list[i+1])
 
-				self.doubleTRM.append(i)
+			if abs(seg_gradient) < self.stable_gradient and \
+				prev_seg_gradient > self.min_trm_gradient and \
+				next_seg_gradient > self.stable_gradient:
+				self.double_trm.append(i)
 
-		if len(self.doubleTRM)>0:
-			print("detected double thermocline")
-			print(self.doubleTRM)
+		if len(self.double_trm)>0:
+			logging.info("double thermocline detected")
+			logging.info(self.double_trm)
 
-	def detectPositiveGradient(self,segmentList):
+	def detect_positive_gradient(self,segment_list):
 		"""
 		Functions to detect positive gradient, since positive gradient is abnormal. 
 		The index of such segments will be appended to positiveSeg
@@ -101,14 +102,14 @@ class ThermoclineSegmentation(_ThermoclineBase):
 			None
 		"""
 
-		self.positiveSeg = []
-		for i, seg in enumerate(segmentList):
-			gradient = self.getGradientFromSegment(seg)
-			if gradient < -1 * self.stableGradient:
-				self.positiveSeg.append(i)
+		self.positive_gradient_segment = []
+		for i, seg in enumerate(segment_list):
+			gradient = self.get_gradient_from_segment(seg)
+			if gradient < -1 * self.stable_gradient:
+				self.positive_gradient_segment.append(i)
 
 
-	def detect(self,data,saveModel = False):
+	def detect(self, data, save_model=False):
 		"""
 		Function to detect the thermocline
 		Args:
@@ -117,102 +118,100 @@ class ThermoclineSegmentation(_ThermoclineBase):
 		Returns:
 			None
 		"""
-		model = segModel(max_error = self.max_error)
+		model = SegmentationModel(max_error=self.max_error)
 		
 		# detect the TRM features
 		model.fit_predict(data.Temperature)
-
-		segmentList = model.segmentList # segmentList is a list of [fitted line, point index]
+		segment_list = model.segment_list # segmentList is a list of [fitted line, point index]
 
 		assert len(data.Depth) > 1
-		depthInterval = data.Depth[1] - data.Depth[0]
 		
 		# get the gradient of all segments
-		gradient = [self.getGradientFromSegment(seg) for seg in model.segmentList]
-		print(gradient)
-		maxGradient_index = np.argmax(gradient)
+		gradient = [self.get_gradient_from_segment(seg) for seg in segment_list]
+		max_gradient_index = np.argmax(gradient)
 		
 		# remove the segment caused by the noise
-		if maxGradient_index == 0:
-			tmpDepth = np.array(data.Depth[segmentList[maxGradient_index][1]])
+		if max_gradient_index == 0:
+			tmpDepth = np.array(data.Depth[segment_list[max_gradient_index][1]])
 			if tmpDepth[-1] - tmpDepth[0] < 2:
 				# if the first segment is less than 2 meters and has the maximum gradient
 				# then the first segment would be a noise or peak, need to remove
-				print("**** first segment is affected by noise")
-				print(tmpDepth)
-				model.segmentList.pop(0)
-				gradient = [self.getGradientFromSegment(seg) for seg in model.segmentList]
-				maxGradient_index = np.argmax(gradient)
+				logging.warning("first segment is affected by noise", tmpDepth)
+				model.segment_list.pop(0)
+				gradient = [self.get_gradient_from_segment(seg) for seg in segment_list]
+				max_gradient_index = np.argmax(gradient)
 
 		self.gradient = gradient
 
-		if gradient[maxGradient_index] > self.minimumGradient_TRM: 
+		if gradient[max_gradient_index] > self.min_trm_gradient: 
 			# TRM gradient is above the maximum gradient
-			# Detect TRM, which is the middle point of the segment with maximum gradient
-			self.TRM = data.Depth[int(np.mean(segmentList[maxGradient_index][1]))]
+			# TRM is detected, which is the middle point of the segment with maximum gradient
+			self.trm = data.Depth[int(np.mean(segment_list[max_gradient_index][1]))]
 
-			gradientIsStable = [abs(g) < self.stableGradient for g in gradient]
-			gradientIsStable[0] = abs(gradient[0]) < self.stableGradient_relaxed
-			gradientIsStable[-1] = abs(gradient[-1]) < self.stableGradient_relaxed
+			# check whether gradient is stable
+			# the gradients of first and last segment use different criteria
+			gradient_is_stable = [abs(g) < self.stable_gradient for g in gradient]
+			gradient_is_stable[0] = abs(gradient[0]) < self.stable_gradient_relaxed
+			gradient_is_stable[-1] = abs(gradient[-1]) < self.stable_gradient_relaxed
 
-			surfaceTemperature = model.segmentList[0][0][0]
-			bottomTemperature = model.segmentList[-1][0][-1]
+			surface_temprature = model.segment_list[0][0][0]
+			bottom_temperature = model.segment_list[-1][0][-1]
 			
-			LEP_index = None
-			UHY_index = None
+			lep_index = None
+			uhy_index = None
 
 			# detect the LEP
-			for i in range(maxGradient_index):
-				if not (gradientIsStable[i] and model.segmentList[i][0][-1] - surfaceTemperature < self.maxTempertureChange):
+			for i in range(max_gradient_index):
+				if not (gradient_is_stable[i] and model.segment_list[i][0][-1] - surface_temprature < self.MAX_TEMPERATURE_CHANGE):
 					if i > 0:
-						LEP_index = model.segmentList[i - 1][1][-1]
+						lep_index = model.segment_list[i - 1][1][-1]
 					break
 
-				if i == maxGradient_index - 1:
-					LEP_index = model.segmentList[i][1][-1]
+				if i == max_gradient_index - 1:
+					lep_index = model.segment_list[i][1][-1]
 
 			# detect the UHY
-			for i in range(len(model.segmentList) - 1, maxGradient_index, -1):
-				print(model.segmentList[i][0][0] - bottomTemperature)
-				if not (gradientIsStable[i] and model.segmentList[i][0][0] - bottomTemperature < self.maxTempertureChange):
-					if i < len(model.segmentList) - 1:
-						UHY_index = model.segmentList[i + 1][1][0]
+			for i in range(len(model.segment_list) - 1, max_gradient_index, -1):
+				if not (gradient_is_stable[i] and model.segment_list[i][0][0] - bottom_temperature < self.MAX_TEMPERATURE_CHANGE):
+					if i < len(model.segment_list) - 1:
+						uhy_index = model.segment_list[i + 1][1][0]
 					break
 
-				if i == maxGradient_index + 1:
-					UHY_index = model.segmentList[i][1][0]
+				if i == max_gradient_index + 1:
+					uhy_index = model.segment_list[i][1][0]
 
-			if LEP_index:
-				self.LEP = data.Depth[LEP_index]
+			if lep_index:
+				self.lep = data.Depth[lep_index]
 
-			if UHY_index:
-				self.UHY = data.Depth[UHY_index]
+			if uhy_index:
+				self.uhy = data.Depth[uhy_index]
 		else:
-			print("minimum Gradient")
-			print(gradient[maxGradient_index]) 
-			print(self.minimumGradient_TRM)
-			print("No TRM deteted")
+			logging.info("minimum gradient too low")
+			logging.info(gradient[max_gradient_index]) 
+			logging.info(self.min_trm_gradient)
+			logging.info("No TRM deteted")
 		
-		self.TRM_gradient = max(gradient)
-		self.num_segments = len(segmentList)
-		self.TRM_idx = maxGradient_index
+		self.trm_gradient = max(gradient)
+		self.num_segments = len(segment_list)
+		self.trm_idx = max_gradient_index
 		
-		self.detectDoubleTRM(segmentList)
-		self.detectPositiveGradient(segmentList)
+		self.detect_double_trm(segment_list)
+		self.detect_positive_gradient(segment_list)
 
-		if saveModel:
+		if save_model:
 			self.model = model
 
-class thermocline(object):
+
+class Thermocline(object):
 	"""
-	Function to detect
+	Class to detect thermocline
 	"""
 	def __init__(self,config):
 		self.config = config
 		self.features = {}
 		self.models = {}
 		
-	def detect(self,data,methods = ["segmentation"], saveModel = True):
+	def detect(self, data, methods=["segmentation"], save_model=True):
 		"""
 		Function to detect features of thermocline
 		Args:
@@ -226,43 +225,41 @@ class thermocline(object):
 		# initialize Features
 		for d in ["TRM","LEP","UHY"]:
 			for m in ["segment","HMM","threshold"]:
-				features[d+"_"+m] = None
+				features[d + "_" + m] = None
 		features["TRM_gradient_segment"] = None
 		features["TRM_num_segment"] = None
-
-		# try each model one by one.
 
 		if "segmentation" in methods:
 			try:
 				model = ThermoclineSegmentation(self.config)
-				model.detect(data, saveModel=saveModel)
+				model.detect(data, save_model=save_model)
 
 				# the gradient of TRM
-				features["TRM_gradient_segment"] = model.TRM_gradient
+				features["TRM_gradient_segment"] = model.trm_gradient
 
 				# the depth of TRM, LEP and UHY
-				features["TRM_segment"] = model.TRM
-				features["LEP_segment"] = model.LEP
-				features["UHY_segment"] = model.UHY
+				features["TRM_segment"] = model.trm
+				features["LEP_segment"] = model.lep
+				features["UHY_segment"] = model.uhy
 				
 				# the number of segments
 				features["TRM_num_segment"] = model.num_segments
 
 				# which segment is the TRM
-				features["TRM_idx"] = model.TRM_idx
+				features["TRM_idx"] = model.trm_idx
 
 				# how many double TRM sequences
-				features["doubleTRM"] = len(model.doubleTRM)
+				features["doubleTRM"] = len(model.double_trm)
 
 				# how many positive gradient segments
-				features["positiveGradient"] = len(model.positiveSeg)
+				features["positiveGradient"] = len(model.positive_gradient_segment)
 
 				# the gradient of the some key segments
 				features["firstSegmentGradient"] = model.gradient[0]
 				features["lastSegmentGradient"] = model.gradient[-1]
 				features["lastButTwoSegmentGradient"] = model.gradient[-2]
 
-				if saveModel:
+				if save_model:
 					self.models["segmentation"] = model.model
 
 			except Exception as err:
