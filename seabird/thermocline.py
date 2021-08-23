@@ -5,7 +5,7 @@ import numpy as np
 import traceback
 from .models.model_segmentation import BottomUp as SegmentationModel
 import logging
-
+import pandas as pd
 class _ThermoclineBase(object):
 	"""
 	Base class for thermocline.
@@ -126,6 +126,7 @@ class ThermoclineSegmentation(_ThermoclineBase):
 
 		assert len(data.Depth) > 1
 		
+		# data.to_csv("~/Developer/test.csv")
 		# get the gradient of all segments
 		gradient = [self.get_gradient_from_segment(seg) for seg in segment_list]
 		max_gradient_index = np.argmax(gradient)
@@ -160,9 +161,10 @@ class ThermoclineSegmentation(_ThermoclineBase):
 			lep_index = None
 			uhy_index = None
 
+			# print(gradient_is_stable, gradient, segment_list)
 			# detect the LEP
 			for i in range(max_gradient_index):
-				if not (gradient_is_stable[i] and model.segment_list[i][0][-1] - surface_temprature < self.MAX_TEMPERATURE_CHANGE):
+				if not (gradient_is_stable[i] and abs(model.segment_list[i][0][-1] - surface_temprature) < self.MAX_TEMPERATURE_CHANGE):
 					if i > 0:
 						lep_index = model.segment_list[i - 1][1][-1]
 					break
@@ -172,7 +174,7 @@ class ThermoclineSegmentation(_ThermoclineBase):
 
 			# detect the UHY
 			for i in range(len(model.segment_list) - 1, max_gradient_index, -1):
-				if not (gradient_is_stable[i] and model.segment_list[i][0][0] - bottom_temperature < self.MAX_TEMPERATURE_CHANGE):
+				if not (gradient_is_stable[i] and abs(model.segment_list[i][0][0] - bottom_temperature) < self.MAX_TEMPERATURE_CHANGE):
 					if i < len(model.segment_list) - 1:
 						uhy_index = model.segment_list[i + 1][1][0]
 					break
