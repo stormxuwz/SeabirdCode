@@ -145,9 +145,9 @@ class BottomUp(TimeSeriesSegmentation):
         Returns:
             error when merging the right segment
         """
-        segments = np.concatenate((left_segment, right_segment))
-        line = self.create_line(segments)
-        return self.calculate_error(line, segments)
+        merged_segment = np.concatenate((left_segment, right_segment))
+        line = self.create_line(merged_segment)
+        return self.calculate_error(line, merged_segment)
 
     def merge_next(self, segment_list, index):
         """

@@ -1,9 +1,7 @@
 import numpy as np
 import pandas as pd
 from datetime import datetime
-from pytz import timezone
 import os
-
 class SeabirdFileParser():
 	def __init__(self):
 		self.meta = {"longitude":None,
@@ -39,7 +37,7 @@ class SeabirdFileParser():
 		"spar":"SPar",
 		"prDE":"Pressure"}
 		
-		self.variableFinal = [
+		self.variables = [
 		"Depth",
 		"Temperature",
 		"Specific_Conductivity",
@@ -51,12 +49,12 @@ class SeabirdFileParser():
 		"SPar",
 		"Pressure"]
 
-		self.badFile = False
+		self.bad_file = False
 		self.cruise = None
-		self.dataColumn = []
+		self.data_columns = []
 		self.sensordata = None
 
-	def read_file(self,filename, fileId = None, columns = None):
+	def read_file(self,filename, fileId=None, columns=None):
 		self.meta["fileId"] = fileId
 		
 		if columns is None:
@@ -64,9 +62,11 @@ class SeabirdFileParser():
 
 		if filename.lower().endswith(".cnv"):
 			sensordata = self.read_cnv(filename)
-			self.sensordata = sensordata.rename(columns = columns)
+
+			self.sensordata = sensordata.rename(columns=columns)
 		
-			for var in self.variableFinal:
+			# fill NA to missing features
+			for var in self.variables:
 				if var not in self.sensordata.columns.values:
 					self.sensordata[var] = np.nan
 
@@ -76,75 +76,70 @@ class SeabirdFileParser():
 			self.meta["lake"] = os.path.basename(self.meta["fileName"])[:2].upper()
 			self.meta["stationInfered"] = os.path.basename(self.meta["fileName"])[:4].upper()
 
-
 		elif filename.lower().endswith(".csv"):
-			self.sensordata = self.read_csv(filename,columns=columns)
+			self.sensordata = self.read_csv(filename, columns=columns)
 			
-		if self.badFile:
+		if self.bad_file:
 			return None
 
-		self.sensordata = self.sensordata[self.variableFinal]
+		self.sensordata = self.sensordata[self.variables]
 
 	def read_csv(self,filename,columns = None):
 		return pd.read_csv(filename).rename(columns = columns)
 
 	def read_cnv(self,filename):
 		sensordata = []
-		dataStarts = False
+		is_data_line = False
+
 		self.meta["fileName"] = filename
 		with open(filename,"r", errors='ignore') as file:
-			lines = file.readlines();
+			lines = file.readlines()
 			if(lines == []):
-				self.badFile = True
-				return None
+				raise ValueError("file is empty")
 
-			for line_index, line in enumerate(lines):
-				if not dataStarts:
-					
+			for line in lines:
+				if is_data_line is False:
 					if line[0] == "*" and line[1]!="*":
 						if line.startswith("*END*"):
-							dataStarts = True
+							is_data_line = True
 							continue
 						content = line[1:].split("=")
 						
-						if len(content)<2: # No configuration data
+						if len(content) < 2: # No configuration data
 							content2 = line[1:].split(":")
-							if len(content2)<2:
+							if len(content2) < 2:
 								continue
 							else:
-								self.extractMeta(content2)
+								self.get_meta_data(content2)
 						else:
-							self.extractMeta(content)
-
+							self.get_meta_data(content)
 					
 					if line[:2] == "**":
 						content = line[2:].split(":")
 						if len(content)<2:
 							continue
 						else:
-							self.extractMeta(content)
+							self.get_meta_data(content)
 
 					if line[:1] == "#":
 						content = line[1:].split("=")
-						if len(content)<2:
+						if len(content) < 2:
 							continue
 						else:
-							self.extractDataColumn(content)
+							self.extract_data_column(content)
 				else:
 					try:
 						content = line.split()
-						if len(content)!=len(self.dataColumn):
+						if len(content) != len(self.data_columns):
 							continue
 						sensordata.append([float(t) for t in content])
 					except:
 						continue
 		
-		# print sensordata,self.dataColumn
-		if len(sensordata)<1:
-			self.badFile = True
-			return None
+		if len(sensordata) < 1:
+			raise ValueError("no data")
 		else:	
-			sensordata = pd.DataFrame(data=np.array(sensordata),columns=self.dataColumn)
+			sensordata = pd.DataFrame(data=np.array(sensordata), columns=self.data_columns)
 		
 		if "c0mS/cm" in sensordata.columns.values:
 			sensordata["c0mS/cm"] = sensordata["c0mS/cm"] * 1000 # change to uS/cm
@@ -152,7 +147,7 @@ class SeabirdFileParser():
 		return sensordata
 		
 
-	def extractMeta(self,content):
+	def get_meta_data(self,content):
 		key = content[0].strip()
 		value = content[1].strip()
 
@@ -189,26 +184,20 @@ class SeabirdFileParser():
 			except:
 				self.meta["systemUpLoadTime"] = datetime.strptime(value,"%m/%d/%y %I:%M:%S %p")
 
-	def extractDataColumn(self,content):
+	def extract_data_column(self,content):
 		key = content[0].strip()
 		value = content[1].strip()
 
 		if key.startswith("name"):
 			key = key.split(" ")
 			value = value.split(":")
-			self.dataColumn.append(value[0])
+			self.data_columns.append(value[0])
 
 		if key == "datcnv_date":
 			self.meta["datcnv_date"] = datetime.strptime(value.split(",")[0],"%b %d %Y %H:%M:%S")
 
-	def sendtoDatabase(self,engine,tableName):
+	def send_to_db(self,engine,tableName):
 		meta = pd.DataFrame.from_dict([self.meta],orient='columns')
 		self.sensordata.to_sql(tableName["data"],engine,flavor="mysql",if_exists="append",index = True,chunksize=2000)
 		meta.to_sql(tableName["meta"],engine,flavor="mysql",if_exists="append",index = False)
-
-	def saveToCSV(self,fileToSave):
-		self.sensordata
-
-
-
 

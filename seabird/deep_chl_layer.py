@@ -81,9 +81,7 @@ class DCL(object):
 		model.fit_predict(data.Fluorescence) # Detect the peak
 		
 		self.all_peaks = model.all_peaks # a np.array storing
-		
-		depth_interval = data.Depth[1]-data.Depth[0]
-		
+				
 		features["allConc"] = np.sum((data.Fluorescence))
 
 		chl_peak_upper_depth_boundary_index = np.searchsorted(data.Depth, chl_peak_upper_depth_boundary) + 1 # find the boundary index

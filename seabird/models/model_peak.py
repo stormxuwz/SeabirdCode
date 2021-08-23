@@ -2,11 +2,8 @@
 Peak detection algorithm, contains both gradient analysis results and shape fitting results
 '''
 import numpy as np
-import logging
 from scipy.optimize import curve_fit
 from scipy.stats import t,laplace
-from ..tools import seabird_preprocessing as spp
-import matplotlib.pyplot as plt
 import pandas as pd
 
 # Fit a gaussian functions
@@ -50,7 +47,7 @@ def fit_gaussian(x, y, x_mean, weight=None):
 		raise ValueError("WLS not implemented")
 		# popt, pcov = curve_fit(lambda x,a,sigma: gauss_function(x,a,x_mean,sigma,max(y)-a), x, y, sigma=weight)
 	fit_y = gauss_function(x, popt[0], x_mean, popt[1], max(y) - popt[0], popt[2])
-	return fit_y,popt
+	return fit_y, popt
 
 
 # fit the t distribution shape
@@ -358,7 +355,7 @@ class Peak(object):
 		# Combine two peaks if they are too close, choose the larger one
 		raw_peaks_new = [raw_peaks[0]]
 
-		for i, peak_ind in enumerate(raw_peaks_new[1:]):
+		for i, peak_ind in enumerate(raw_peaks[1:]):
 			if peak_ind - raw_peaks_new[-1] > minimum_point_distance:
 				raw_peaks_new.append(peak_ind)
 			else:
